@@ -30,4 +30,6 @@ dependencies {
     compile([group: 'org.jboss.jbossts', name: 'jbossjta', version: '4.15.1.Final']) {
         transitive=false;
     }
+
+
 }
