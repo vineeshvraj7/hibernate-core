@@ -8,14 +8,14 @@ import org.hibernate.metamodel.spi.source.MetadataImplementor;
  */
 public interface TypeContributingIntegrator extends Integrator {
 
-    /**
-     * Allows the <code>Integrator</code> to modify the <code>MetadataImplementor</code>
-     * prior to building the metadata, presumably to register additional types in the
+	/**
+	 * Allows the <code>Integrator</code> to modify the <code>MetadataImplementor</code>
+	 * prior to building the metadata, presumably to register additional types in the
 	 * <code>TypeRegistry</code>.
 	 *
-     *
-     * @param builder
-     */
-    public void prepareTypes(MetadataImplementor builder);
+	 * @param builder
+	 */
+	public void prepareTypes(MetadataImplementor builder);
 
 }
+
