@@ -21,8 +21,10 @@
 
 apply plugin: 'java'
 
+version = '4.0-M1'
+
 dependencies {
-    compile( project( ':hibernate-core' ) )
+    compile( project( ':hibernate-core') )
     compile( [group: 'com.vividsolutions', name: 'jts', version: '1.12'] ) {
         transitive = false
     }
