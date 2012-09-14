@@ -37,7 +37,7 @@ public class GeometryJavaTypeDescriptor extends AbstractTypeDescriptor<Geometry>
 
 	public static final JavaTypeDescriptor<Geometry> INSTANCE = new GeometryJavaTypeDescriptor(Geometry.class);
 
-	protected GeometryJavaTypeDescriptor(Class<Geometry> type) {
+	public GeometryJavaTypeDescriptor(Class<Geometry> type) {
 		super(type);
 	}
 
