@@ -25,7 +25,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.spatial.GeometrySqlTypeDescriptor;
-import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.JTSGeometryType;
 import org.hibernate.spatial.SpatialDialect;
 import org.hibernate.spatial.SpatialFunction;
 import org.hibernate.spatial.SpatialRelation;
@@ -96,12 +96,15 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 		super();
 
 		// Register Geometry column type
-		registerColumnType( java.sql.Types.ARRAY, "BLOB" );
+		registerColumnType(
+				GeoDBGeometryTypeDescriptor.INSTANCE.getSqlType(),
+				GeoDBGeometryTypeDescriptor.INSTANCE.getTypeName()
+		);
 
 		// Register functions that operate on spatial types
-// NOT YET AVAILABLE IN GEODB
-//		registerFunction("dimension", new StandardSQLFunction("dimension",
-//				Hibernate.INTEGER));
+		// NOT YET AVAILABLE IN GEODB
+		//		registerFunction("dimension", new StandardSQLFunction("dimension",
+		//				Hibernate.INTEGER));
 		registerFunction(
 				"geometrytype", new StandardSQLFunction(
 				"GeometryType", StandardBasicTypes.STRING
@@ -116,7 +119,7 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 		registerFunction(
 				"envelope", new StandardSQLFunction(
 				"ST_Envelope",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 		registerFunction(
@@ -143,9 +146,9 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 				StandardBasicTypes.BOOLEAN
 		)
 		);
-// NOT YET AVAILABLE IN GEODB
-//		registerFunction("boundary", new StandardSQLFunction("boundary",
-//				new CustomType(GeoDBGeometryUserType.class, null)));
+		// NOT YET AVAILABLE IN GEODB
+		//		registerFunction("boundary", new StandardSQLFunction("boundary",
+		//				new CustomType(GeoDBGeometryUserType.class, null)));
 
 		// Register functions for spatial relation constructs
 		registerFunction(
@@ -196,9 +199,9 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 				StandardBasicTypes.BOOLEAN
 		)
 		);
-// NOT YET AVAILABLE IN GEODB
-//		registerFunction("relate", new StandardSQLFunction("relate",
-//				Hibernate.BOOLEAN));
+		// NOT YET AVAILABLE IN GEODB
+		//		registerFunction("relate", new StandardSQLFunction("relate",
+		//				Hibernate.BOOLEAN));
 
 		// register the spatial analysis functions
 		registerFunction(
@@ -210,26 +213,26 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 		registerFunction(
 				"buffer", new StandardSQLFunction(
 				"ST_Buffer",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
-// NOT YET AVAILABLE IN GEODB
-//		registerFunction("convexhull", new StandardSQLFunction("convexhull",
-//				new CustomType(GeoDBGeometryUserType.class, null)));
-//		registerFunction("difference", new StandardSQLFunction("difference",
-//				new CustomType(GeoDBGeometryUserType.class, null)));
-//		registerFunction("intersection", new StandardSQLFunction(
-//				"intersection", new CustomType(GeoDBGeometryUserType.class, null)));
-//		registerFunction("symdifference",
-//				new StandardSQLFunction("symdifference", new CustomType(
-//						GeoDBGeometryUserType.class, null)));
-//		registerFunction("geomunion", new StandardSQLFunction("geomunion",
-//				new CustomType(GeoDBGeometryUserType.class, null)));
+		// NOT YET AVAILABLE IN GEODB
+		//		registerFunction("convexhull", new StandardSQLFunction("convexhull",
+		//				new CustomType(GeoDBGeometryUserType.class, null)));
+		//		registerFunction("difference", new StandardSQLFunction("difference",
+		//				new CustomType(GeoDBGeometryUserType.class, null)));
+		//		registerFunction("intersection", new StandardSQLFunction(
+		//				"intersection", new CustomType(GeoDBGeometryUserType.class, null)));
+		//		registerFunction("symdifference",
+		//				new StandardSQLFunction("symdifference", new CustomType(
+		//						GeoDBGeometryUserType.class, null)));
+		//		registerFunction("geomunion", new StandardSQLFunction("geomunion",
+		//				new CustomType(GeoDBGeometryUserType.class, null)));
 
 		//register Spatial Aggregate funciton
-// NOT YET AVAILABLE IN GEODB
-//		registerFunction("extent", new StandardSQLFunction("extent",
-//				new CustomType(GeoDBGeometryUserType.class, null)));
+		// NOT YET AVAILABLE IN GEODB
+		//		registerFunction("extent", new StandardSQLFunction("extent",
+		//				new CustomType(GeoDBGeometryUserType.class, null)));
 
 		registerFunction(
 				"dwithin", new StandardSQLFunction(
@@ -260,7 +263,7 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 	@Override
 	public String getTypeName(int code, long length, int precision, int scale) throws HibernateException {
 		if ( code == 3000 ) {
-			return "GEOMETRY";
+			return GeoDBGeometryTypeDescriptor.INSTANCE.getTypeName();
 		}
 		return super.getTypeName( code, length, precision, scale );
 	}
@@ -273,17 +276,13 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 		return super.remapSqlTypeDescriptor( sqlTypeDescriptor );
 	}
 
-	/* (non-Javadoc)
-		  * @see org.hibernatespatial.SpatialDialect#getSpatialAggregateSQL(java.lang.String, int)
-		  */
-
 	public String getSpatialAggregateSQL(String columnName, int aggregation) {
 		switch ( aggregation ) {
-// NOT YET AVAILABLE IN GEODB
-//		case SpatialAggregate.EXTENT:
-//			StringBuilder stbuf = new StringBuilder();
-//			stbuf.append("extent(").append(columnName).append(")");
-//			return stbuf.toString();
+			// NOT YET AVAILABLE IN GEODB
+			//		case SpatialAggregate.EXTENT:
+			//			StringBuilder stbuf = new StringBuilder();
+			//			stbuf.append("extent(").append(columnName).append(")");
+			//			return stbuf.toString();
 			default:
 				throw new IllegalArgumentException(
 						"Aggregations of type "

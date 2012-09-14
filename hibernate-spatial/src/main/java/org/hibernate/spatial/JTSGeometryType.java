@@ -29,9 +29,9 @@ import org.hibernate.type.AbstractSingleColumnStandardBasicType;
  *
  * @author Karel Maesen
  */
-public class GeometryType extends AbstractSingleColumnStandardBasicType<Geometry> {
+public class JTSGeometryType extends AbstractSingleColumnStandardBasicType<Geometry> {
 
-	public static final GeometryType INSTANCE = new GeometryType();
+	public static final JTSGeometryType INSTANCE = new JTSGeometryType();
 
 	@Override
 	public String[] getRegistrationKeys() {
@@ -44,17 +44,17 @@ public class GeometryType extends AbstractSingleColumnStandardBasicType<Geometry
 				com.vividsolutions.jts.geom.MultiLineString.class.getCanonicalName(),
 				com.vividsolutions.jts.geom.MultiPoint.class.getCanonicalName(),
 				com.vividsolutions.jts.geom.GeometryCollection.class.getCanonicalName(),
-				"geometry"
+				"jts_geometry"
 		};
 	}
 
-	public GeometryType() {
-		super( GeometrySqlTypeDescriptor.INSTANCE, GeometryJavaTypeDescriptor.INSTANCE );
+	public JTSGeometryType() {
+		super( GeometrySqlTypeDescriptor.INSTANCE, JTSGeometryJavaTypeDescriptor.INSTANCE );
 	}
 
 	@Override
 	public String getName() {
-		return "geometry";
+		return "jts_geometry";
 	}
 
 }

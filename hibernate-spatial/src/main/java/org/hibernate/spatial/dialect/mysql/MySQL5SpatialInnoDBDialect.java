@@ -1,6 +1,5 @@
 package org.hibernate.spatial.dialect.mysql;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
@@ -21,32 +20,13 @@ public class MySQL5SpatialInnoDBDialect extends MySQL5InnoDBDialect implements S
 
 	public MySQL5SpatialInnoDBDialect() {
 		super();
-		Map<String, StandardSQLFunction> functionsToRegister = dialectDelegate.getFunctionsToRegister();
-		Map<String, Integer> columnTypes = dialectDelegate.getColumnTypesToRegister();
-		if ( null != columnTypes ) {
-			Iterator<String> keys = columnTypes.keySet().iterator();
-			while ( keys.hasNext() ) {
-				String aKey = keys.next();
-				registerColumnType( columnTypes.get( aKey ), aKey );
-			}
+		registerColumnType(
+				MySQLGeometryTypeDescriptor.INSTANCE.getSqlType(),
+				MySQLGeometryTypeDescriptor.INSTANCE.getTypeName()
+		);
+		for ( Map.Entry<String, StandardSQLFunction> entry : new MySQLSpatialFunctions() ) {
+			registerFunction( entry.getKey(), entry.getValue() );
 		}
-
-		if ( null != functionsToRegister ) {
-			Iterator<String> keys = functionsToRegister.keySet().iterator();
-			while ( keys.hasNext() ) {
-				String aKey = keys.next();
-				registerFunction( aKey, functionsToRegister.get( aKey ) );
-
-			}
-		}
-	}
-
-	public Map<String, Integer> getColumnTypesToRegister() {
-		return dialectDelegate.getColumnTypesToRegister();
-	}
-
-	public Map<String, StandardSQLFunction> getFunctionsToRegister() {
-		return dialectDelegate.getFunctionsToRegister();
 	}
 
 	@Override

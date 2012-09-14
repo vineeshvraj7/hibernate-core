@@ -56,4 +56,12 @@ public class GeometrySqlTypeDescriptor implements SqlTypeDescriptor {
 	public <X> ValueExtractor<X> getExtractor(JavaTypeDescriptor<X> javaTypeDescriptor) {
 		throw new UnsupportedOperationException();
 	}
+
+	/**
+	 * Returns the fully-qualified database specific type name for the spatial user-defined type.
+	 * @return
+	 */
+	public String getTypeName() {
+		return "GEOMETRY";
+	}
 }

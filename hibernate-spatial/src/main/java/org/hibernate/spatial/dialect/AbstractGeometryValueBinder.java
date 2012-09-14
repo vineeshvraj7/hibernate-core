@@ -24,31 +24,30 @@ package org.hibernate.spatial.dialect;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import com.vividsolutions.jts.geom.Geometry;
 
 import org.hibernate.spatial.jts.JTS;
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
-import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.WrapperOptions;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.sql.BasicBinder;
+import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 1/19/12
  */
-public abstract class AbstractJTSGeometryValueBinder implements ValueBinder<Geometry> {
+public abstract class AbstractGeometryValueBinder<X> extends BasicBinder<X> {
 
-	@Override
-	public void bind(PreparedStatement st, Geometry value, int index, WrapperOptions options) throws SQLException {
-		if ( value == null ) {
-			st.setNull( index, Types.STRUCT );
-		}
-		else {
-			Geometry jtsGeom = (Geometry) value;
-			Object dbGeom = toNative( jtsGeom, st.getConnection() );
-			st.setObject( index, dbGeom );
-		}
+	public AbstractGeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor, SqlTypeDescriptor sqlDescriptor) {
+		super( javaDescriptor, sqlDescriptor );
+	}
+
+	protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options) throws SQLException {
+		Geometry jtsGeom = getJavaDescriptor().unwrap( value, Geometry.class, options );
+		Object dbGeom = toNative( jtsGeom, st.getConnection() );
+		st.setObject( index, dbGeom );
 	}
 
 	protected MGeometryFactory getGeometryFactory() {

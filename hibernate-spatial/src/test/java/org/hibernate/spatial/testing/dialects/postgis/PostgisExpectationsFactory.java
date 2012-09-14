@@ -24,6 +24,7 @@ package org.hibernate.spatial.testing.dialects.postgis;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+import org.hibernate.spatial.JTSGeometryJavaTypeDescriptor;
 import org.hibernate.spatial.dialect.postgis.PGGeometryValueExtractor;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
 import org.hibernate.spatial.testing.DataSourceUtils;
@@ -36,7 +37,7 @@ import org.hibernate.spatial.testing.NativeSQLStatement;
  */
 public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 
-	private final PGGeometryValueExtractor decoder = new PGGeometryValueExtractor();
+	private final PGGeometryValueExtractor decoder = new PGGeometryValueExtractor( JTSGeometryJavaTypeDescriptor.INSTANCE);
 
 	public PostgisExpectationsFactory(DataSourceUtils utils) {
 		super( utils );

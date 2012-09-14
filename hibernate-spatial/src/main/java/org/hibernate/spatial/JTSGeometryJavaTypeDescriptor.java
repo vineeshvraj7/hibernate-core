@@ -33,12 +33,12 @@ import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 7/27/11
  */
-public class GeometryJavaTypeDescriptor extends AbstractTypeDescriptor<Geometry> {
+public class JTSGeometryJavaTypeDescriptor extends AbstractTypeDescriptor<Geometry> {
 
 
-	public static final JavaTypeDescriptor<Geometry> INSTANCE = new GeometryJavaTypeDescriptor( Geometry.class );
+	public static final JavaTypeDescriptor<Geometry> INSTANCE = new JTSGeometryJavaTypeDescriptor( Geometry.class );
 
-	public GeometryJavaTypeDescriptor(Class<Geometry> type) {
+	public JTSGeometryJavaTypeDescriptor(Class<Geometry> type) {
 		super( type );
 	}
 
@@ -60,12 +60,26 @@ public class GeometryJavaTypeDescriptor extends AbstractTypeDescriptor<Geometry>
 
 	@Override
 	public <X> X unwrap(Geometry value, Class<X> type, WrapperOptions options) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		if ( value == null ) {
+			return null;
+		}
+
+		if ( Geometry.class.isAssignableFrom( type ) ) {
+			return (X) value;
+		}
+
+		if ( String.class.isAssignableFrom( type ) ) {
+			return (X) toString( value );
+		}
+		throw unknownUnwrap( type );
 	}
 
 	@Override
 	public <X> Geometry wrap(X value, WrapperOptions options) {
-		return null;  //To change body of implemented methods use File | Settings | File Templates.
+		if ( String.class.isInstance( value ) ) {
+			return fromString( (String) value );
+		}
+		throw unknownWrap( value.getClass() );
 	}
 
 }
