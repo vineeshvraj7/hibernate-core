@@ -21,17 +21,18 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+
+import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
 abstract class AbstractGeometryCollectionDecoder<T extends GeometryCollection> extends AbstractDecoder<T> {
 
 	public AbstractGeometryCollectionDecoder(MGeometryFactory factory) {
-		super(factory);
+		super( factory );
 	}
 
 	@Override
@@ -41,20 +42,20 @@ abstract class AbstractGeometryCollectionDecoder<T extends GeometryCollection> e
 
 	@Override
 	protected T createNullGeometry() {
-		return createGeometry((List<Geometry>) null, false);
+		return createGeometry( (List<Geometry>) null, false );
 	}
 
 	@Override
 	protected T createGeometry(SqlServerGeometry nativeGeom) {
-		return createGeometry(nativeGeom, 0);
+		return createGeometry( nativeGeom, 0 );
 	}
 
 	@Override
 	protected T createGeometry(SqlServerGeometry nativeGeom, int shapeIndex) {
 		int startChildIdx = shapeIndex + 1;
-		List<Geometry> geometries = new ArrayList<Geometry>(nativeGeom.getNumShapes());
-		for (int childIdx = startChildIdx; childIdx < nativeGeom.getNumShapes(); childIdx++) {
-			if (!nativeGeom.isParentShapeOf(shapeIndex, childIdx)) {
+		List<Geometry> geometries = new ArrayList<Geometry>( nativeGeom.getNumShapes() );
+		for ( int childIdx = startChildIdx; childIdx < nativeGeom.getNumShapes(); childIdx++ ) {
+			if ( !nativeGeom.isParentShapeOf( shapeIndex, childIdx ) ) {
 				continue;
 			}
 			AbstractDecoder<?> decoder = (AbstractDecoder<?>) Decoders.decoderFor(
@@ -62,10 +63,10 @@ abstract class AbstractGeometryCollectionDecoder<T extends GeometryCollection> e
 							childIdx
 					)
 			);
-			Geometry geometry = decoder.createGeometry(nativeGeom, childIdx);
-			geometries.add(geometry);
+			Geometry geometry = decoder.createGeometry( nativeGeom, childIdx );
+			geometries.add( geometry );
 		}
-		return createGeometry(geometries, nativeGeom.hasMValues());
+		return createGeometry( geometries, nativeGeom.hasMValues() );
 	}
 
 	abstract protected T createGeometry(List<Geometry> geometries, boolean hasM);

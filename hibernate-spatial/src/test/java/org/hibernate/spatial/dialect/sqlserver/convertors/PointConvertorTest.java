@@ -23,11 +23,12 @@ package org.hibernate.spatial.dialect.sqlserver.convertors;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
+import org.junit.Test;
+
 import org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect;
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 import org.hibernate.testing.BeforeClassOnce;
 import org.hibernate.testing.RequiresDialect;
-import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -41,21 +42,21 @@ public class PointConvertorTest extends AbstractConvertorTest {
 	@BeforeClassOnce
 	public void beforeClass() {
 		super.beforeClass();
-		doDecoding(OpenGisType.POINT);
+		doDecoding( OpenGisType.POINT );
 		doEncoding();
 	}
 
 	@Test
 	public void test_verify_srid() {
-		assertEquals(0, decodedGeoms.get(1).getSRID());
-		assertEquals(4326, decodedGeoms.get(2).getSRID());
-		assertEquals(31370, decodedGeoms.get(3).getSRID());
+		assertEquals( 0, decodedGeoms.get( 1 ).getSRID() );
+		assertEquals( 4326, decodedGeoms.get( 2 ).getSRID() );
+		assertEquals( 31370, decodedGeoms.get( 3 ).getSRID() );
 	}
 
 	@Test
 	public void test_class() {
-		for (Integer id : decodedGeoms.keySet()) {
-			assertEquals(Point.class, decodedGeoms.get(id).getClass());
+		for ( Integer id : decodedGeoms.keySet() ) {
+			assertEquals( Point.class, decodedGeoms.get( id ).getClass() );
 		}
 	}
 
@@ -63,14 +64,14 @@ public class PointConvertorTest extends AbstractConvertorTest {
 	public void test_coordinates() {
 		Coordinate expected;
 		Coordinate received;
-		expected = new Coordinate(10.0, 5.0);
-		assertEquals(expected, decodedGeoms.get(1).getCoordinate());
-		expected = new Coordinate(52.25, 2.53);
-		assertEquals(expected, decodedGeoms.get(2).getCoordinate());
-		expected = new Coordinate(150000.0, 200000.0);
-		assertEquals(expected, decodedGeoms.get(3).getCoordinate());
-		expected = new MCoordinate(10.0, 2.0, 1.0, 3.0);
-		assertEquals(expected, decodedGeoms.get(4).getCoordinate());
+		expected = new Coordinate( 10.0, 5.0 );
+		assertEquals( expected, decodedGeoms.get( 1 ).getCoordinate() );
+		expected = new Coordinate( 52.25, 2.53 );
+		assertEquals( expected, decodedGeoms.get( 2 ).getCoordinate() );
+		expected = new Coordinate( 150000.0, 200000.0 );
+		assertEquals( expected, decodedGeoms.get( 3 ).getCoordinate() );
+		expected = new MCoordinate( 10.0, 2.0, 1.0, 3.0 );
+		assertEquals( expected, decodedGeoms.get( 4 ).getCoordinate() );
 	}
 
 	@Test

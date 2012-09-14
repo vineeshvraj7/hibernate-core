@@ -39,23 +39,23 @@ public class MGeometryFactory extends GeometryFactory {
 
 	public MGeometryFactory(PrecisionModel precisionModel, int SRID,
 							MCoordinateSequenceFactory coordinateSequenceFactory) {
-		super(precisionModel, SRID, coordinateSequenceFactory);
+		super( precisionModel, SRID, coordinateSequenceFactory );
 	}
 
 	public MGeometryFactory(MCoordinateSequenceFactory coordinateSequenceFactory) {
-		super(coordinateSequenceFactory);
+		super( coordinateSequenceFactory );
 	}
 
 	public MGeometryFactory(PrecisionModel precisionModel) {
-		this(precisionModel, 0, MCoordinateSequenceFactory.instance());
+		this( precisionModel, 0, MCoordinateSequenceFactory.instance() );
 	}
 
 	public MGeometryFactory(PrecisionModel precisionModel, int SRID) {
-		this(precisionModel, SRID, MCoordinateSequenceFactory.instance());
+		this( precisionModel, SRID, MCoordinateSequenceFactory.instance() );
 	}
 
 	public MGeometryFactory() {
-		this(new PrecisionModel(), 0);
+		this( new PrecisionModel(), 0 );
 	}
 
 	/**
@@ -63,24 +63,26 @@ public class MGeometryFactory extends GeometryFactory {
 	 * array will create an empty MLineString.
 	 *
 	 * @param coordinates array of MCoordinate defining this geometry's vertices
+	 *
 	 * @return An instance of MLineString containing the coordinates
+	 *
 	 * @see #createLineString(com.vividsolutions.jts.geom.Coordinate[])
 	 */
 	public MLineString createMLineString(MCoordinate[] coordinates) {
 		return createMLineString(
 				coordinates != null ? getCoordinateSequenceFactory()
-						.create(coordinates)
+						.create( coordinates )
 						: null
 		);
 	}
 
 	public MultiMLineString createMultiMLineString(MLineString[] mlines,
 												   double mGap) {
-		return new MultiMLineString(mlines, mGap, this);
+		return new MultiMLineString( mlines, mGap, this );
 	}
 
 	public MultiMLineString createMultiMLineString(MLineString[] mlines) {
-		return new MultiMLineString(mlines, 0.0d, this);
+		return new MultiMLineString( mlines, 0.0d, this );
 	}
 
 	/**
@@ -88,11 +90,13 @@ public class MGeometryFactory extends GeometryFactory {
 	 * CoordinateSequence will create an empty MLineString.
 	 *
 	 * @param coordinates a CoordinateSequence possibly empty, or null
+	 *
 	 * @return An MLineString instance based on the <code>coordinates</code>
+	 *
 	 * @see #createLineString(com.vividsolutions.jts.geom.CoordinateSequence)
 	 */
 	public MLineString createMLineString(CoordinateSequence coordinates) {
-		return new MLineString(coordinates, this);
+		return new MLineString( coordinates, this );
 	}
 
 }

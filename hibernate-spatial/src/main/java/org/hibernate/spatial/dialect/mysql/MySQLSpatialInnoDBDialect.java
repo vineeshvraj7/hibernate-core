@@ -20,15 +20,15 @@
  */
 package org.hibernate.spatial.dialect.mysql;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.MySQLInnoDBDialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.spatial.SpatialDialect;
 import org.hibernate.spatial.SpatialFunction;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Extends the MySQLInnoDBDialect by also including information on spatial operators,
@@ -47,19 +47,19 @@ public class MySQLSpatialInnoDBDialect extends MySQLInnoDBDialect implements Spa
 		super();
 		Map<String, StandardSQLFunction> functionsToRegister = dialectDelegate.getFunctionsToRegister();
 		Map<String, Integer> columnTypes = dialectDelegate.getColumnTypesToRegister();
-		if (null != columnTypes) {
+		if ( null != columnTypes ) {
 			Iterator<String> keys = columnTypes.keySet().iterator();
-			while (keys.hasNext()) {
+			while ( keys.hasNext() ) {
 				String aKey = keys.next();
-				registerColumnType(columnTypes.get(aKey), aKey);
+				registerColumnType( columnTypes.get( aKey ), aKey );
 			}
 		}
 
-		if (null != functionsToRegister) {
+		if ( null != functionsToRegister ) {
 			Iterator<String> keys = functionsToRegister.keySet().iterator();
-			while (keys.hasNext()) {
+			while ( keys.hasNext() ) {
 				String aKey = keys.next();
-				registerFunction(aKey, functionsToRegister.get(aKey));
+				registerFunction( aKey, functionsToRegister.get( aKey ) );
 
 			}
 		}
@@ -67,36 +67,36 @@ public class MySQLSpatialInnoDBDialect extends MySQLInnoDBDialect implements Spa
 
 	@Override
 	public SqlTypeDescriptor remapSqlTypeDescriptor(SqlTypeDescriptor sqlTypeDescriptor) {
-		return dialectDelegate.remapSqlTypeDescriptor(sqlTypeDescriptor);
+		return dialectDelegate.remapSqlTypeDescriptor( sqlTypeDescriptor );
 	}
 
 	@Override
 	public String getTypeName(int code, long length, int precision, int scale) throws HibernateException {
-		return dialectDelegate.getTypeName(code, length, precision, scale);
+		return dialectDelegate.getTypeName( code, length, precision, scale );
 	}
 
 	public String getSpatialRelateSQL(String columnName, int spatialRelation) {
-		return dialectDelegate.getSpatialRelateSQL(columnName, spatialRelation);
+		return dialectDelegate.getSpatialRelateSQL( columnName, spatialRelation );
 	}
 
 	public String getSpatialFilterExpression(String columnName) {
-		return dialectDelegate.getSpatialFilterExpression(columnName);
+		return dialectDelegate.getSpatialFilterExpression( columnName );
 	}
 
 	public String getSpatialAggregateSQL(String columnName, int aggregation) {
-		return dialectDelegate.getSpatialAggregateSQL(columnName, aggregation);
+		return dialectDelegate.getSpatialAggregateSQL( columnName, aggregation );
 	}
 
 	public String getDWithinSQL(String columnName) {
-		return dialectDelegate.getDWithinSQL(columnName);
+		return dialectDelegate.getDWithinSQL( columnName );
 	}
 
 	public String getHavingSridSQL(String columnName) {
-		return dialectDelegate.getHavingSridSQL(columnName);
+		return dialectDelegate.getHavingSridSQL( columnName );
 	}
 
 	public String getIsEmptySQL(String columnName, boolean isEmpty) {
-		return dialectDelegate.getIsEmptySQL(columnName, isEmpty);
+		return dialectDelegate.getIsEmptySQL( columnName, isEmpty );
 	}
 
 	public String getDbGeometryTypeName() {
@@ -108,7 +108,7 @@ public class MySQLSpatialInnoDBDialect extends MySQLInnoDBDialect implements Spa
 	}
 
 	public boolean supports(SpatialFunction function) {
-		return dialectDelegate.supports(function);
+		return dialectDelegate.supports( function );
 	}
 
 }

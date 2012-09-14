@@ -21,11 +21,11 @@
 
 package org.hibernate.spatial.dialect.oracle;
 
+import java.util.List;
+
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
-
-import java.util.List;
 
 /**
  * Implements OGC function dimension for HQL.
@@ -33,20 +33,22 @@ import java.util.List;
 class GetDimensionFunction extends SDOObjectMethod {
 
 	GetDimensionFunction() {
-		super("Get_Dims", StandardBasicTypes.INTEGER);
+		super( "Get_Dims", StandardBasicTypes.INTEGER );
 	}
 
 	public String render(Type firstArgumentType, final List args,
 						 final SessionFactoryImplementor factory) {
 		StringBuffer buf = new StringBuffer();
-		if (args.isEmpty()) {
+		if ( args.isEmpty() ) {
 			throw new IllegalArgumentException(
 					"First Argument in arglist must be object to "
-							+ "which method is applied");
+							+ "which method is applied"
+			);
 		}
 
-		buf.append(args.get(0)).append(".").append(
-				getName()).append("()");
+		buf.append( args.get( 0 ) ).append( "." ).append(
+				getName()
+		).append( "()" );
 		return buf.toString();
 	}
 }

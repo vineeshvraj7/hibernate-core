@@ -50,21 +50,21 @@ public abstract class AbstractJTSGeometryValueExtractor extends BasicExtractor<G
 
 	@Override
 	protected Geometry doExtract(ResultSet rs, String name, WrapperOptions options) throws SQLException {
-		Object geomObj = rs.getObject(name);
-		return toJTS(geomObj);
+		Object geomObj = rs.getObject( name );
+		return toJTS( geomObj );
 
 	}
 
 	@Override
 	protected Geometry doExtract(CallableStatement statement, int index, WrapperOptions options) throws SQLException {
 		Object geomObj = statement.getObject( index );
-		return toJTS(geomObj);
+		return toJTS( geomObj );
 	}
 
 	@Override
 	protected Geometry doExtract(CallableStatement statement, String name, WrapperOptions options) throws SQLException {
 		Object geomObj = statement.getObject( name );
-		return toJTS(geomObj);
+		return toJTS( geomObj );
 	}
 
 	abstract public Geometry toJTS(Object object);

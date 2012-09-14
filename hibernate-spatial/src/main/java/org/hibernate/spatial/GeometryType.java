@@ -21,6 +21,7 @@
 package org.hibernate.spatial;
 
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 
 /**
@@ -34,7 +35,7 @@ public class GeometryType extends AbstractSingleColumnStandardBasicType<Geometry
 
 	@Override
 	public String[] getRegistrationKeys() {
-		return new String[]{
+		return new String[] {
 				com.vividsolutions.jts.geom.Geometry.class.getCanonicalName(),
 				com.vividsolutions.jts.geom.Point.class.getCanonicalName(),
 				com.vividsolutions.jts.geom.Polygon.class.getCanonicalName(),
@@ -48,7 +49,7 @@ public class GeometryType extends AbstractSingleColumnStandardBasicType<Geometry
 	}
 
 	public GeometryType() {
-		super(GeometrySqlTypeDescriptor.INSTANCE, GeometryJavaTypeDescriptor.INSTANCE);
+		super( GeometrySqlTypeDescriptor.INSTANCE, GeometryJavaTypeDescriptor.INSTANCE );
 	}
 
 	@Override

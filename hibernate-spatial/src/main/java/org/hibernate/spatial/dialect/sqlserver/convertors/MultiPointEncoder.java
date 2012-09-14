@@ -23,22 +23,23 @@ package org.hibernate.spatial.dialect.sqlserver.convertors;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.MultiPoint;
+
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 
 
 class MultiPointEncoder extends GeometryCollectionEncoder<MultiPoint> {
 
 	public MultiPointEncoder() {
-		super(OpenGisType.MULTIPOINT);
+		super( OpenGisType.MULTIPOINT );
 	}
 
 	@Override
 	protected boolean hasMValues(MultiPoint geom) {
-		for (Coordinate c : geom.getCoordinates()) {
-			if (!(c instanceof MCoordinate)) {
+		for ( Coordinate c : geom.getCoordinates() ) {
+			if ( !( c instanceof MCoordinate ) ) {
 				return false;
 			}
-			if (!Double.isNaN(((MCoordinate) c).m)) {
+			if ( !Double.isNaN( ( (MCoordinate) c ).m ) ) {
 				return true;
 			}
 		}

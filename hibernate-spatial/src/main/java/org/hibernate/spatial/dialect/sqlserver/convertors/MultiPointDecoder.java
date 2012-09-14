@@ -21,12 +21,13 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
-import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
-import java.util.List;
+import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
 /**
  * <code>Decoder</code> for GeometryCollections.
@@ -37,7 +38,7 @@ import java.util.List;
 class MultiPointDecoder extends AbstractGeometryCollectionDecoder<MultiPoint> {
 
 	public MultiPointDecoder(MGeometryFactory factory) {
-		super(factory);
+		super( factory );
 	}
 
 
@@ -48,8 +49,8 @@ class MultiPointDecoder extends AbstractGeometryCollectionDecoder<MultiPoint> {
 
 	@Override
 	protected MultiPoint createGeometry(List<Geometry> geometries, boolean hasM) {
-		Point[] points = geometries != null ? geometries.toArray(new Point[geometries.size()]) : null;
-		return getGeometryFactory().createMultiPoint(points);
+		Point[] points = geometries != null ? geometries.toArray( new Point[geometries.size()] ) : null;
+		return getGeometryFactory().createMultiPoint( points );
 	}
 
 }

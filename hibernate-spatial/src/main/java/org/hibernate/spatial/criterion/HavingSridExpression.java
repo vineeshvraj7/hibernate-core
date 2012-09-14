@@ -46,14 +46,14 @@ public class HavingSridExpression implements Criterion {
 	}
 
 	public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
-		String column = ExpressionUtil.findColumn(propertyName, criteria, criteriaQuery);
-		SpatialDialect spatialDialect = ExpressionUtil.getSpatialDialect(criteriaQuery, SpatialFunction.srid);
-		return spatialDialect.getHavingSridSQL(column);
+		String column = ExpressionUtil.findColumn( propertyName, criteria, criteriaQuery );
+		SpatialDialect spatialDialect = ExpressionUtil.getSpatialDialect( criteriaQuery, SpatialFunction.srid );
+		return spatialDialect.getHavingSridSQL( column );
 	}
 
 	public TypedValue[] getTypedValues(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
-		return new TypedValue[]{
-				new TypedValue(StandardBasicTypes.INTEGER, Integer.valueOf(srid), EntityMode.POJO)
+		return new TypedValue[] {
+				new TypedValue( StandardBasicTypes.INTEGER, Integer.valueOf( srid ), EntityMode.POJO )
 		};
 	}
 

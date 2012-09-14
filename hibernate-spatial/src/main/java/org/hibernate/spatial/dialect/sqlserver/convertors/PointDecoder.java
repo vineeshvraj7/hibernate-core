@@ -23,6 +23,7 @@ package org.hibernate.spatial.dialect.sqlserver.convertors;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
+
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
 /**
@@ -32,7 +33,7 @@ import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 class PointDecoder extends AbstractDecoder<Point> {
 
 	public PointDecoder(MGeometryFactory factory) {
-		super(factory);
+		super( factory );
 	}
 
 	@Override
@@ -41,25 +42,25 @@ class PointDecoder extends AbstractDecoder<Point> {
 	}
 
 	protected Point createNullGeometry() {
-		return getGeometryFactory().createPoint((Coordinate) null);
+		return getGeometryFactory().createPoint( (Coordinate) null );
 	}
 
 	protected Point createGeometry(SqlServerGeometry nativeGeom) {
-		return createPoint(nativeGeom, 0);
+		return createPoint( nativeGeom, 0 );
 	}
 
 	@Override
 	protected Point createGeometry(SqlServerGeometry nativeGeom, int shapeIndex) {
-		if (nativeGeom.isEmptyShape(shapeIndex)) {
+		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
 			return createNullGeometry();
 		}
-		int figureOffset = nativeGeom.getFiguresForShape(shapeIndex).start;
-		int pntOffset = nativeGeom.getPointsForFigure(figureOffset).start;
-		return createPoint(nativeGeom, pntOffset);
+		int figureOffset = nativeGeom.getFiguresForShape( shapeIndex ).start;
+		int pntOffset = nativeGeom.getPointsForFigure( figureOffset ).start;
+		return createPoint( nativeGeom, pntOffset );
 	}
 
 	private Point createPoint(SqlServerGeometry nativeGeom, int pntOffset) {
-		return getGeometryFactory().createPoint(nativeGeom.getCoordinate(pntOffset));
+		return getGeometryFactory().createPoint( nativeGeom.getCoordinate( pntOffset ) );
 	}
 
 

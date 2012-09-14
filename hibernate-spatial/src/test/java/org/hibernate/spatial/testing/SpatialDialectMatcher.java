@@ -32,6 +32,6 @@ import org.hibernate.testing.Skip;
 public class SpatialDialectMatcher implements Skip.Matcher {
 	@Override
 	public boolean isMatch() {
-		return !(Dialect.getDialect() instanceof SpatialDialect);
+		return !( Dialect.getDialect() instanceof SpatialDialect );
 	}
 }

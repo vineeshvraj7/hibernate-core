@@ -22,6 +22,7 @@ package org.hibernate.spatial.criterion;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.criterion.Criterion;
 import org.hibernate.spatial.SpatialRelation;
 
@@ -103,52 +104,52 @@ public class SpatialRestrictions {
 	}
 
 	public static SpatialFilter filter(String propertyName, Geometry filter) {
-		return new SpatialFilter(propertyName, filter);
+		return new SpatialFilter( propertyName, filter );
 	}
 
 	public static SpatialFilter filter(String propertyName, Envelope envelope,
 									   int SRID) {
-		return new SpatialFilter(propertyName, envelope, SRID);
+		return new SpatialFilter( propertyName, envelope, SRID );
 	}
 
 	public static Criterion distanceWithin(String propertyName, Geometry geometry, double distance) {
-		return new DWithinExpression(propertyName, geometry, distance);
+		return new DWithinExpression( propertyName, geometry, distance );
 	}
 
 
 	public static Criterion havingSRID(String propertyName, int srid) {
-		return new HavingSridExpression(propertyName, srid);
+		return new HavingSridExpression( propertyName, srid );
 	}
 
 	public static Criterion isEmpty(String propertyName) {
-		return new IsEmptyExpression(propertyName, true);
+		return new IsEmptyExpression( propertyName, true );
 	}
 
 	public static Criterion isNotEmpty(String propertyName) {
-		return new IsEmptyExpression(propertyName, false);
+		return new IsEmptyExpression( propertyName, false );
 	}
 
 	public static Criterion spatialRestriction(int relation,
 											   String propertyName, Geometry value) {
-		switch (relation) {
+		switch ( relation ) {
 			case SpatialRelation.CONTAINS:
-				return contains(propertyName, value);
+				return contains( propertyName, value );
 			case SpatialRelation.CROSSES:
-				return crosses(propertyName, value);
+				return crosses( propertyName, value );
 			case SpatialRelation.DISJOINT:
-				return disjoint(propertyName, value);
+				return disjoint( propertyName, value );
 			case SpatialRelation.INTERSECTS:
-				return intersects(propertyName, value);
+				return intersects( propertyName, value );
 			case SpatialRelation.EQUALS:
-				return eq(propertyName, value);
+				return eq( propertyName, value );
 			case SpatialRelation.FILTER:
-				return filter(propertyName, value);
+				return filter( propertyName, value );
 			case SpatialRelation.OVERLAPS:
-				return overlaps(propertyName, value);
+				return overlaps( propertyName, value );
 			case SpatialRelation.TOUCHES:
-				return touches(propertyName, value);
+				return touches( propertyName, value );
 			case SpatialRelation.WITHIN:
-				return within(propertyName, value);
+				return within( propertyName, value );
 			default:
 				throw new IllegalArgumentException(
 						"Non-existant spatial relation passed."

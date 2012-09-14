@@ -25,10 +25,11 @@ public enum RelationshipMask {
 
 	public static String booleanCombination(RelationshipMask[] masks) {
 		String strMask = null;
-		for (RelationshipMask relationshipMask : masks) {
-			if (strMask == null) {
+		for ( RelationshipMask relationshipMask : masks ) {
+			if ( strMask == null ) {
 				strMask = relationshipMask.toString();
-			} else {
+			}
+			else {
 				strMask += "+" + relationshipMask.toString();
 			}
 		}

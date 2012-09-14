@@ -39,8 +39,8 @@ import com.vividsolutions.jts.io.WKBWriter;
 class WKB {
 
 	static Geometry fromWKB(byte[] bytes, GeometryFactory factory) throws ParseException {
-		WKBReader reader = new WKBReader(factory);
-		return reader.read(bytes);
+		WKBReader reader = new WKBReader( factory );
+		return reader.read( bytes );
 	}
 
 	/**
@@ -48,19 +48,21 @@ class WKB {
 	 *
 	 * @param bytes
 	 * @param factory
+	 *
 	 * @return
+	 *
 	 * @throws ParseException
 	 */
 	static Geometry fromEWKB(byte[] bytes, GeometryFactory factory) throws ParseException {
 		byte[] wkbBytes = new byte[bytes.length - 32];
-		System.arraycopy(bytes, 32, wkbBytes, 0, bytes.length - 32);
-		return fromWKB(wkbBytes, factory);
+		System.arraycopy( bytes, 32, wkbBytes, 0, bytes.length - 32 );
+		return fromWKB( wkbBytes, factory );
 	}
 
 
 	static byte[] toWKB(Geometry jtsGeom) {
-		WKBWriter writer = new WKBWriter(2, true);
-		return writer.write(jtsGeom);
+		WKBWriter writer = new WKBWriter( 2, true );
+		return writer.write( jtsGeom );
 	}
 }
 

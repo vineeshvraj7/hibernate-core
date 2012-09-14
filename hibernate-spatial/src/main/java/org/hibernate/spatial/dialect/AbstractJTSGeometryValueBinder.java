@@ -21,16 +21,17 @@
 
 package org.hibernate.spatial.dialect;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.hibernate.spatial.jts.JTS;
-import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
-import org.hibernate.type.descriptor.ValueBinder;
-import org.hibernate.type.descriptor.WrapperOptions;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import com.vividsolutions.jts.geom.Geometry;
+
+import org.hibernate.spatial.jts.JTS;
+import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
+import org.hibernate.type.descriptor.ValueBinder;
+import org.hibernate.type.descriptor.WrapperOptions;
 
 /**
  * @author Karel Maesen, Geovise BVBA
@@ -40,12 +41,13 @@ public abstract class AbstractJTSGeometryValueBinder implements ValueBinder<Geom
 
 	@Override
 	public void bind(PreparedStatement st, Geometry value, int index, WrapperOptions options) throws SQLException {
-		if (value == null) {
-			st.setNull(index, Types.STRUCT);
-		} else {
+		if ( value == null ) {
+			st.setNull( index, Types.STRUCT );
+		}
+		else {
 			Geometry jtsGeom = (Geometry) value;
-			Object dbGeom = toNative(jtsGeom, st.getConnection());
-			st.setObject(index, dbGeom);
+			Object dbGeom = toNative( jtsGeom, st.getConnection() );
+			st.setObject( index, dbGeom );
 		}
 	}
 

@@ -27,6 +27,7 @@ package org.hibernate.spatial.helper;
  *
  * @param <T> the return type of the <code>find</code> method
  * @param <S> the type of subject
+ *
  * @author Karel Maesen
  */
 public interface FinderStrategy<T, S> {
@@ -35,7 +36,9 @@ public interface FinderStrategy<T, S> {
 	 * Find a feature or property of a subject
 	 *
 	 * @param subject the object that is being searched
+	 *
 	 * @return the object sought
+	 *
 	 * @throws FinderException thrown when the feature can be found;
 	 */
 	public T find(S subject) throws FinderException;

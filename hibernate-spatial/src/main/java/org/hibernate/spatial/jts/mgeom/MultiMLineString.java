@@ -20,7 +20,11 @@
  */
 package org.hibernate.spatial.jts.mgeom;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiLineString;
 
 public class MultiMLineString extends MultiLineString implements MGeometry {
 
@@ -37,13 +41,13 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 
 	/**
 	 * @param MlineStrings the <code>MLineString</code>s for this
-	 *                     <code>MultiMLineString</code>, or <code>null</code> or an
-	 *                     empty array to create the empty geometry. Elements may be
-	 *                     empty <code>LineString</code>s, but not <code>null</code>s.
+	 * <code>MultiMLineString</code>, or <code>null</code> or an
+	 * empty array to create the empty geometry. Elements may be
+	 * empty <code>LineString</code>s, but not <code>null</code>s.
 	 */
 	public MultiMLineString(MLineString[] MlineStrings, double mGap,
 							GeometryFactory factory) {
-		super(MlineStrings, factory);
+		super( MlineStrings, factory );
 		this.mGap = mGap;
 		determineMonotone();
 	}
@@ -54,51 +58,54 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 	private void determineMonotone() {
 		this.monotone = true;
 		this.strictMonotone = true;
-		if (this.isEmpty()) {
+		if ( this.isEmpty() ) {
 			return;
 		}
 		int mdir = CONSTANT;
-		for (int i = 0; i < this.geometries.length; i++) {
+		for ( int i = 0; i < this.geometries.length; i++ ) {
 			MLineString ml = (MLineString) this.geometries[0];
-			if (!ml.isEmpty()) {
+			if ( !ml.isEmpty() ) {
 				mdir = ml.getMeasureDirection();
 				break;
 			}
 		}
-		for (int i = 0; i < this.geometries.length; i++) {
+		for ( int i = 0; i < this.geometries.length; i++ ) {
 			MLineString ml = (MLineString) this.geometries[i];
-			if (ml.isEmpty()) {
+			if ( ml.isEmpty() ) {
 				continue;
 			}
 			// check whether mlinestrings are all pointing in same direction,
 			// and
 			// are monotone
-			if (!ml.isMonotone(false)
-					|| (ml.getMeasureDirection() != mdir && !(ml
-					.getMeasureDirection() == CONSTANT))) {
+			if ( !ml.isMonotone( false )
+					|| ( ml.getMeasureDirection() != mdir && !( ml
+					.getMeasureDirection() == CONSTANT ) ) ) {
 				this.monotone = false;
 				break;
 			}
 
-			if (!ml.isMonotone(true) || (ml.getMeasureDirection() != mdir)) {
+			if ( !ml.isMonotone( true ) || ( ml.getMeasureDirection() != mdir ) ) {
 				this.strictMonotone = false;
 				break;
 			}
 
 			// check whether the geometry measures do not overlap or
 			// are inconsistent with previous parts
-			if (i > 0) {
+			if ( i > 0 ) {
 				MLineString mlp = (MLineString) this.geometries[i - 1];
-				if (mdir == INCREASING) {
-					if (mlp.getMaxM() > ml.getMinM()) {
+				if ( mdir == INCREASING ) {
+					if ( mlp.getMaxM() > ml.getMinM() ) {
 						monotone = false;
-					} else if (mlp.getMaxM() >= ml.getMinM()) {
+					}
+					else if ( mlp.getMaxM() >= ml.getMinM() ) {
 						strictMonotone = false;
 					}
-				} else {
-					if (mlp.getMinM() < ml.getMaxM()) {
+				}
+				else {
+					if ( mlp.getMinM() < ml.getMaxM() ) {
 						monotone = false;
-					} else if (mlp.getMinM() <= ml.getMaxM()) {
+					}
+					else if ( mlp.getMinM() <= ml.getMaxM() ) {
 						strictMonotone = false;
 					}
 				}
@@ -106,7 +113,7 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 			}
 
 		}
-		if (!monotone) {
+		if ( !monotone ) {
 			this.strictMonotone = false;
 		}
 
@@ -127,7 +134,7 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 	public double getMatCoordinate(Coordinate co, double tolerance)
 			throws MGeometryException {
 
-		if (!this.isMonotone(false)) {
+		if ( !this.isMonotone( false ) ) {
 			throw new MGeometryException(
 					MGeometryException.OPERATION_REQUIRES_MONOTONE
 			);
@@ -136,20 +143,20 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 		double mval = Double.NaN;
 		double dist = Double.POSITIVE_INFINITY;
 
-		com.vividsolutions.jts.geom.Point p = this.getFactory().createPoint(co);
+		com.vividsolutions.jts.geom.Point p = this.getFactory().createPoint( co );
 
 		// find points within tolerance for getMatCoordinate
-		for (int i = 0; i < this.getNumGeometries(); i++) {
-			MLineString ml = (MLineString) this.getGeometryN(i);
+		for ( int i = 0; i < this.getNumGeometries(); i++ ) {
+			MLineString ml = (MLineString) this.getGeometryN( i );
 			// go to next MLineString if the input point is beyond tolerance
-			if (ml.distance(p) > tolerance) {
+			if ( ml.distance( p ) > tolerance ) {
 				continue;
 			}
 
-			MCoordinate mc = ml.getClosestPoint(co, tolerance);
-			if (mc != null) {
-				double d = mc.distance(co);
-				if (d <= tolerance && d < dist) {
+			MCoordinate mc = ml.getClosestPoint( co, tolerance );
+			if ( mc != null ) {
+				double d = mc.distance( co );
+				if ( d <= tolerance && d < dist ) {
 					dist = d;
 					mval = mc.m;
 				}
@@ -165,15 +172,16 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 
 	public void measureOnLength(boolean keepBeginMeasure) {
 		double startM = 0.0;
-		for (int i = 0; i < this.getNumGeometries(); i++) {
-			MLineString ml = (MLineString) this.getGeometryN(i);
-			if (i == 0) {
-				ml.measureOnLength(keepBeginMeasure);
-			} else {
-				ml.measureOnLength(false);
+		for ( int i = 0; i < this.getNumGeometries(); i++ ) {
+			MLineString ml = (MLineString) this.getGeometryN( i );
+			if ( i == 0 ) {
+				ml.measureOnLength( keepBeginMeasure );
 			}
-			if (startM != 0.0) {
-				ml.shiftMeasure(startM);
+			else {
+				ml.measureOnLength( false );
+			}
+			if ( startM != 0.0 ) {
+				ml.shiftMeasure( startM );
 			}
 			startM += ml.getLength() + mGap;
 		}
@@ -188,17 +196,17 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 
 	public Coordinate getCoordinateAtM(double m) throws MGeometryException {
 
-		if (!this.isMonotone(false)) {
+		if ( !this.isMonotone( false ) ) {
 			throw new MGeometryException(
 					MGeometryException.OPERATION_REQUIRES_MONOTONE
 			);
 		}
 
 		Coordinate c = null;
-		for (int i = 0; i < this.getNumGeometries(); i++) {
-			MGeometry mg = (MGeometry) this.getGeometryN(i);
-			c = mg.getCoordinateAtM(m);
-			if (c != null) {
+		for ( int i = 0; i < this.getNumGeometries(); i++ ) {
+			MGeometry mg = (MGeometry) this.getGeometryN( i );
+			c = mg.getCoordinateAtM( m );
+			if ( c != null ) {
 				return c;
 			}
 		}
@@ -208,28 +216,28 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 	public CoordinateSequence[] getCoordinatesBetween(double begin, double end)
 			throws MGeometryException {
 
-		if (!this.isMonotone(false)) {
+		if ( !this.isMonotone( false ) ) {
 			throw new MGeometryException(
 					MGeometryException.OPERATION_REQUIRES_MONOTONE,
 					"Operation requires geometry with monotonic measures"
 			);
 		}
 
-		if (this.isEmpty()) {
+		if ( this.isEmpty() ) {
 			return null;
 		}
 
 		java.util.ArrayList<CoordinateSequence> ar = new java.util.ArrayList<CoordinateSequence>();
 
-		for (int i = 0; i < this.getNumGeometries(); i++) {
-			MLineString ml = (MLineString) this.getGeometryN(i);
-			for (CoordinateSequence cs : ml.getCoordinatesBetween(begin, end)) {
-				if (cs.size() > 0) {
-					ar.add(cs);
+		for ( int i = 0; i < this.getNumGeometries(); i++ ) {
+			MLineString ml = (MLineString) this.getGeometryN( i );
+			for ( CoordinateSequence cs : ml.getCoordinatesBetween( begin, end ) ) {
+				if ( cs.size() > 0 ) {
+					ar.add( cs );
 				}
 			}
 		}
-		return ar.toArray(new CoordinateSequence[ar.size()]);
+		return ar.toArray( new CoordinateSequence[ar.size()] );
 	}
 
 	/*
@@ -240,10 +248,10 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 
 	public double getMinM() {
 		double minM = Double.POSITIVE_INFINITY;
-		for (int i = 0; i < this.getNumGeometries(); i++) {
-			MLineString ml = (MLineString) this.getGeometryN(i);
+		for ( int i = 0; i < this.getNumGeometries(); i++ ) {
+			MLineString ml = (MLineString) this.getGeometryN( i );
 			double d = ml.getMinM();
-			if (d < minM) {
+			if ( d < minM ) {
 				minM = d;
 			}
 		}
@@ -258,10 +266,10 @@ public class MultiMLineString extends MultiLineString implements MGeometry {
 
 	public double getMaxM() {
 		double maxM = Double.NEGATIVE_INFINITY;
-		for (int i = 0; i < this.getNumGeometries(); i++) {
-			MLineString ml = (MLineString) this.getGeometryN(i);
+		for ( int i = 0; i < this.getNumGeometries(); i++ ) {
+			MLineString ml = (MLineString) this.getGeometryN( i );
 			double d = ml.getMaxM();
-			if (d > maxM) {
+			if ( d > maxM ) {
 				maxM = d;
 			}
 		}

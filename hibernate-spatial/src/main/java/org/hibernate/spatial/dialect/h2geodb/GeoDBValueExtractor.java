@@ -21,19 +21,20 @@
 
 package org.hibernate.spatial.dialect.h2geodb;
 
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKBConstants;
-import org.hibernate.HibernateException;
-import org.hibernate.spatial.Log;
-import org.hibernate.spatial.LogFactory;
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueExtractor;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
+
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKBConstants;
+
+import org.hibernate.HibernateException;
+import org.hibernate.spatial.Log;
+import org.hibernate.spatial.LogFactory;
+import org.hibernate.spatial.dialect.AbstractJTSGeometryValueExtractor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
@@ -45,23 +46,29 @@ public class GeoDBValueExtractor extends AbstractJTSGeometryValueExtractor {
 
 	@Override
 	public Geometry toJTS(Object object) {
-		if (object == null)
+		if ( object == null ) {
 			return null;
+		}
 		try {
-			if (object instanceof Blob) {
-				return WKB.fromWKB(toByteArray((Blob) object), getGeometryFactory());
-			} else if (object instanceof byte[]) {
-				return geometryFromByteArray((byte[]) object);
-			} else if (object instanceof Envelope) {
-				return getGeometryFactory().toGeometry((Envelope) object);
-			} else {
+			if ( object instanceof Blob ) {
+				return WKB.fromWKB( toByteArray( (Blob) object ), getGeometryFactory() );
+			}
+			else if ( object instanceof byte[] ) {
+				return geometryFromByteArray( (byte[]) object );
+			}
+			else if ( object instanceof Envelope ) {
+				return getGeometryFactory().toGeometry( (Envelope) object );
+			}
+			else {
 				throw new IllegalArgumentException(
 						"Can't convert database object of type "
-								+ object.getClass().getCanonicalName());
+								+ object.getClass().getCanonicalName()
+				);
 			}
-		} catch (Exception e) {
-			LOG.warn("Could not convert database object to a JTS Geometry.");
-			throw new HibernateException(e);
+		}
+		catch ( Exception e ) {
+			LOG.warn( "Could not convert database object to a JTS Geometry." );
+			throw new HibernateException( e );
 		}
 	}
 
@@ -79,6 +86,7 @@ public class GeoDBValueExtractor extends AbstractJTSGeometryValueExtractor {
 	 * </ol>
 	 *
 	 * @param bytes
+	 *
 	 * @return
 	 */
 	private Geometry geometryFromByteArray(byte[] bytes) throws ParseException {
@@ -86,26 +94,30 @@ public class GeoDBValueExtractor extends AbstractJTSGeometryValueExtractor {
 				   * wkbXDR = 0, // Big Endian
 				   * wkbNDR = 1 // Little Endian
 				   */
-		if (bytes[0] != WKBConstants.wkbNDR && bytes[0] != WKBConstants.wkbXDR) {
+		if ( bytes[0] != WKBConstants.wkbNDR && bytes[0] != WKBConstants.wkbXDR ) {
 			// process as EWKB
-			return WKB.fromEWKB(bytes, getGeometryFactory());
-		} else {
+			return WKB.fromEWKB( bytes, getGeometryFactory() );
+		}
+		else {
 			// process as WKB
 			try {
-				return WKB.fromWKB(bytes, getGeometryFactory());
-			} catch (RuntimeException e) {
+				return WKB.fromWKB( bytes, getGeometryFactory() );
+			}
+			catch ( RuntimeException e ) {
 				// note: ParseException is wrapped in a RuntimeException in
 				// geodb.GeoDB
-				if (e.getCause() != null
-						&& e.getCause() instanceof ParseException) {
+				if ( e.getCause() != null
+						&& e.getCause() instanceof ParseException ) {
 					// retry as EWKB, this should rarely happen, but may occur
 					// when the first byte of the EWKB bounding-box is '0'.
 					// this should not be considered as a error
 					LOG.debug(
 							"Caught parse exception while parsing byte array as WKB. Retrying as EWKB.",
-							e);
-					return WKB.fromEWKB(bytes, getGeometryFactory());
-				} else {
+							e
+					);
+					return WKB.fromEWKB( bytes, getGeometryFactory() );
+				}
+				else {
 					// this is an other exception, simply re-throw
 					throw e;
 				}
@@ -121,19 +133,22 @@ public class GeoDBValueExtractor extends AbstractJTSGeometryValueExtractor {
 		try {
 			in = blob.getBinaryStream();
 			int n = 0;
-			while ((n = in.read(buf)) >= 0) {
-				baos.write(buf, 0, n);
+			while ( ( n = in.read( buf ) ) >= 0 ) {
+				baos.write( buf, 0, n );
 
 			}
-		} catch (Exception e) {
-			LOG.warn("Could not convert database BLOB object to binary stream.", e);
-		} finally {
+		}
+		catch ( Exception e ) {
+			LOG.warn( "Could not convert database BLOB object to binary stream.", e );
+		}
+		finally {
 			try {
-				if (in != null) {
+				if ( in != null ) {
 					in.close();
 				}
-			} catch (IOException e) {
-				LOG.warn("Could not close binary stream.");
+			}
+			catch ( IOException e ) {
+				LOG.warn( "Could not close binary stream." );
 			}
 		}
 

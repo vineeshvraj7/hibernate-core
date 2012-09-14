@@ -27,9 +27,9 @@ package org.hibernate.spatial.dialect.sqlserver.convertors;
  * @Date 2009-11-29
  */
 enum FigureAttribute {
-	InteriorRing((byte) 0),
-	Stroke((byte) 1),
-	ExteriorRing((byte) 2);
+	InteriorRing( (byte) 0 ),
+	Stroke( (byte) 1 ),
+	ExteriorRing( (byte) 2 );
 
 	final byte byteValue;
 
@@ -38,11 +38,11 @@ enum FigureAttribute {
 	}
 
 	static FigureAttribute valueOf(byte b) {
-		for (FigureAttribute fa : values()) {
-			if (fa.byteValue == b) {
+		for ( FigureAttribute fa : values() ) {
+			if ( fa.byteValue == b ) {
 				return fa;
 			}
 		}
-		throw new IllegalArgumentException(String.format("Can't interpret value %d as FigureAttribute.", b));
+		throw new IllegalArgumentException( String.format( "Can't interpret value %d as FigureAttribute.", b ) );
 	}
 }

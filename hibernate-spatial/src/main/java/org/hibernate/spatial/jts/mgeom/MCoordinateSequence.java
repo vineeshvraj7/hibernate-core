@@ -20,11 +20,11 @@
  */
 package org.hibernate.spatial.jts.mgeom;
 
+import java.io.Serializable;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Envelope;
-
-import java.io.Serializable;
 
 /**
  * Implements the CoordinateSequence interface. In this implementation,
@@ -41,16 +41,16 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 
 	public static MCoordinate[] copy(Coordinate[] coordinates) {
 		MCoordinate[] copy = new MCoordinate[coordinates.length];
-		for (int i = 0; i < coordinates.length; i++) {
-			copy[i] = new MCoordinate(coordinates[i]);
+		for ( int i = 0; i < coordinates.length; i++ ) {
+			copy[i] = new MCoordinate( coordinates[i] );
 		}
 		return copy;
 	}
 
 	public static MCoordinate[] copy(CoordinateSequence coordSeq) {
 		MCoordinate[] copy = new MCoordinate[coordSeq.size()];
-		for (int i = 0; i < coordSeq.size(); i++) {
-			copy[i] = new MCoordinate(coordSeq.getCoordinate(i));
+		for ( int i = 0; i < coordSeq.size(); i++ ) {
+			copy[i] = new MCoordinate( coordSeq.getCoordinate( i ) );
 		}
 		return copy;
 	}
@@ -73,7 +73,7 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 	 * @param copyCoords
 	 */
 	public MCoordinateSequence(Coordinate[] copyCoords) {
-		coordinates = copy(copyCoords);
+		coordinates = copy( copyCoords );
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 	 * @param coordSeq
 	 */
 	public MCoordinateSequence(CoordinateSequence coordSeq) {
-		coordinates = copy(coordSeq);
+		coordinates = copy( coordSeq );
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 	 */
 	public MCoordinateSequence(int size) {
 		coordinates = new MCoordinate[size];
-		for (int i = 0; i < size; i++) {
+		for ( int i = 0; i < size; i++ ) {
 			coordinates[i] = new MCoordinate();
 		}
 	}
@@ -113,7 +113,7 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 	 * @see com.vividsolutions.jts.geom.CoordinateSequence#getCoordinateCopy(int)
 	 */
 	public Coordinate getCoordinateCopy(int index) {
-		return new Coordinate(coordinates[index]);
+		return new Coordinate( coordinates[index] );
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 	 * @see com.vividsolutions.jts.geom.CoordinateSequence#getOrdinate(int, int)
 	 */
 	public double getOrdinate(int index, int ordinateIndex) {
-		switch (ordinateIndex) {
+		switch ( ordinateIndex ) {
 			case CoordinateSequence.X:
 				return coordinates[index].x;
 			case CoordinateSequence.Y:
@@ -167,7 +167,7 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 	 * @see com.vividsolutions.jts.geom.CoordinateSequence#setOrdinate(int, int, double)
 	 */
 	public void setOrdinate(int index, int ordinateIndex, double value) {
-		switch (ordinateIndex) {
+		switch ( ordinateIndex ) {
 			case CoordinateSequence.X:
 				coordinates[index].x = value;
 				break;
@@ -181,17 +181,17 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 				coordinates[index].m = value;
 				break;
 			default:
-				throw new IllegalArgumentException("invalid ordinateIndex");
+				throw new IllegalArgumentException( "invalid ordinateIndex" );
 		}
 	}
 
 	public Object clone() {
 		MCoordinate[] cloneCoordinates = new MCoordinate[size()];
-		for (int i = 0; i < coordinates.length; i++) {
+		for ( int i = 0; i < coordinates.length; i++ ) {
 			cloneCoordinates[i] = (MCoordinate) coordinates[i].clone();
 		}
 
-		return new MCoordinateSequence(cloneCoordinates);
+		return new MCoordinateSequence( cloneCoordinates );
 	}
 
 	public int size() {
@@ -203,22 +203,22 @@ public class MCoordinateSequence implements CoordinateSequence, Serializable {
 	}
 
 	public Envelope expandEnvelope(Envelope env) {
-		for (int i = 0; i < coordinates.length; i++) {
-			env.expandToInclude(coordinates[i]);
+		for ( int i = 0; i < coordinates.length; i++ ) {
+			env.expandToInclude( coordinates[i] );
 		}
 		return env;
 	}
 
 	public String toString() {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("MCoordinateSequence [");
-		for (int i = 0; i < coordinates.length; i++) {
-			if (i > 0) {
-				strBuf.append(", ");
+		strBuf.append( "MCoordinateSequence [" );
+		for ( int i = 0; i < coordinates.length; i++ ) {
+			if ( i > 0 ) {
+				strBuf.append( ", " );
 			}
-			strBuf.append(coordinates[i]);
+			strBuf.append( coordinates[i] );
 		}
-		strBuf.append("]");
+		strBuf.append( "]" );
 		return strBuf.toString();
 	}
 }

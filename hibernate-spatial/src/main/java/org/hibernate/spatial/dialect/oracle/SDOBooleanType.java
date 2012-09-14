@@ -21,13 +21,13 @@
 
 package org.hibernate.spatial.dialect.oracle;
 
-import org.hibernate.dialect.Dialect;
-import org.hibernate.type.BooleanType;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+
+import org.hibernate.dialect.Dialect;
+import org.hibernate.type.BooleanType;
 
 class SDOBooleanType extends BooleanType {
 
@@ -42,12 +42,14 @@ class SDOBooleanType extends BooleanType {
 	}
 
 	public Object get(ResultSet rs, String name) throws SQLException {
-		String value = rs.getString(name);
-		if (rs.wasNull()) {
+		String value = rs.getString( name );
+		if ( rs.wasNull() ) {
 			return getDefaultValue();
-		} else if ("TRUE".equalsIgnoreCase(value)) {
+		}
+		else if ( "TRUE".equalsIgnoreCase( value ) ) {
 			return Boolean.TRUE;
-		} else {
+		}
+		else {
 			return Boolean.FALSE;
 		}
 	}
@@ -55,11 +57,12 @@ class SDOBooleanType extends BooleanType {
 	public void set(PreparedStatement st, Boolean value, int index)
 			throws SQLException {
 
-		if (value == null) {
-			st.setNull(index, Types.VARCHAR);
-		} else {
+		if ( value == null ) {
+			st.setNull( index, Types.VARCHAR );
+		}
+		else {
 			boolean bool = value.booleanValue();
-			st.setString(index, bool ? "TRUE" : "FALSE");
+			st.setString( index, bool ? "TRUE" : "FALSE" );
 		}
 	}
 

@@ -22,9 +22,10 @@
 package org.hibernate.spatial.dialect.postgis;
 
 import junit.framework.TestCase;
+import org.junit.Test;
+
 import org.hibernate.spatial.SpatialDialect;
 import org.hibernate.spatial.SpatialFunction;
-import org.junit.Test;
 
 /**
  * Tests support for
@@ -38,8 +39,8 @@ public class PostgisDialectTest extends TestCase {
 
 	@Test
 	public void testSupports() throws Exception {
-		for (SpatialFunction sf : SpatialFunction.values()) {
-			assertTrue("Dialect doesn't support " + sf, dialect.supports(sf));
+		for ( SpatialFunction sf : SpatialFunction.values() ) {
+			assertTrue( "Dialect doesn't support " + sf, dialect.supports( sf ) );
 		}
 	}
 }

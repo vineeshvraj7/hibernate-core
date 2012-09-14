@@ -51,25 +51,32 @@ public class OracleSpatialProjection extends SimpleProjection {
 							  CriteriaQuery criteriaQuery) throws HibernateException {
 
 		SessionFactoryImplementor factory = criteriaQuery.getFactory();
-		String[] columns = criteriaQuery.getColumnsUsingProjection(criteria,
-				this.propertyName);
+		String[] columns = criteriaQuery.getColumnsUsingProjection(
+				criteria,
+				this.propertyName
+		);
 		Dialect dialect = factory.getDialect();
-		if (dialect instanceof SpatialDialect) {
+		if ( dialect instanceof SpatialDialect ) {
 			SpatialDialect seDialect = (SpatialDialect) dialect;
 
-			return new StringBuffer(seDialect.getSpatialAggregateSQL(
-					columns[0], this.aggregate)).append(" y").append(position)
-					.append("_").toString();
-		} else {
+			return new StringBuffer(
+					seDialect.getSpatialAggregateSQL(
+							columns[0], this.aggregate
+					)
+			).append( " y" ).append( position )
+					.append( "_" ).toString();
+		}
+		else {
 			throw new IllegalStateException(
-					"Dialect must be spatially enabled dialect");
+					"Dialect must be spatially enabled dialect"
+			);
 		}
 
 	}
 
 	public Type[] getTypes(Criteria criteria, CriteriaQuery criteriaQuery)
 			throws HibernateException {
-		return new Type[]{criteriaQuery.getType(criteria, this.propertyName)};
+		return new Type[] { criteriaQuery.getType( criteria, this.propertyName ) };
 	}
 
 	public String toString() {

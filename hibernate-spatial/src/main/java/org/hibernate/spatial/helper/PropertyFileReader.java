@@ -20,9 +20,6 @@
  */
 package org.hibernate.spatial.helper;
 
-import org.hibernate.spatial.Log;
-import org.hibernate.spatial.LogFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +29,9 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.hibernate.spatial.Log;
+import org.hibernate.spatial.LogFactory;
 
 /**
  * Helper class to read settings and properties files.
@@ -46,7 +46,7 @@ public class PropertyFileReader {
 	 * pattern for comment lines. If it matches, it is a comment.
 	 */
 	private static final Pattern nonCommentPattern = Pattern
-			.compile("^([^#]+)");
+			.compile( "^([^#]+)" );
 
 	private InputStream is = null;
 
@@ -55,11 +55,11 @@ public class PropertyFileReader {
 	}
 
 	public Properties getProperties() throws IOException {
-		if (is == null) {
+		if ( is == null ) {
 			return null;
 		}
 		Properties props = new Properties();
-		props.load(is);
+		props.load( is );
 		return props;
 	}
 
@@ -67,17 +67,18 @@ public class PropertyFileReader {
 	 * Returns the non-comment lines in a file.
 	 *
 	 * @return set of non-comment strings.
+	 *
 	 * @throws IOException
 	 */
 	public Set<String> getNonCommentLines() throws IOException {
 		Set<String> lines = new HashSet<String>();
 		String line;
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		while ((line = reader.readLine()) != null) {
+		BufferedReader reader = new BufferedReader( new InputStreamReader( is ) );
+		while ( ( line = reader.readLine() ) != null ) {
 			line = line.trim();
-			Matcher m = nonCommentPattern.matcher(line);
-			if (m.find()) {
-				lines.add(m.group().trim());
+			Matcher m = nonCommentPattern.matcher( line );
+			if ( m.find() ) {
+				lines.add( m.group().trim() );
 			}
 		}
 		return lines;
@@ -86,8 +87,9 @@ public class PropertyFileReader {
 	public void close() {
 		try {
 			this.is.close();
-		} catch (IOException e) {
-			LOG.warn("Exception when closing PropertyFileReader: " + e);
+		}
+		catch ( IOException e ) {
+			LOG.warn( "Exception when closing PropertyFileReader: " + e );
 		}
 	}
 
