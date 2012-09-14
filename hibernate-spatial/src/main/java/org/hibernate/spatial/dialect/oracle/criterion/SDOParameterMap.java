@@ -57,127 +57,136 @@ public class SDOParameterMap {
 	}
 
 	public void setDistance(Double distance) {
-		if (distance != null)
-			params.put(DISTANCE, distance);
+		if ( distance != null ) {
+			params.put( DISTANCE, distance );
+		}
 	}
 
 	public Double getDistance() {
-		return (Double) params.get(DISTANCE);
+		return (Double) params.get( DISTANCE );
 	}
 
 	public void removeDistance() {
-		params.remove(DISTANCE);
+		params.remove( DISTANCE );
 	}
 
 	public void setSdoBatchSize(Integer size) {
-		if (size != null)
-			params.put(SDO_BATCH_SIZE, size);
+		if ( size != null ) {
+			params.put( SDO_BATCH_SIZE, size );
+		}
 	}
 
 	public Integer getSdoBatchSize() {
-		return (Integer) params.get(SDO_BATCH_SIZE);
+		return (Integer) params.get( SDO_BATCH_SIZE );
 	}
 
 	public void removeSdoBatchSize() {
-		params.remove(SDO_BATCH_SIZE);
+		params.remove( SDO_BATCH_SIZE );
 	}
 
 	public void setSdoNumRes(Integer size) {
-		if (size != null)
-			params.put(SDO_NUM_RES, size);
+		if ( size != null ) {
+			params.put( SDO_NUM_RES, size );
+		}
 	}
 
 	public Integer getSdoNumRes() {
-		return (Integer) params.get(SDO_NUM_RES);
+		return (Integer) params.get( SDO_NUM_RES );
 	}
 
 	public void removeSdoNumRes() {
-		params.remove(SDO_NUM_RES);
+		params.remove( SDO_NUM_RES );
 	}
 
 	public void setUnit(String unit) {
-		if (unit != null)
-			this.params.put(UNIT, unit);
+		if ( unit != null ) {
+			this.params.put( UNIT, unit );
+		}
 	}
 
 	public String getUnit() {
-		return (String) this.params.get(UNIT);
+		return (String) this.params.get( UNIT );
 	}
 
 	public void removeUnit() {
-		this.params.remove(UNIT);
+		this.params.remove( UNIT );
 	}
 
 	public void setMaxResolution(Double res) {
-		if (res != null)
-			params.put(MAX_RESOLUTION, res);
+		if ( res != null ) {
+			params.put( MAX_RESOLUTION, res );
+		}
 	}
 
 	public Double getMaxResolution() {
-		return (Double) params.get(MAX_RESOLUTION);
+		return (Double) params.get( MAX_RESOLUTION );
 	}
 
 	public void removeMaxResolution() {
-		params.remove(MAX_RESOLUTION);
+		params.remove( MAX_RESOLUTION );
 	}
 
 	public void setMinResolution(Double res) {
-		if (res != null)
-			params.put(MIN_RESOLUTION, res);
+		if ( res != null ) {
+			params.put( MIN_RESOLUTION, res );
+		}
 	}
 
 	public Double getMinResolution() {
-		return (Double) params.get(MIN_RESOLUTION);
+		return (Double) params.get( MIN_RESOLUTION );
 	}
 
 	public void removeMinResolution() {
-		params.remove(MIN_RESOLUTION);
+		params.remove( MIN_RESOLUTION );
 	}
 
 	public void setMask(String mask) {
-		if (mask != null)
-			this.params.put(MASK, mask);
+		if ( mask != null ) {
+			this.params.put( MASK, mask );
+		}
 	}
 
 	public String getMask() {
-		return (String) this.params.get(MASK);
+		return (String) this.params.get( MASK );
 	}
 
 	public void removeMask() {
-		this.params.remove(MASK);
+		this.params.remove( MASK );
 	}
 
 	public void setQueryType(String queryType) {
-		if (queryType != null)
-			this.params.put(QUERYTYPE, queryType);
+		if ( queryType != null ) {
+			this.params.put( QUERYTYPE, queryType );
+		}
 	}
 
 	public void setQueryTypeToFilter() {
-		this.params.put(QUERYTYPE, "FILTER");
+		this.params.put( QUERYTYPE, "FILTER" );
 	}
 
 	public String getQueryType() {
-		return (String) this.params.get(QUERYTYPE);
+		return (String) this.params.get( QUERYTYPE );
 	}
 
 	public void removeQueryType() {
-		this.params.remove(QUERYTYPE);
+		this.params.remove( QUERYTYPE );
 	}
 
 	public String toQuotedString() {
 		StringBuilder stb = new StringBuilder();
-		if (params.isEmpty()) {
+		if ( params.isEmpty() ) {
 			return "";
 		}
-		stb.append('\'');
-		for (String paramName : params.keySet()) {
-			if (params.get(paramName) == null)
+		stb.append( '\'' );
+		for ( String paramName : params.keySet() ) {
+			if ( params.get( paramName ) == null ) {
 				continue;
-			stb.append(paramName).append("=").append(params.get(paramName))
-					.append(" ");
+			}
+			stb.append( paramName ).append( "=" ).append( params.get( paramName ) )
+					.append( " " );
 		}
-		stb.deleteCharAt(stb.length() - 1);
-		stb.append('\'');
+		stb.deleteCharAt( stb.length() - 1 );
+		stb.append( '\'' );
 		return stb.toString();
 	}
 

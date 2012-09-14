@@ -39,20 +39,20 @@ class Figure {
 	}
 
 	void store(ByteBuffer buffer) {
-		buffer.put(figureAttribute.byteValue);
-		buffer.putInt(pointOffset);
+		buffer.put( figureAttribute.byteValue );
+		buffer.putInt( pointOffset );
 	}
 
 	boolean isInteriorRing() {
-		return this.figureAttribute.equals(FigureAttribute.InteriorRing);
+		return this.figureAttribute.equals( FigureAttribute.InteriorRing );
 	}
 
 	boolean isExteriorRing() {
-		return this.figureAttribute.equals(FigureAttribute.ExteriorRing);
+		return this.figureAttribute.equals( FigureAttribute.ExteriorRing );
 	}
 
 	boolean isStroke() {
-		return this.figureAttribute.equals(FigureAttribute.Stroke);
+		return this.figureAttribute.equals( FigureAttribute.Stroke );
 	}
 
 }

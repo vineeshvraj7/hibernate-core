@@ -21,7 +21,13 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * The type of geometry.
@@ -30,14 +36,14 @@ import com.vividsolutions.jts.geom.*;
  *         Date: Nov 2, 2009
  */
 public enum OpenGisType {
-	POINT((byte) 1, Point.class),
-	LINESTRING((byte) 2, LineString.class),
-	POLYGON((byte) 3, Polygon.class),
-	MULTIPOINT((byte) 4, MultiPoint.class),
-	MULTILINESTRING((byte) 5, MultiLineString.class),
-	MULTIPOLYGON((byte) 6, MultiPolygon.class),
-	GEOMETRYCOLLECTION((byte) 7, GeometryCollection.class),
-	INVALID_TYPE((byte) 0, null);
+	POINT( (byte) 1, Point.class ),
+	LINESTRING( (byte) 2, LineString.class ),
+	POLYGON( (byte) 3, Polygon.class ),
+	MULTIPOINT( (byte) 4, MultiPoint.class ),
+	MULTILINESTRING( (byte) 5, MultiLineString.class ),
+	MULTIPOLYGON( (byte) 6, MultiPolygon.class ),
+	GEOMETRYCOLLECTION( (byte) 7, GeometryCollection.class ),
+	INVALID_TYPE( (byte) 0, null );
 
 	final byte byteValue;
 	final Class geomClass;
@@ -48,12 +54,12 @@ public enum OpenGisType {
 	}
 
 	boolean typeOf(Object o) {
-		return geomClass.isAssignableFrom(o.getClass());
+		return geomClass.isAssignableFrom( o.getClass() );
 	}
 
 	static OpenGisType valueOf(byte b) {
-		for (OpenGisType t : values()) {
-			if (t.byteValue == b) {
+		for ( OpenGisType t : values() ) {
+			if ( t.byteValue == b ) {
 				return t;
 			}
 		}

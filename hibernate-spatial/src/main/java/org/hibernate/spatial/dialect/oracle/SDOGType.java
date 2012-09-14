@@ -35,9 +35,9 @@ class SDOGType {
 
 	public SDOGType(int dimension, int lrsDimension,
 					TypeGeometry typeGeometry) {
-		setDimension(dimension);
-		setLrsDimension(lrsDimension);
-		setTypeGeometry(typeGeometry);
+		setDimension( dimension );
+		setLrsDimension( lrsDimension );
+		setTypeGeometry( typeGeometry );
 	}
 
 	public int getDimension() {
@@ -45,9 +45,10 @@ class SDOGType {
 	}
 
 	public void setDimension(int dimension) {
-		if (dimension < 2 || dimension > 4) {
+		if ( dimension < 2 || dimension > 4 ) {
 			throw new IllegalArgumentException(
-					"Dimension can only be 2,3 or 4.");
+					"Dimension can only be 2,3 or 4."
+			);
 		}
 		this.dimension = dimension;
 	}
@@ -62,33 +63,36 @@ class SDOGType {
 	}
 
 	public int getLRSDimension() {
-		if (this.lrsDimension > 0) {
+		if ( this.lrsDimension > 0 ) {
 			return this.lrsDimension;
-		} else if (this.lrsDimension == 0 && this.dimension == 4) {
+		}
+		else if ( this.lrsDimension == 0 && this.dimension == 4 ) {
 			return 4;
 		}
 		return 0;
 	}
 
 	public int getZDimension() {
-		if (this.dimension > 2) {
-			if (!isLRSGeometry()) {
+		if ( this.dimension > 2 ) {
+			if ( !isLRSGeometry() ) {
 				return this.dimension;
-			} else {
-				return (getLRSDimension() < this.dimension ? 4 : 3);
+			}
+			else {
+				return ( getLRSDimension() < this.dimension ? 4 : 3 );
 			}
 		}
 		return 0;
 	}
 
 	public boolean isLRSGeometry() {
-		return (this.lrsDimension > 0 || (this.lrsDimension == 0 && this.dimension == 4));
+		return ( this.lrsDimension > 0 || ( this.lrsDimension == 0 && this.dimension == 4 ) );
 	}
 
 	public void setLrsDimension(int lrsDimension) {
-		if (lrsDimension != 0 && lrsDimension > this.dimension) {
+		if ( lrsDimension != 0 && lrsDimension > this.dimension ) {
 			throw new IllegalArgumentException(
-					"lrsDimension must be 0 or lower or equal to dimenstion.");
+					"lrsDimension must be 0 or lower or equal to dimenstion."
+			);
 		}
 		this.lrsDimension = lrsDimension;
 	}
@@ -105,22 +109,23 @@ class SDOGType {
 		v -= dim * 1000;
 		int lrsDim = v / 100;
 		v -= lrsDim * 100;
-		TypeGeometry typeGeometry = TypeGeometry.parse(v);
-		return new SDOGType(dim, lrsDim, typeGeometry);
+		TypeGeometry typeGeometry = TypeGeometry.parse( v );
+		return new SDOGType( dim, lrsDim, typeGeometry );
 	}
 
 	public static SDOGType parse(Object datum) {
 
 		try {
-			int v = ((Number) datum).intValue();
-			return parse(v);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			int v = ( (Number) datum ).intValue();
+			return parse( v );
+		}
+		catch ( Exception e ) {
+			throw new RuntimeException( e );
 		}
 
 	}
 
 	public String toString() {
-		return Integer.toString(this.intValue());
+		return Integer.toString( this.intValue() );
 	}
 }

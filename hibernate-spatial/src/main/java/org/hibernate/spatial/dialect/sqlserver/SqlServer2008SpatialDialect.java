@@ -25,7 +25,11 @@ package org.hibernate.spatial.dialect.sqlserver;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.SQLServer2008Dialect;
 import org.hibernate.dialect.function.SQLFunctionTemplate;
-import org.hibernate.spatial.*;
+import org.hibernate.spatial.GeometrySqlTypeDescriptor;
+import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.SpatialDialect;
+import org.hibernate.spatial.SpatialFunction;
+import org.hibernate.spatial.SpatialRelation;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
@@ -42,7 +46,7 @@ public class SqlServer2008SpatialDialect extends SQLServer2008Dialect implements
 
 	public SqlServer2008SpatialDialect() {
 		super();
-		registerColumnType(java.sql.Types.ARRAY, COLUMN_TYPE);
+		registerColumnType( java.sql.Types.ARRAY, COLUMN_TYPE );
 
 		// registering OGC functions
 		// (spec_simplefeatures_sql_99-04.pdf)
@@ -51,38 +55,38 @@ public class SqlServer2008SpatialDialect extends SQLServer2008Dialect implements
 		// Registerfunction calls for registering geometry functions:
 		// first argument is the OGC standard functionname,
 		// second the Function as it occurs in the spatial dialect
-		registerFunction("dimension", new SQLFunctionTemplate(StandardBasicTypes.INTEGER, "?1.STDimension()"));
-		registerFunction("geometrytype", new SQLFunctionTemplate(StandardBasicTypes.STRING, "?1.STGeometryType()"));
-		registerFunction("srid", new SQLFunctionTemplate(StandardBasicTypes.INTEGER, "?1.STSrid"));
-		registerFunction("envelope", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STEnvelope()"));
-		registerFunction("astext", new SQLFunctionTemplate(StandardBasicTypes.STRING, "?1.STAsText()"));
-		registerFunction("asbinary", new SQLFunctionTemplate(StandardBasicTypes.BINARY, "?1.STAsBinary()"));
+		registerFunction( "dimension", new SQLFunctionTemplate( StandardBasicTypes.INTEGER, "?1.STDimension()" ) );
+		registerFunction( "geometrytype", new SQLFunctionTemplate( StandardBasicTypes.STRING, "?1.STGeometryType()" ) );
+		registerFunction( "srid", new SQLFunctionTemplate( StandardBasicTypes.INTEGER, "?1.STSrid" ) );
+		registerFunction( "envelope", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STEnvelope()" ) );
+		registerFunction( "astext", new SQLFunctionTemplate( StandardBasicTypes.STRING, "?1.STAsText()" ) );
+		registerFunction( "asbinary", new SQLFunctionTemplate( StandardBasicTypes.BINARY, "?1.STAsBinary()" ) );
 
-		registerFunction("isempty", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STIsEmpty()"));
-		registerFunction("issimple", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STIsSimple()"));
-		registerFunction("boundary", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STBoundary()"));
+		registerFunction( "isempty", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STIsEmpty()" ) );
+		registerFunction( "issimple", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STIsSimple()" ) );
+		registerFunction( "boundary", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STBoundary()" ) );
 
 		// section 2.1.1.2
 		// Register functions for spatial relation constructs
-		registerFunction("contains", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STContains(?2)"));
-		registerFunction("crosses", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STCrosses(?2)"));
-		registerFunction("disjoint", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STDisjoint(?2)"));
-		registerFunction("equals", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STEquals(?2)"));
-		registerFunction("intersects", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STIntersects(?2)"));
-		registerFunction("overlaps", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STOverlaps(?2)"));
-		registerFunction("touches", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STTouches(?2)"));
-		registerFunction("within", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STWithin(?2)"));
-		registerFunction("relate", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1.STRelate(?2,?3)"));
+		registerFunction( "contains", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STContains(?2)" ) );
+		registerFunction( "crosses", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STCrosses(?2)" ) );
+		registerFunction( "disjoint", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STDisjoint(?2)" ) );
+		registerFunction( "equals", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STEquals(?2)" ) );
+		registerFunction( "intersects", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STIntersects(?2)" ) );
+		registerFunction( "overlaps", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STOverlaps(?2)" ) );
+		registerFunction( "touches", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STTouches(?2)" ) );
+		registerFunction( "within", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STWithin(?2)" ) );
+		registerFunction( "relate", new SQLFunctionTemplate( StandardBasicTypes.BOOLEAN, "?1.STRelate(?2,?3)" ) );
 
 		// section 2.1.1.3
 		// Register spatial analysis functions.
-		registerFunction("distance", new SQLFunctionTemplate(StandardBasicTypes.DOUBLE, "?1.STDistance(?2)"));
-		registerFunction("buffer", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STBuffer(?2)"));
-		registerFunction("convexhull", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STConvexHull()"));
-		registerFunction("difference", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STDifference(?2)"));
-		registerFunction("intersection", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STIntersection(?2)"));
-		registerFunction("symdifference", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STSymDifference(?2)"));
-		registerFunction("geomunion", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STUnion(?2)"));
+		registerFunction( "distance", new SQLFunctionTemplate( StandardBasicTypes.DOUBLE, "?1.STDistance(?2)" ) );
+		registerFunction( "buffer", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STBuffer(?2)" ) );
+		registerFunction( "convexhull", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STConvexHull()" ) );
+		registerFunction( "difference", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STDifference(?2)" ) );
+		registerFunction( "intersection", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STIntersection(?2)" ) );
+		registerFunction( "symdifference", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STSymDifference(?2)" ) );
+		registerFunction( "geomunion", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STUnion(?2)" ) );
 		// we rename OGC union to geomunion because union is a reserved SQL keyword.
 		// (See also postgis documentation).
 
@@ -91,29 +95,31 @@ public class SqlServer2008SpatialDialect extends SQLServer2008Dialect implements
 		//registerFunction("extent", new SQLFunctionTemplate(geomType, "?1.STExtent()"));
 
 		// section 2.1.9.1 methods on surfaces
-		registerFunction("area", new SQLFunctionTemplate(StandardBasicTypes.DOUBLE, "?1.STArea()"));
-		registerFunction("centroid", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STCentroid()"));
-		registerFunction("pointonsurface", new SQLFunctionTemplate(GeometryType.INSTANCE, "?1.STPointOnSurface()"));
+		registerFunction( "area", new SQLFunctionTemplate( StandardBasicTypes.DOUBLE, "?1.STArea()" ) );
+		registerFunction( "centroid", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STCentroid()" ) );
+		registerFunction( "pointonsurface", new SQLFunctionTemplate( GeometryType.INSTANCE, "?1.STPointOnSurface()" ) );
 	}
 
 	//Temporary Fix for HHH-6074
 	@Override
 	public String getTypeName(int code, long length, int precision, int scale) throws HibernateException {
-		if (code == 3000) return "GEOMETRY";
-		return super.getTypeName(code, length, precision, scale);
+		if ( code == 3000 ) {
+			return "GEOMETRY";
+		}
+		return super.getTypeName( code, length, precision, scale );
 	}
 
 	@Override
 	public SqlTypeDescriptor remapSqlTypeDescriptor(SqlTypeDescriptor sqlTypeDescriptor) {
-		if (sqlTypeDescriptor instanceof GeometrySqlTypeDescriptor) {
+		if ( sqlTypeDescriptor instanceof GeometrySqlTypeDescriptor ) {
 			return SqlServer2008GeometryTypeDescriptor.INSTANCE;
 		}
-		return super.remapSqlTypeDescriptor(sqlTypeDescriptor);
+		return super.remapSqlTypeDescriptor( sqlTypeDescriptor );
 	}
 
 	public String getSpatialRelateSQL(String columnName, int spatialRelation) {
 		final String stfunction;
-		switch (spatialRelation) {
+		switch ( spatialRelation ) {
 			case SpatialRelation.WITHIN:
 				stfunction = "STWithin";
 				break;
@@ -152,11 +158,11 @@ public class SqlServer2008SpatialDialect extends SQLServer2008Dialect implements
 	}
 
 	public String getSpatialAggregateSQL(String columnName, int aggregation) {
-		throw new UnsupportedOperationException("No spatial aggregate SQL functions.");
+		throw new UnsupportedOperationException( "No spatial aggregate SQL functions." );
 	}
 
 	public String getDWithinSQL(String columnName) {
-		throw new UnsupportedOperationException("SQL Server has no DWithin function.");
+		throw new UnsupportedOperationException( "SQL Server has no DWithin function." );
 	}
 
 
@@ -174,6 +180,6 @@ public class SqlServer2008SpatialDialect extends SQLServer2008Dialect implements
 	}
 
 	public boolean supports(SpatialFunction function) {
-		return (getFunctions().get(function.toString()) != null);
+		return ( getFunctions().get( function.toString() ) != null );
 	}
 }

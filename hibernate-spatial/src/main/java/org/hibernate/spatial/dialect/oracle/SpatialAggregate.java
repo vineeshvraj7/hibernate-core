@@ -42,7 +42,7 @@ class SpatialAggregate {
 
 		String specificAggrSyntax;
 
-		switch (aggregation) {
+		switch ( aggregation ) {
 			case org.hibernate.spatial.SpatialAggregate.EXTENT:
 				specificAggrSyntax = "MBR";
 				_aggregateType = false;
@@ -71,7 +71,7 @@ class SpatialAggregate {
 				specificAggrSyntax = null;
 				break;
 		}
-		if (specificAggrSyntax != null) {
+		if ( specificAggrSyntax != null ) {
 			_aggregateSyntax = SDO_AGGR + specificAggrSyntax;
 		}
 	}

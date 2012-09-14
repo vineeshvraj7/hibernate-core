@@ -20,18 +20,6 @@
  */
 package org.hibernate.spatial.dialect.oracle;
 
-import org.hibernate.HibernateException;
-import org.hibernate.QueryException;
-import org.hibernate.dialect.Oracle10gDialect;
-import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.spatial.*;
-import org.hibernate.spatial.dialect.oracle.criterion.OracleSpatialAggregate;
-import org.hibernate.spatial.helper.PropertyFileReader;
-import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.Type;
-import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -40,6 +28,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.hibernate.HibernateException;
+import org.hibernate.QueryException;
+import org.hibernate.dialect.Oracle10gDialect;
+import org.hibernate.dialect.function.StandardSQLFunction;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.spatial.GeometrySqlTypeDescriptor;
+import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.Log;
+import org.hibernate.spatial.LogFactory;
+import org.hibernate.spatial.SpatialAnalysis;
+import org.hibernate.spatial.SpatialDialect;
+import org.hibernate.spatial.SpatialFunction;
+import org.hibernate.spatial.SpatialRelation;
+import org.hibernate.spatial.dialect.oracle.criterion.OracleSpatialAggregate;
+import org.hibernate.spatial.helper.PropertyFileReader;
+import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.Type;
+import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 /**
  * Spatial Dialect for Oracle10g databases.
@@ -56,21 +63,22 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 	private class AsTextFunction extends StandardSQLFunction {
 
 		private AsTextFunction() {
-			super("astext", StandardBasicTypes.STRING);
+			super( "astext", StandardBasicTypes.STRING );
 		}
 
 		public String render(Type firstArgumentType, final List args,
 							 final SessionFactoryImplementor factory) {
 
 			StringBuffer buf = new StringBuffer();
-			if (args.isEmpty()) {
+			if ( args.isEmpty() ) {
 				throw new IllegalArgumentException(
 						"First Argument in arglist must be object "
-								+ "to which method is applied");
+								+ "to which method is applied"
+				);
 			}
 
-			buf.append("TO_CHAR(SDO_UTIL.TO_WKTGEOMETRY(").append(args.get(0))
-					.append("))");
+			buf.append( "TO_CHAR(SDO_UTIL.TO_WKTGEOMETRY(" ).append( args.get( 0 ) )
+					.append( "))" );
 			return buf.toString();
 		}
 	}
@@ -83,25 +91,32 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		private final int relation;
 
 		private SpatialRelateFunction(final String name, final int relation) {
-			super(name, isOGCStrict() ? StandardBasicTypes.BOOLEAN
-					: new SDOBooleanType());
+			super(
+					name, isOGCStrict() ? StandardBasicTypes.BOOLEAN
+					: new SDOBooleanType()
+			);
 			this.relation = relation;
 		}
 
 		public String render(Type firstArgumentType, final List args,
 							 final SessionFactoryImplementor factory) {
 
-			if (args.size() < 2) {
+			if ( args.size() < 2 ) {
 				throw new QueryException(
-						"Spatial relate functions require at least two arguments");
+						"Spatial relate functions require at least two arguments"
+				);
 			}
 
 			String srf;
 			return isOGCStrict() ?
-					getOGCSpatialRelateSQL((String) args.get(0),
-							(String) args.get(1), this.relation) :
-					getNativeSpatialRelateSQL((String) args.get(0),
-							(String) args.get(1), this.relation);
+					getOGCSpatialRelateSQL(
+							(String) args.get( 0 ),
+							(String) args.get( 1 ), this.relation
+					) :
+					getNativeSpatialRelateSQL(
+							(String) args.get( 0 ),
+							(String) args.get( 1 ), this.relation
+					);
 		}
 
 	}
@@ -111,13 +126,15 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 
 		private SpatialAnalysisFunction(String name, Type returnType,
 										int analysis) {
-			super(name, returnType);
+			super( name, returnType );
 			this.analysis = analysis;
 		}
 
 		public String render(Type firstArgumentType, List args, SessionFactoryImplementor factory) {
-			return isOGCStrict() ? getSpatialAnalysisSQL(args, this.analysis,
-					false) : getNativeSpatialAnalysisSQL(args, analysis);
+			return isOGCStrict() ? getSpatialAnalysisSQL(
+					args, this.analysis,
+					false
+			) : getNativeSpatialAnalysisSQL( args, analysis );
 		}
 
 	}
@@ -128,13 +145,15 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 
 		private SpatialAggregationFunction(String name, Type returnType,
 										   boolean isProjection, int aggregation) {
-			super(name, returnType);
+			super( name, returnType );
 			this.aggregation = aggregation;
 		}
 
 		public String render(Type firstArgumentType, List args, SessionFactoryImplementor factory) {
-			return getNativeSpatialAggregateSQL((String) args.get(0),
-					this.aggregation);
+			return getNativeSpatialAggregateSQL(
+					(String) args.get( 0 ),
+					this.aggregation
+			);
 		}
 	}
 
@@ -151,135 +170,243 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 	public OracleSpatial10gDialect() {
 		super();
 		// initialise features to default
-		features.put(OGC_STRICT, new Boolean(true));
+		features.put( OGC_STRICT, new Boolean( true ) );
 
 		// read configuration information from
 		// classpath
 		configure();
 
 		// register geometry type
-		registerColumnType(java.sql.Types.STRUCT, "MDSYS.SDO_GEOMETRY");
+		registerColumnType( java.sql.Types.STRUCT, "MDSYS.SDO_GEOMETRY" );
 
 		// registering OGC functions
 		// (spec_simplefeatures_sql_99-04.pdf)
 
 		// section 2.1.1.1
-		registerFunction("dimension", new GetDimensionFunction());
-		registerFunction("geometrytype", new GetGeometryTypeFunction());
-		registerFunction("srid", new SDOObjectProperty("SDO_SRID",
-				StandardBasicTypes.INTEGER));
-		registerFunction("envelope",
-				new StandardSQLFunction("SDO_GEOM.SDO_MBR", GeometryType.INSTANCE));
-		registerFunction("astext", new AsTextFunction());
+		registerFunction( "dimension", new GetDimensionFunction() );
+		registerFunction( "geometrytype", new GetGeometryTypeFunction() );
+		registerFunction(
+				"srid", new SDOObjectProperty(
+				"SDO_SRID",
+				StandardBasicTypes.INTEGER
+		)
+		);
+		registerFunction(
+				"envelope",
+				new StandardSQLFunction( "SDO_GEOM.SDO_MBR", GeometryType.INSTANCE )
+		);
+		registerFunction( "astext", new AsTextFunction() );
 
-		registerFunction("asbinary", new StandardSQLFunction(
-				"SDO_UTIL.TO_WKBGEOMETRY", StandardBasicTypes.BINARY));
-		registerFunction("isempty", new WrappedOGCFunction("OGC_ISEMPTY",
-				StandardBasicTypes.BOOLEAN, new boolean[]{true}));
-		registerFunction("issimple", new WrappedOGCFunction("OGC_ISSIMPLE",
-				StandardBasicTypes.BOOLEAN, new boolean[]{true}));
-		registerFunction("boundary", new WrappedOGCFunction("OGC_BOUNDARY",
+		registerFunction(
+				"asbinary", new StandardSQLFunction(
+				"SDO_UTIL.TO_WKBGEOMETRY", StandardBasicTypes.BINARY
+		)
+		);
+		registerFunction(
+				"isempty", new WrappedOGCFunction(
+				"OGC_ISEMPTY",
+				StandardBasicTypes.BOOLEAN, new boolean[] { true }
+		)
+		);
+		registerFunction(
+				"issimple", new WrappedOGCFunction(
+				"OGC_ISSIMPLE",
+				StandardBasicTypes.BOOLEAN, new boolean[] { true }
+		)
+		);
+		registerFunction(
+				"boundary", new WrappedOGCFunction(
+				"OGC_BOUNDARY",
 				GeometryType.INSTANCE,
-				new boolean[]{true}));
+				new boolean[] { true }
+		)
+		);
 
 		// registerFunction("area", new AreaFunction());
 
 		// Register functions for spatial relation constructs
 		// section 2.1.1.2
-		registerFunction("overlaps", new SpatialRelateFunction("overlaps",
-				SpatialRelation.OVERLAPS));
-		registerFunction("intersects", new SpatialRelateFunction("intersects",
-				SpatialRelation.INTERSECTS));
-		registerFunction("contains", new SpatialRelateFunction("contains",
-				SpatialRelation.CONTAINS));
-		registerFunction("crosses", new SpatialRelateFunction("crosses",
-				SpatialRelation.CROSSES));
-		registerFunction("disjoint", new SpatialRelateFunction("disjoint",
-				SpatialRelation.DISJOINT));
-		registerFunction("equals", new SpatialRelateFunction("equals",
-				SpatialRelation.EQUALS));
-		registerFunction("touches", new SpatialRelateFunction("touches",
-				SpatialRelation.TOUCHES));
-		registerFunction("within", new SpatialRelateFunction("within",
-				SpatialRelation.WITHIN));
-		registerFunction("relate", new WrappedOGCFunction("OGC_RELATE",
-				StandardBasicTypes.BOOLEAN, new boolean[]{true, true, false}));
+		registerFunction(
+				"overlaps", new SpatialRelateFunction(
+				"overlaps",
+				SpatialRelation.OVERLAPS
+		)
+		);
+		registerFunction(
+				"intersects", new SpatialRelateFunction(
+				"intersects",
+				SpatialRelation.INTERSECTS
+		)
+		);
+		registerFunction(
+				"contains", new SpatialRelateFunction(
+				"contains",
+				SpatialRelation.CONTAINS
+		)
+		);
+		registerFunction(
+				"crosses", new SpatialRelateFunction(
+				"crosses",
+				SpatialRelation.CROSSES
+		)
+		);
+		registerFunction(
+				"disjoint", new SpatialRelateFunction(
+				"disjoint",
+				SpatialRelation.DISJOINT
+		)
+		);
+		registerFunction(
+				"equals", new SpatialRelateFunction(
+				"equals",
+				SpatialRelation.EQUALS
+		)
+		);
+		registerFunction(
+				"touches", new SpatialRelateFunction(
+				"touches",
+				SpatialRelation.TOUCHES
+		)
+		);
+		registerFunction(
+				"within", new SpatialRelateFunction(
+				"within",
+				SpatialRelation.WITHIN
+		)
+		);
+		registerFunction(
+				"relate", new WrappedOGCFunction(
+				"OGC_RELATE",
+				StandardBasicTypes.BOOLEAN, new boolean[] { true, true, false }
+		)
+		);
 
 		// Register spatial analysis functions.
 		// Section 2.1.1.3
-		registerFunction("distance", new SpatialAnalysisFunction("distance",
-				StandardBasicTypes.DOUBLE, SpatialAnalysis.DISTANCE));
-		registerFunction("buffer", new SpatialAnalysisFunction("buffer",
+		registerFunction(
+				"distance", new SpatialAnalysisFunction(
+				"distance",
+				StandardBasicTypes.DOUBLE, SpatialAnalysis.DISTANCE
+		)
+		);
+		registerFunction(
+				"buffer", new SpatialAnalysisFunction(
+				"buffer",
 				GeometryType.INSTANCE,
-				SpatialAnalysis.BUFFER));
-		registerFunction("convexhull", new SpatialAnalysisFunction(
+				SpatialAnalysis.BUFFER
+		)
+		);
+		registerFunction(
+				"convexhull", new SpatialAnalysisFunction(
 				"convexhull", GeometryType.INSTANCE,
-				SpatialAnalysis.CONVEXHULL));
-		registerFunction("difference", new SpatialAnalysisFunction(
+				SpatialAnalysis.CONVEXHULL
+		)
+		);
+		registerFunction(
+				"difference", new SpatialAnalysisFunction(
 				"difference", GeometryType.INSTANCE,
-				SpatialAnalysis.DIFFERENCE));
-		registerFunction("intersection", new SpatialAnalysisFunction(
+				SpatialAnalysis.DIFFERENCE
+		)
+		);
+		registerFunction(
+				"intersection", new SpatialAnalysisFunction(
 				"intersection", GeometryType.INSTANCE,
-				SpatialAnalysis.INTERSECTION));
-		registerFunction("symdifference", new SpatialAnalysisFunction(
+				SpatialAnalysis.INTERSECTION
+		)
+		);
+		registerFunction(
+				"symdifference", new SpatialAnalysisFunction(
 				"symdifference", GeometryType.INSTANCE,
-				SpatialAnalysis.SYMDIFFERENCE));
-		registerFunction("geomunion", new SpatialAnalysisFunction("union",
+				SpatialAnalysis.SYMDIFFERENCE
+		)
+		);
+		registerFunction(
+				"geomunion", new SpatialAnalysisFunction(
+				"union",
 				GeometryType.INSTANCE,
-				SpatialAnalysis.UNION));
+				SpatialAnalysis.UNION
+		)
+		);
 		// we rename OGC union to geomunion because union is a reserved SQL
 		// keyword. (See also postgis documentation).
 
 		// portable spatial aggregate functions
-		registerFunction("extent", new SpatialAggregationFunction("extent",
+		registerFunction(
+				"extent", new SpatialAggregationFunction(
+				"extent",
 				GeometryType.INSTANCE, false,
-				OracleSpatialAggregate.EXTENT));
+				OracleSpatialAggregate.EXTENT
+		)
+		);
 
 		//other common functions
-		registerFunction("transform", new StandardSQLFunction("SDO_CS.TRANSFORM",
-				GeometryType.INSTANCE));
+		registerFunction(
+				"transform", new StandardSQLFunction(
+				"SDO_CS.TRANSFORM",
+				GeometryType.INSTANCE
+		)
+		);
 
 		// Oracle specific Aggregate functions
-		registerFunction("centroid", new SpatialAggregationFunction("extent",
+		registerFunction(
+				"centroid", new SpatialAggregationFunction(
+				"extent",
 				GeometryType.INSTANCE, false,
-				OracleSpatialAggregate.CENTROID));
+				OracleSpatialAggregate.CENTROID
+		)
+		);
 
-		registerFunction("concat_lines", new SpatialAggregationFunction(
+		registerFunction(
+				"concat_lines", new SpatialAggregationFunction(
 				"extent", GeometryType.INSTANCE, false,
-				OracleSpatialAggregate.CONCAT_LINES));
+				OracleSpatialAggregate.CONCAT_LINES
+		)
+		);
 
-		registerFunction("aggr_convexhull", new SpatialAggregationFunction(
+		registerFunction(
+				"aggr_convexhull", new SpatialAggregationFunction(
 				"extent", GeometryType.INSTANCE, false,
-				OracleSpatialAggregate.CONVEXHULL));
+				OracleSpatialAggregate.CONVEXHULL
+		)
+		);
 
-		registerFunction("aggr_union", new SpatialAggregationFunction("extent",
+		registerFunction(
+				"aggr_union", new SpatialAggregationFunction(
+				"extent",
 				GeometryType.INSTANCE, false,
-				OracleSpatialAggregate.UNION));
+				OracleSpatialAggregate.UNION
+		)
+		);
 
-		registerFunction("lrs_concat", new SpatialAggregationFunction(
+		registerFunction(
+				"lrs_concat", new SpatialAggregationFunction(
 				"lrsconcat", GeometryType.INSTANCE,
-				false, OracleSpatialAggregate.LRS_CONCAT));
+				false, OracleSpatialAggregate.LRS_CONCAT
+		)
+		);
 	}
 
 	@Override
 	public String getTypeName(int code, long length, int precision, int scale) throws HibernateException {
-		if (code == 3000) return "SDO_GEOMETRY";
-		return super.getTypeName(code, length, precision, scale);
+		if ( code == 3000 ) {
+			return "SDO_GEOMETRY";
+		}
+		return super.getTypeName( code, length, precision, scale );
 	}
 
 	@Override
 	public SqlTypeDescriptor remapSqlTypeDescriptor(SqlTypeDescriptor sqlTypeDescriptor) {
-		if (sqlTypeDescriptor instanceof GeometrySqlTypeDescriptor) {
+		if ( sqlTypeDescriptor instanceof GeometrySqlTypeDescriptor ) {
 			return SDOGeometryTypeDescriptor.INSTANCE;
 		}
-		return super.remapSqlTypeDescriptor(sqlTypeDescriptor);
+		return super.remapSqlTypeDescriptor( sqlTypeDescriptor );
 	}
 
 	public String getNativeSpatialRelateSQL(String arg1, String arg2,
 											int spatialRelation) {
 		String mask = "";
 		boolean negate = false;
-		switch (spatialRelation) {
+		switch ( spatialRelation ) {
 			case SpatialRelation.INTERSECTS:
 				mask = "ANYINTERACT"; // OGC Compliance verified
 				break;
@@ -288,7 +415,8 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 				break;
 			case SpatialRelation.CROSSES:
 				throw new UnsupportedOperationException(
-						"Oracle Spatial does't have equivalent CROSSES relationship");
+						"Oracle Spatial does't have equivalent CROSSES relationship"
+				);
 			case SpatialRelation.DISJOINT:
 				mask = "ANYINTERACT";
 				negate = true;
@@ -308,20 +436,22 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 			default:
 				throw new IllegalArgumentException(
 						"undefined SpatialRelation passed (" + spatialRelation
-								+ ")");
+								+ ")"
+				);
 		}
 		StringBuffer buffer;
-		if (negate) {
-			buffer = new StringBuffer("CASE WHEN SDO_RELATE(");
-		} else {
-			buffer = new StringBuffer("SDO_RELATE(");
+		if ( negate ) {
+			buffer = new StringBuffer( "CASE WHEN SDO_RELATE(" );
+		}
+		else {
+			buffer = new StringBuffer( "SDO_RELATE(" );
 		}
 
 
-		buffer.append(arg1);
-		buffer.append(",").append(arg2).append(",'mask=" + mask + "') ");
-		if (negate) {
-			buffer.append(" = 'TRUE' THEN 'FALSE' ELSE 'TRUE' END");
+		buffer.append( arg1 );
+		buffer.append( "," ).append( arg2 ).append( ",'mask=" + mask + "') " );
+		if ( negate ) {
+			buffer.append( " = 'TRUE' THEN 'FALSE' ELSE 'TRUE' END" );
 		}
 		return buffer.toString();
 	}
@@ -329,40 +459,43 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 	public String getOGCSpatialRelateSQL(String arg1, String arg2,
 										 int spatialRelation) {
 
-		StringBuffer ogcFunction = new StringBuffer("MDSYS.");
-		switch (spatialRelation) {
+		StringBuffer ogcFunction = new StringBuffer( "MDSYS." );
+		switch ( spatialRelation ) {
 			case SpatialRelation.INTERSECTS:
-				ogcFunction.append("OGC_INTERSECTS");
+				ogcFunction.append( "OGC_INTERSECTS" );
 				break;
 			case SpatialRelation.CONTAINS:
-				ogcFunction.append("OGC_CONTAINS");
+				ogcFunction.append( "OGC_CONTAINS" );
 				break;
 			case SpatialRelation.CROSSES:
-				ogcFunction.append("OGC_CROSS");
+				ogcFunction.append( "OGC_CROSS" );
 				break;
 			case SpatialRelation.DISJOINT:
-				ogcFunction.append("OGC_DISJOINT");
+				ogcFunction.append( "OGC_DISJOINT" );
 				break;
 			case SpatialRelation.EQUALS:
-				ogcFunction.append("OGC_EQUALS");
+				ogcFunction.append( "OGC_EQUALS" );
 				break;
 			case SpatialRelation.OVERLAPS:
-				ogcFunction.append("OGC_OVERLAP");
+				ogcFunction.append( "OGC_OVERLAP" );
 				break;
 			case SpatialRelation.TOUCHES:
-				ogcFunction.append("OGC_TOUCH");
+				ogcFunction.append( "OGC_TOUCH" );
 				break;
 			case SpatialRelation.WITHIN:
-				ogcFunction.append("OGC_WITHIN");
+				ogcFunction.append( "OGC_WITHIN" );
 				break;
 			default:
-				throw new IllegalArgumentException("Unknown SpatialRelation ("
-						+ spatialRelation + ").");
+				throw new IllegalArgumentException(
+						"Unknown SpatialRelation ("
+								+ spatialRelation + ")."
+				);
 		}
-		ogcFunction.append("(").append("MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(")
-				.append(arg1).append("),").append(
-				"MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(").append(arg2)
-				.append(")").append(")");
+		ogcFunction.append( "(" ).append( "MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(" )
+				.append( arg1 ).append( ")," ).append(
+				"MDSYS.ST_GEOMETRY.FROM_SDO_GEOM("
+		).append( arg2 )
+				.append( ")" ).append( ")" );
 		return ogcFunction.toString();
 
 	}
@@ -371,58 +504,67 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 
 		StringBuffer aggregateFunction = new StringBuffer();
 
-		SpatialAggregate sa = new SpatialAggregate(aggregation);
+		SpatialAggregate sa = new SpatialAggregate( aggregation );
 
-		if (sa._aggregateSyntax == null) {
-			throw new IllegalArgumentException("Unknown Spatial Aggregation ("
-					+ aggregation + ").");
+		if ( sa._aggregateSyntax == null ) {
+			throw new IllegalArgumentException(
+					"Unknown Spatial Aggregation ("
+							+ aggregation + ")."
+			);
 		}
 
-		aggregateFunction.append(sa._aggregateSyntax);
+		aggregateFunction.append( sa._aggregateSyntax );
 
-		aggregateFunction.append("(");
-		if (sa.isAggregateType()) {
-			aggregateFunction.append("SDOAGGRTYPE(");
+		aggregateFunction.append( "(" );
+		if ( sa.isAggregateType() ) {
+			aggregateFunction.append( "SDOAGGRTYPE(" );
 		}
-		aggregateFunction.append(arg1);
+		aggregateFunction.append( arg1 );
 		// TODO tolerance must by configurable
-		if (sa.isAggregateType()) {
-			aggregateFunction.append(", ").append(.001).append(")");
+		if ( sa.isAggregateType() ) {
+			aggregateFunction.append( ", " ).append( .001 ).append( ")" );
 		}
-		aggregateFunction.append(")");
+		aggregateFunction.append( ")" );
 
 		return aggregateFunction.toString();
 	}
 
 	private StringBuffer wrapInSTGeometry(String geomColumn, StringBuffer toAdd) {
-		return toAdd.append("MDSYS.ST_GEOMETRY(").append(geomColumn)
-				.append(")");
+		return toAdd.append( "MDSYS.ST_GEOMETRY(" ).append( geomColumn )
+				.append( ")" );
 	}
 
 	public String getSpatialFilterExpression(String columnName) {
-		StringBuffer buffer = new StringBuffer("SDO_FILTER(");
+		StringBuffer buffer = new StringBuffer( "SDO_FILTER(" );
 		// String pureColumnName =
 		// columnName.substring(columnName.lastIndexOf(".")+1);
 		// buffer.append("\"" + pureColumnName.toUpperCase() + "\"");
-		buffer.append(columnName);
-		buffer.append(",?) = 'TRUE' ");
+		buffer.append( columnName );
+		buffer.append( ",?) = 'TRUE' " );
 		return buffer.toString();
 	}
 
 	public String getSpatialRelateSQL(String columnName, int spatialRelation) {
 
-		String sql = (isOGCStrict() ? (getOGCSpatialRelateSQL(columnName, "?",
-				spatialRelation) + " = 1") : (getNativeSpatialRelateSQL(
-				columnName, "?", spatialRelation) + "= 'TRUE'"));
+		String sql = ( isOGCStrict() ? ( getOGCSpatialRelateSQL(
+				columnName, "?",
+				spatialRelation
+		) + " = 1" ) : ( getNativeSpatialRelateSQL(
+				columnName, "?", spatialRelation
+		) + "= 'TRUE'" ) );
 		sql += " and " + columnName + " is not null";
 		return sql;
 	}
 
 	public String getSpatialAnalysisSQL(List args, int spatialAnalysisFunction,
 										boolean useFilter) {
-		return isOGCStrict() ? getOGCSpatialAnalysisSQL(args,
-				spatialAnalysisFunction) : getNativeSpatialAnalysisSQL(args,
-				spatialAnalysisFunction);
+		return isOGCStrict() ? getOGCSpatialAnalysisSQL(
+				args,
+				spatialAnalysisFunction
+		) : getNativeSpatialAnalysisSQL(
+				args,
+				spatialAnalysisFunction
+		);
 	}
 
 	public String getSpatialAggregateSQL(String columnName,
@@ -434,11 +576,11 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 	}
 
 	public String getDWithinSQL(String columnName) {
-		throw new UnsupportedOperationException("No DWithin in this dialect");
+		throw new UnsupportedOperationException( "No DWithin in this dialect" );
 	}
 
 	public String getHavingSridSQL(String columnName) {
-		return String.format(" (MDSYS.ST_GEOMETRY(%s).ST_SRID() = ?)", columnName);
+		return String.format( " (MDSYS.ST_GEOMETRY(%s).ST_SRID() = ?)", columnName );
 	}
 
 	public String getIsEmptySQL(String columnName, boolean isEmpty) {
@@ -452,116 +594,135 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 	private String getOGCSpatialAnalysisSQL(List args,
 											int spatialAnalysisFunction) {
 		boolean[] geomArgs;
-		StringBuffer ogcFunction = new StringBuffer("MDSYS.");
+		StringBuffer ogcFunction = new StringBuffer( "MDSYS." );
 		boolean isGeomReturn = true;
-		switch (spatialAnalysisFunction) {
+		switch ( spatialAnalysisFunction ) {
 			case SpatialAnalysis.BUFFER:
-				ogcFunction.append("OGC_BUFFER");
-				geomArgs = new boolean[]{true, false};
+				ogcFunction.append( "OGC_BUFFER" );
+				geomArgs = new boolean[] { true, false };
 				break;
 			case SpatialAnalysis.CONVEXHULL:
-				ogcFunction.append("OGC_CONVEXHULL");
-				geomArgs = new boolean[]{true};
+				ogcFunction.append( "OGC_CONVEXHULL" );
+				geomArgs = new boolean[] { true };
 				break;
 			case SpatialAnalysis.DIFFERENCE:
-				ogcFunction.append("OGC_DIFFERENCE");
-				geomArgs = new boolean[]{true, true};
+				ogcFunction.append( "OGC_DIFFERENCE" );
+				geomArgs = new boolean[] { true, true };
 				break;
 			case SpatialAnalysis.DISTANCE:
-				ogcFunction.append("OGC_DISTANCE");
-				geomArgs = new boolean[]{true, true};
+				ogcFunction.append( "OGC_DISTANCE" );
+				geomArgs = new boolean[] { true, true };
 				isGeomReturn = false;
 				break;
 			case SpatialAnalysis.INTERSECTION:
-				ogcFunction.append("OGC_INTERSECTION");
-				geomArgs = new boolean[]{true, true};
+				ogcFunction.append( "OGC_INTERSECTION" );
+				geomArgs = new boolean[] { true, true };
 				break;
 			case SpatialAnalysis.SYMDIFFERENCE:
-				ogcFunction.append("OGC_SYMMETRICDIFFERENCE");
-				geomArgs = new boolean[]{true, true};
+				ogcFunction.append( "OGC_SYMMETRICDIFFERENCE" );
+				geomArgs = new boolean[] { true, true };
 				break;
 			case SpatialAnalysis.UNION:
-				ogcFunction.append("OGC_UNION");
-				geomArgs = new boolean[]{true, true};
+				ogcFunction.append( "OGC_UNION" );
+				geomArgs = new boolean[] { true, true };
 				break;
 			default:
 				throw new IllegalArgumentException(
 						"Unknown SpatialAnalysisFunction ("
-								+ spatialAnalysisFunction + ").");
+								+ spatialAnalysisFunction + ")."
+				);
 		}
 
-		if (args.size() < geomArgs.length)
+		if ( args.size() < geomArgs.length ) {
 			throw new QueryException(
 					"Insufficient arguments for spatial analysis function (function type:  "
-							+ spatialAnalysisFunction + ").");
-
-		ogcFunction.append("(");
-		for (int i = 0; i < geomArgs.length; i++) {
-			if (i > 0)
-				ogcFunction.append(",");
-			if (geomArgs[i])
-				wrapInSTGeometry((String) args.get(i), ogcFunction);
-			else
-				ogcFunction.append(args.get(i));
+							+ spatialAnalysisFunction + ")."
+			);
 		}
-		ogcFunction.append(")");
-		if (isGeomReturn)
-			ogcFunction.append(".geom");
+
+		ogcFunction.append( "(" );
+		for ( int i = 0; i < geomArgs.length; i++ ) {
+			if ( i > 0 ) {
+				ogcFunction.append( "," );
+			}
+			if ( geomArgs[i] ) {
+				wrapInSTGeometry( (String) args.get( i ), ogcFunction );
+			}
+			else {
+				ogcFunction.append( args.get( i ) );
+			}
+		}
+		ogcFunction.append( ")" );
+		if ( isGeomReturn ) {
+			ogcFunction.append( ".geom" );
+		}
 		return ogcFunction.toString();
 	}
 
 	private String getNativeSpatialAnalysisSQL(List args, int spatialAnalysis) {
-		return getOGCSpatialAnalysisSQL(args, spatialAnalysis);
+		return getOGCSpatialAnalysisSQL( args, spatialAnalysis );
 	}
 
 	boolean isOGCStrict() {
-		return ((Boolean) this.features.get(OGC_STRICT)).booleanValue();
+		return ( (Boolean) this.features.get( OGC_STRICT ) ).booleanValue();
 	}
 
 
 	private void configure() {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		String propfileLoc = getClass().getCanonicalName() + ".properties";
-		URL propfile = loader.getResource(propfileLoc);
-		if (propfile != null) {
+		URL propfile = loader.getResource( propfileLoc );
+		if ( propfile != null ) {
 			InputStream is = null;
-			LOG.info("properties file found: " + propfile);
+			LOG.info( "properties file found: " + propfile );
 			try {
-				loader.getResource(getClass().getCanonicalName());
+				loader.getResource( getClass().getCanonicalName() );
 				is = propfile.openStream();
-				PropertyFileReader reader = new PropertyFileReader(is);
+				PropertyFileReader reader = new PropertyFileReader( is );
 				Properties props = reader.getProperties();
 
 				// checking for connectionfinder
-				String ccn = props.getProperty(CONNECTION_FINDER_PROPERTY);
-				if (ccn != null) {
+				String ccn = props.getProperty( CONNECTION_FINDER_PROPERTY );
+				if ( ccn != null ) {
 					try {
 						Class clazz = Thread.currentThread()
-								.getContextClassLoader().loadClass(ccn);
+								.getContextClassLoader().loadClass( ccn );
 						ConnectionFinder cf = (ConnectionFinder) clazz
 								.newInstance();
-						OracleJDBCTypeFactory.setConnectionFinder(cf);
-						LOG.info("Setting ConnectionFinder to " + ccn);
-					} catch (ClassNotFoundException e) {
-						LOG.warn("Tried to set ConnectionFinder to " + ccn
-								+ ", but class not found.");
-					} catch (InstantiationException e) {
-						LOG.warn("Tried to set ConnectionFinder to " + ccn
-								+ ", but couldn't instantiate.");
-					} catch (IllegalAccessException e) {
+						OracleJDBCTypeFactory.setConnectionFinder( cf );
+						LOG.info( "Setting ConnectionFinder to " + ccn );
+					}
+					catch ( ClassNotFoundException e ) {
+						LOG.warn(
+								"Tried to set ConnectionFinder to " + ccn
+										+ ", but class not found."
+						);
+					}
+					catch ( InstantiationException e ) {
+						LOG.warn(
+								"Tried to set ConnectionFinder to " + ccn
+										+ ", but couldn't instantiate."
+						);
+					}
+					catch ( IllegalAccessException e ) {
 						LOG
-								.warn("Tried to set ConnectionFinder to "
-										+ ccn
-										+ ", but got IllegalAcessException on instantiation.");
+								.warn(
+										"Tried to set ConnectionFinder to "
+												+ ccn
+												+ ", but got IllegalAcessException on instantiation."
+								);
 					}
 				}
 
-			} catch (IOException e) {
-				LOG.warn("Problem reading properties file " + e);
-			} finally {
+			}
+			catch ( IOException e ) {
+				LOG.warn( "Problem reading properties file " + e );
+			}
+			finally {
 				try {
 					is.close();
-				} catch (Exception e) {
+				}
+				catch ( Exception e ) {
 				}
 			}
 		}
@@ -577,7 +738,7 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 	}
 
 	public boolean supports(SpatialFunction function) {
-		return (getFunctions().get(function.toString()) != null);
+		return ( getFunctions().get( function.toString() ) != null );
 	}
 
 

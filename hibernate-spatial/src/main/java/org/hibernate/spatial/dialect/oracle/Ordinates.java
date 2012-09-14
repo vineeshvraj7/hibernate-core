@@ -38,19 +38,20 @@ class Ordinates {
 	}
 
 	public Ordinates(Array array) {
-		if (array == null) {
-			this.ordinates = new Double[]{};
+		if ( array == null ) {
+			this.ordinates = new Double[] { };
 			return;
 		}
 		try {
 			Number[] ords = (Number[]) array.getArray();
 			this.ordinates = new Double[ords.length];
-			for (int i = 0; i < ords.length; i++) {
+			for ( int i = 0; i < ords.length; i++ ) {
 				this.ordinates[i] = ords[i] != null ? ords[i].doubleValue()
 						: Double.NaN;
 			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		}
+		catch ( Exception e ) {
+			throw new RuntimeException( e );
 		}
 	}
 
@@ -60,27 +61,31 @@ class Ordinates {
 
 	public Double[] getOrdinatesArray(int startPosition, int endPosition) {
 		Double[] a = new Double[endPosition - startPosition];
-		System.arraycopy(this.ordinates, startPosition - 1, a, 0, a.length);
+		System.arraycopy( this.ordinates, startPosition - 1, a, 0, a.length );
 		return a;
 	}
 
 	public Double[] getOrdinatesArray(int startPosition) {
-		Double[] a = new Double[this.ordinates.length - (startPosition - 1)];
-		System.arraycopy(this.ordinates, startPosition - 1, a, 0, a.length);
+		Double[] a = new Double[this.ordinates.length - ( startPosition - 1 )];
+		System.arraycopy( this.ordinates, startPosition - 1, a, 0, a.length );
 		return a;
 	}
 
 	public String toString() {
-		return SDOGeometry.arrayToString(this.ordinates);
+		return SDOGeometry.arrayToString( this.ordinates );
 	}
 
 	public void addOrdinates(Double[] ordinatesToAdd) {
 		Double[] newOrdinates = new Double[this.ordinates.length
 				+ ordinatesToAdd.length];
-		System.arraycopy(this.ordinates, 0, newOrdinates, 0,
-				this.ordinates.length);
-		System.arraycopy(ordinatesToAdd, 0, newOrdinates,
-				this.ordinates.length, ordinatesToAdd.length);
+		System.arraycopy(
+				this.ordinates, 0, newOrdinates, 0,
+				this.ordinates.length
+		);
+		System.arraycopy(
+				ordinatesToAdd, 0, newOrdinates,
+				this.ordinates.length, ordinatesToAdd.length
+		);
 		this.ordinates = newOrdinates;
 	}
 

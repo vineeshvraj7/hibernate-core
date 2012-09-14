@@ -35,6 +35,12 @@ public class MySQLExpressionTemplate implements SQLExpressionTemplate {
 	final String SQL_TEMPLATE = "insert into geomtest (id, type, geom) values (%d, '%s', GeomFromText('%s', %d))";
 
 	public String toInsertSql(TestDataElement testDataElement) {
-		return String.format(SQL_TEMPLATE, testDataElement.id, testDataElement.type, testDataElement.wkt, testDataElement.srid);
+		return String.format(
+				SQL_TEMPLATE,
+				testDataElement.id,
+				testDataElement.type,
+				testDataElement.wkt,
+				testDataElement.srid
+		);
 	}
 }

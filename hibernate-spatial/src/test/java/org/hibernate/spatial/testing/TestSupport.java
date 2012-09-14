@@ -35,7 +35,7 @@ public abstract class TestSupport {
 
 	public DataSourceUtils createDataSourceUtil(Configuration configuration) {
 		this.configuration = configuration;
-		return new DataSourceUtils(driver(), url(), user(), passwd(), getSQLExpressionTemplate());
+		return new DataSourceUtils( driver(), url(), user(), passwd(), getSQLExpressionTemplate() );
 	}
 
 	public GeometryEquality createGeometryEquality() {
@@ -49,18 +49,18 @@ public abstract class TestSupport {
 	public abstract SQLExpressionTemplate getSQLExpressionTemplate();
 
 	protected String driver() {
-		return configuration.getProperty("hibernate.connection.driver_class");
+		return configuration.getProperty( "hibernate.connection.driver_class" );
 	}
 
 	protected String url() {
-		return configuration.getProperty("hibernate.connection.url");
+		return configuration.getProperty( "hibernate.connection.url" );
 	}
 
 	protected String user() {
-		return configuration.getProperty("hibernate.connection.username");
+		return configuration.getProperty( "hibernate.connection.username" );
 	}
 
 	protected String passwd() {
-		return configuration.getProperty("hibernate.connection.password");
+		return configuration.getProperty( "hibernate.connection.password" );
 	}
 }

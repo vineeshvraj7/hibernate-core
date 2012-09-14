@@ -24,6 +24,7 @@ package org.hibernate.spatial;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
+
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
@@ -35,10 +36,10 @@ import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 public class GeometryJavaTypeDescriptor extends AbstractTypeDescriptor<Geometry> {
 
 
-	public static final JavaTypeDescriptor<Geometry> INSTANCE = new GeometryJavaTypeDescriptor(Geometry.class);
+	public static final JavaTypeDescriptor<Geometry> INSTANCE = new GeometryJavaTypeDescriptor( Geometry.class );
 
 	public GeometryJavaTypeDescriptor(Class<Geometry> type) {
-		super(type);
+		super( type );
 	}
 
 	@Override
@@ -50,9 +51,10 @@ public class GeometryJavaTypeDescriptor extends AbstractTypeDescriptor<Geometry>
 	public Geometry fromString(String string) {
 		WKTReader reader = new WKTReader();
 		try {
-			return reader.read(string);
-		} catch (ParseException e) {
-			throw new RuntimeException(String.format("Can't parse string %s as WKT", string));
+			return reader.read( string );
+		}
+		catch ( ParseException e ) {
+			throw new RuntimeException( String.format( "Can't parse string %s as WKT", string ) );
 		}
 	}
 

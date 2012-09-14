@@ -27,8 +27,9 @@ package org.hibernate.spatial.dialect.oracle;
  */
 enum TypeGeometry {
 
-	UNKNOWN_GEOMETRY(0), POINT(1), LINE(2), POLYGON(3), COLLECTION(4), MULTIPOINT(
-			5), MULTILINE(6), MULTIPOLYGON(7), SOLID(8), MULTISOLID(9);
+	UNKNOWN_GEOMETRY( 0 ), POINT( 1 ), LINE( 2 ), POLYGON( 3 ), COLLECTION( 4 ), MULTIPOINT(
+			5
+	), MULTILINE( 6 ), MULTIPOLYGON( 7 ), SOLID( 8 ), MULTISOLID( 9 );
 
 	private int gtype = 0;
 
@@ -41,13 +42,15 @@ enum TypeGeometry {
 	}
 
 	static TypeGeometry parse(int v) {
-		for (TypeGeometry gt : values()) {
-			if (gt.intValue() == v) {
+		for ( TypeGeometry gt : values() ) {
+			if ( gt.intValue() == v ) {
 				return gt;
 			}
 		}
-		throw new RuntimeException("Value " + v
-				+ " isn't a valid TypeGeometry value");
+		throw new RuntimeException(
+				"Value " + v
+						+ " isn't a valid TypeGeometry value"
+		);
 	}
 
 }

@@ -24,7 +24,12 @@ package org.hibernate.spatial.dialect.postgis;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernate.spatial.*;
+import org.hibernate.spatial.GeometrySqlTypeDescriptor;
+import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.SpatialAggregate;
+import org.hibernate.spatial.SpatialDialect;
+import org.hibernate.spatial.SpatialFunction;
+import org.hibernate.spatial.SpatialRelation;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
@@ -44,7 +49,7 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 
 	protected void registerTypesAndFunctions() {
 
-		registerColumnType(java.sql.Types.STRUCT, "geometry");
+		registerColumnType( java.sql.Types.STRUCT, "geometry" );
 		// registering OGC functions
 		// (spec_simplefeatures_sql_99-04.pdf)
 
@@ -194,7 +199,7 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 		);
 		registerFunction(
 				"symdifference",
-				new StandardSQLFunction("st_symdifference", GeometryType.INSTANCE)
+				new StandardSQLFunction( "st_symdifference", GeometryType.INSTANCE )
 		);
 		registerFunction(
 				"geomunion", new StandardSQLFunction(
@@ -234,29 +239,33 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 	 * parameters. In the case of typecode == 3000, it returns this dialect's spatial type which is
 	 * <code>GEOMETRY</code>.
 	 *
-	 * @param code	  The {@link java.sql.Types} typecode
-	 * @param length	The datatype length
+	 * @param code The {@link java.sql.Types} typecode
+	 * @param length The datatype length
 	 * @param precision The datatype precision
-	 * @param scale	 The datatype scale
+	 * @param scale The datatype scale
+	 *
 	 * @return
+	 *
 	 * @throws HibernateException
 	 */
 	@Override
 	public String getTypeName(int code, long length, int precision, int scale) throws HibernateException {
-		if (code == 3000) return "GEOMETRY";
-		return super.getTypeName(code, length, precision, scale);
+		if ( code == 3000 ) {
+			return "GEOMETRY";
+		}
+		return super.getTypeName( code, length, precision, scale );
 	}
 
 	@Override
 	public SqlTypeDescriptor remapSqlTypeDescriptor(SqlTypeDescriptor sqlTypeDescriptor) {
-		if (sqlTypeDescriptor instanceof GeometrySqlTypeDescriptor) {
+		if ( sqlTypeDescriptor instanceof GeometrySqlTypeDescriptor ) {
 			return PGGeometryTypeDescriptor.INSTANCE;
 		}
-		return super.remapSqlTypeDescriptor(sqlTypeDescriptor);
+		return super.remapSqlTypeDescriptor( sqlTypeDescriptor );
 	}
 
 	public String getSpatialRelateSQL(String columnName, int spatialRelation) {
-		switch (spatialRelation) {
+		switch ( spatialRelation ) {
 			case SpatialRelation.WITHIN:
 				return " ST_within(" + columnName + ",?)";
 			case SpatialRelation.CONTAINS:
@@ -300,10 +309,10 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 	}
 
 	public String getSpatialAggregateSQL(String columnName, int aggregation) {
-		switch (aggregation) {
+		switch ( aggregation ) {
 			case SpatialAggregate.EXTENT:
 				StringBuilder stbuf = new StringBuilder();
-				stbuf.append("extent(").append(columnName).append(")");
+				stbuf.append( "extent(" ).append( columnName ).append( ")" );
 				return stbuf.toString();
 			default:
 				throw new IllegalArgumentException(
@@ -318,6 +327,6 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 	}
 
 	public boolean supports(SpatialFunction function) {
-		return (getFunctions().get(function.toString()) != null);
+		return ( getFunctions().get( function.toString() ) != null );
 	}
 }

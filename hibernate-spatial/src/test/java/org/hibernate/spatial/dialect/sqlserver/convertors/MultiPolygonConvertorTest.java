@@ -21,10 +21,11 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import org.junit.Test;
+
 import org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect;
 import org.hibernate.testing.BeforeClassOnce;
 import org.hibernate.testing.RequiresDialect;
-import org.junit.Test;
 
 @RequiresDialect(SqlServer2008SpatialDialect.class)
 public class MultiPolygonConvertorTest extends AbstractConvertorTest {
@@ -32,7 +33,7 @@ public class MultiPolygonConvertorTest extends AbstractConvertorTest {
 	@BeforeClassOnce
 	public void beforeClass() {
 		super.beforeClass();
-		doDecoding(OpenGisType.MULTIPOLYGON);
+		doDecoding( OpenGisType.MULTIPOLYGON );
 		doEncoding();
 	}
 

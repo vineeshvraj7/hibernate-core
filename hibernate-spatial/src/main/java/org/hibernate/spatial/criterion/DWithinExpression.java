@@ -22,6 +22,7 @@
 package org.hibernate.spatial.criterion;
 
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.Criteria;
 import org.hibernate.EntityMode;
 import org.hibernate.HibernateException;
@@ -50,17 +51,17 @@ public class DWithinExpression implements Criterion {
 	}
 
 	public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
-		String column = ExpressionUtil.findColumn(propertyName, criteria, criteriaQuery);
-		SpatialDialect spatialDialect = ExpressionUtil.getSpatialDialect(criteriaQuery, SpatialFunction.dwithin);
-		return spatialDialect.getDWithinSQL(column);
+		String column = ExpressionUtil.findColumn( propertyName, criteria, criteriaQuery );
+		SpatialDialect spatialDialect = ExpressionUtil.getSpatialDialect( criteriaQuery, SpatialFunction.dwithin );
+		return spatialDialect.getDWithinSQL( column );
 
 	}
 
 
 	public TypedValue[] getTypedValues(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
-		return new TypedValue[]{
-				criteriaQuery.getTypedValue(criteria, propertyName, geometry),
-				new TypedValue(StandardBasicTypes.DOUBLE, Double.valueOf(distance), EntityMode.POJO)
+		return new TypedValue[] {
+				criteriaQuery.getTypedValue( criteria, propertyName, geometry ),
+				new TypedValue( StandardBasicTypes.DOUBLE, Double.valueOf( distance ), EntityMode.POJO )
 		};
 	}
 }

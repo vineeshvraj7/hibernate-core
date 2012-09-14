@@ -20,9 +20,9 @@
  */
 package org.hibernate.spatial.dialect.oracle;
 
-import org.hibernate.spatial.helper.FinderStrategy;
-
 import java.sql.Connection;
+
+import org.hibernate.spatial.helper.FinderStrategy;
 
 /**
  * The <code>ConnectionFinder</code> returns an OracleConnection when given a

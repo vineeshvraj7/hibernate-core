@@ -46,15 +46,16 @@ public class TestSupportFactories {
 
 
 	public TestSupport getTestSupportFactory(Dialect dialect) throws InstantiationException, IllegalAccessException {
-		if (dialect == null) {
-			throw new IllegalArgumentException("Dialect argument is required.");
+		if ( dialect == null ) {
+			throw new IllegalArgumentException( "Dialect argument is required." );
 		}
-		Class testSupportFactoryClass = getSupportFactoryClass(dialect);
-		return instantiate(testSupportFactoryClass);
+		Class testSupportFactoryClass = getSupportFactoryClass( dialect );
+		return instantiate( testSupportFactoryClass );
 
 	}
 
-	private TestSupport instantiate(Class<? extends TestSupport> testSupportFactoryClass) throws IllegalAccessException, InstantiationException {
+	private TestSupport instantiate(Class<? extends TestSupport> testSupportFactoryClass)
+			throws IllegalAccessException, InstantiationException {
 		return testSupportFactoryClass.newInstance();
 	}
 
@@ -67,24 +68,24 @@ public class TestSupportFactories {
 
 	private static Class<? extends TestSupport> getSupportFactoryClass(Dialect dialect) {
 		String canonicalName = dialect.getClass().getCanonicalName();
-		if ("org.hibernate.spatial.dialect.postgis.PostgisDialect".equals(canonicalName)) {
+		if ( "org.hibernate.spatial.dialect.postgis.PostgisDialect".equals( canonicalName ) ) {
 			return PostgisTestSupport.class;
 		}
-		if ("org.hibernate.spatial.dialect.h2geodb.GeoDBDialect".equals(canonicalName)) {
+		if ( "org.hibernate.spatial.dialect.h2geodb.GeoDBDialect".equals( canonicalName ) ) {
 			return GeoDBTestSupport.class;
 		}
-		if ("org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect".equals(canonicalName)) {
+		if ( "org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect".equals( canonicalName ) ) {
 			return SQLServerTestSupport.class;
 		}
-		if ("org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect".equals(canonicalName) ||
-				"org.hibernate.spatial.dialect.mysql.MySQLSpatialInnoDBDialect".equals(canonicalName) ||
-                "org.hibernate.spatial.dialect.mysql.MySQL5SpatialInnoDBDialect".equals(canonicalName)) {
+		if ( "org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect".equals( canonicalName ) ||
+				"org.hibernate.spatial.dialect.mysql.MySQLSpatialInnoDBDialect".equals( canonicalName ) ||
+				"org.hibernate.spatial.dialect.mysql.MySQL5SpatialInnoDBDialect".equals( canonicalName ) ) {
 			return MySQLTestSupport.class;
 		}
-		if ("org.hibernate.spatial.dialect.oracle.OracleSpatial10gDialect".equals(canonicalName)) {
+		if ( "org.hibernate.spatial.dialect.oracle.OracleSpatial10gDialect".equals( canonicalName ) ) {
 			return OracleSDOTestSupport.class;
 		}
-		throw new IllegalArgumentException("Dialect not known in test suite");
+		throw new IllegalArgumentException( "Dialect not known in test suite" );
 	}
 
 }

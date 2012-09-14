@@ -22,7 +22,11 @@
 package org.hibernate.spatial.testing.dialects.postgis;
 
 
-import org.hibernate.spatial.testing.*;
+import org.hibernate.spatial.testing.AbstractExpectationsFactory;
+import org.hibernate.spatial.testing.DataSourceUtils;
+import org.hibernate.spatial.testing.SQLExpressionTemplate;
+import org.hibernate.spatial.testing.TestData;
+import org.hibernate.spatial.testing.TestSupport;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 
 /**
@@ -33,15 +37,15 @@ public class PostgisTestSupport extends TestSupport {
 
 
 	public TestData createTestData(BaseCoreFunctionalTestCase testcase) {
-		if (testcase.getClass().getCanonicalName().contains("TestSpatialFunctions") ||
-				testcase.getClass().getCanonicalName().contains("TestSpatialRestrictions")) {
-			return TestData.fromFile("postgis-functions-test.xml");
+		if ( testcase.getClass().getCanonicalName().contains( "TestSpatialFunctions" ) ||
+				testcase.getClass().getCanonicalName().contains( "TestSpatialRestrictions" ) ) {
+			return TestData.fromFile( "postgis-functions-test.xml" );
 		}
-		return TestData.fromFile("test-data-set.xml");
+		return TestData.fromFile( "test-data-set.xml" );
 	}
 
 	public AbstractExpectationsFactory createExpectationsFactory(DataSourceUtils dataSourceUtils) {
-		return new PostgisExpectationsFactory(dataSourceUtils);
+		return new PostgisExpectationsFactory( dataSourceUtils );
 	}
 
 	@Override

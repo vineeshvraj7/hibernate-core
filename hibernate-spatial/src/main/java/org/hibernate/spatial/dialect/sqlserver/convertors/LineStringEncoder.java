@@ -21,36 +21,36 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
-
-import java.util.List;
 
 class LineStringEncoder extends AbstractEncoder<LineString> {
 
 	@Override
 	protected void encode(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
-		if (!(geom instanceof LineString)) {
-			throw new IllegalArgumentException("Require LineString geometry");
+		if ( !( geom instanceof LineString ) ) {
+			throw new IllegalArgumentException( "Require LineString geometry" );
 		}
-		if (geom.isEmpty()) {
-			shapes.add(new Shape(parentShapeIndex, -1, OpenGisType.LINESTRING));
+		if ( geom.isEmpty() ) {
+			shapes.add( new Shape( parentShapeIndex, -1, OpenGisType.LINESTRING ) );
 			return;
 		}
 		int figureOffset = figures.size();
 		int pointOffset = coordinates.size();
-		for (Coordinate coordinate : geom.getCoordinates()) {
-			coordinates.add(coordinate);
+		for ( Coordinate coordinate : geom.getCoordinates() ) {
+			coordinates.add( coordinate );
 		}
-		figures.add(new Figure(FigureAttribute.Stroke, pointOffset));
-		shapes.add(new Shape(parentShapeIndex, figureOffset, OpenGisType.LINESTRING));
+		figures.add( new Figure( FigureAttribute.Stroke, pointOffset ) );
+		shapes.add( new Shape( parentShapeIndex, figureOffset, OpenGisType.LINESTRING ) );
 	}
 
 	@Override
 	protected void encodePoints(SqlServerGeometry nativeGeom, List<Coordinate> coordinates) {
-		super.encodePoints(nativeGeom, coordinates);
-		if (coordinates.size() == 2) {
+		super.encodePoints( nativeGeom, coordinates );
+		if ( coordinates.size() == 2 ) {
 			nativeGeom.setIsSingleLineSegment();
 		}
 	}
