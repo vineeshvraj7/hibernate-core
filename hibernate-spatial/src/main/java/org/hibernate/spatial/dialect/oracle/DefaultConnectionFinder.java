@@ -21,12 +21,12 @@
 package org.hibernate.spatial.dialect.oracle;
 
 
-import org.hibernate.HibernateException;
-import org.hibernate.spatial.helper.FinderException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+
+import org.hibernate.HibernateException;
+import org.hibernate.spatial.helper.FinderException;
 
 /**
  * Default <code>ConnectionFinder</code> implementation.
@@ -47,31 +47,32 @@ public class DefaultConnectionFinder implements ConnectionFinder {
 
 	static {
 		try {
-			oracleConnectionClass = Class.forName("oracle.jdbc.driver.OracleConnection");
-		} catch (ClassNotFoundException e) {
-			throw new HibernateException("Can't find Oracle JDBC Driver on classpath.");
+			oracleConnectionClass = Class.forName( "oracle.jdbc.driver.OracleConnection" );
+		}
+		catch ( ClassNotFoundException e ) {
+			throw new HibernateException( "Can't find Oracle JDBC Driver on classpath." );
 		}
 	}
 
 	public Connection find(Connection con) throws FinderException {
-		if (con == null) {
+		if ( con == null ) {
 			return null;
 		}
 
-		if (oracleConnectionClass.isInstance(con)) {
+		if ( oracleConnectionClass.isInstance( con ) ) {
 			return con;
 		}
 		// try to find the Oracleconnection recursively
-		for (Method method : con.getClass().getMethods()) {
-			if (method.getReturnType().isAssignableFrom(
+		for ( Method method : con.getClass().getMethods() ) {
+			if ( method.getReturnType().isAssignableFrom(
 					java.sql.Connection.class
 			)
-					&& method.getParameterTypes().length == 0) {
+					&& method.getParameterTypes().length == 0 ) {
 
 				try {
-					method.setAccessible(true);
-					Connection oc = find((Connection) (method.invoke(con, new Object[]{})));
-					if (oc == null) {
+					method.setAccessible( true );
+					Connection oc = find( (Connection) ( method.invoke( con, new Object[] { } ) ) );
+					if ( oc == null ) {
 						throw new FinderException(
 								String.format(
 										"Tried retrieving OracleConnection from %s using method %s, but received null.",
@@ -81,14 +82,16 @@ public class DefaultConnectionFinder implements ConnectionFinder {
 						);
 					}
 					return oc;
-				} catch (IllegalAccessException e) {
+				}
+				catch ( IllegalAccessException e ) {
 					throw new FinderException(
 							String.format(
 									"Illegal access on executing method %s when finding OracleConnection",
 									method.getName()
 							)
 					);
-				} catch (InvocationTargetException e) {
+				}
+				catch ( InvocationTargetException e ) {
 					throw new FinderException(
 							String.format(
 									"Invocation exception on executing method %s when finding OracleConnection",

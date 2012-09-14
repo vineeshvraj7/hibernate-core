@@ -27,13 +27,20 @@ package org.hibernate.spatial.dialect.oracle;
  *         creation-date: Jul 1, 2010
  */
 enum ElementType {
-	UNSUPPORTED(0, true), POINT(1, 1), ORIENTATION(1, 0), POINT_CLUSTER(1,
-			true), LINE_STRAITH_SEGMENTS(2, 1), LINE_ARC_SEGMENTS(2, 2), INTERIOR_RING_STRAIGHT_SEGMENTS(
-			2003, 1), EXTERIOR_RING_STRAIGHT_SEGMENTS(1003, 1), INTERIOR_RING_ARC_SEGMENTS(
-			2003, 2), EXTERIOR_RING_ARC_SEGMENTS(1003, 2), INTERIOR_RING_RECT(
-			2003, 3), EXTERIOR_RING_RECT(1003, 3), INTERIOR_RING_CIRCLE(
-			2003, 4), EXTERIOR_RING_CIRCLE(1003, 4), COMPOUND_LINE(4, true), COMPOUND_EXTERIOR_RING(
-			1005, true), COMPOUND_INTERIOR_RING(2005, true);
+	UNSUPPORTED( 0, true ), POINT( 1, 1 ), ORIENTATION( 1, 0 ), POINT_CLUSTER(
+			1,
+			true
+	), LINE_STRAITH_SEGMENTS( 2, 1 ), LINE_ARC_SEGMENTS( 2, 2 ), INTERIOR_RING_STRAIGHT_SEGMENTS(
+			2003, 1
+	), EXTERIOR_RING_STRAIGHT_SEGMENTS( 1003, 1 ), INTERIOR_RING_ARC_SEGMENTS(
+			2003, 2
+	), EXTERIOR_RING_ARC_SEGMENTS( 1003, 2 ), INTERIOR_RING_RECT(
+			2003, 3
+	), EXTERIOR_RING_RECT( 1003, 3 ), INTERIOR_RING_CIRCLE(
+			2003, 4
+	), EXTERIOR_RING_CIRCLE( 1003, 4 ), COMPOUND_LINE( 4, true ), COMPOUND_EXTERIOR_RING(
+			1005, true
+	), COMPOUND_INTERIOR_RING( 2005, true );
 
 	private int etype;
 
@@ -69,45 +76,46 @@ enum ElementType {
 	}
 
 	public boolean isLine() {
-		return (etype == 2 || etype == 4);
+		return ( etype == 2 || etype == 4 );
 	}
 
 	public boolean isInteriorRing() {
-		return (etype == 2003 || etype == 2005);
+		return ( etype == 2003 || etype == 2005 );
 	}
 
 	public boolean isExteriorRing() {
-		return (etype == 1003 || etype == 1005);
+		return ( etype == 1003 || etype == 1005 );
 	}
 
 	public boolean isStraightSegment() {
-		return (interpretation == 1);
+		return ( interpretation == 1 );
 	}
 
 	public boolean isArcSegment() {
-		return (interpretation == 2);
+		return ( interpretation == 2 );
 	}
 
 	public boolean isCircle() {
-		return (interpretation == 4);
+		return ( interpretation == 4 );
 	}
 
 	public boolean isRect() {
-		return (interpretation == 3);
+		return ( interpretation == 3 );
 	}
 
 	public static ElementType parseType(int etype, int interpretation) {
-		for (ElementType t : values()) {
-			if (t.etype == etype) {
-				if (t.isCompound()
-						|| t.getInterpretation() == interpretation) {
+		for ( ElementType t : values() ) {
+			if ( t.etype == etype ) {
+				if ( t.isCompound()
+						|| t.getInterpretation() == interpretation ) {
 					return t;
 				}
 			}
 		}
 		throw new RuntimeException(
 				"Can't determine ElementType from etype:" + etype
-						+ " and interp.:" + interpretation);
+						+ " and interp.:" + interpretation
+		);
 	}
 
 }

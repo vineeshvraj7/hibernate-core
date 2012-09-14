@@ -38,20 +38,22 @@ class SDOPoint {
 	public SDOPoint(Struct struct) {
 		try {
 			Object[] data = struct.getAttributes();
-			this.x = ((Number) data[0]).doubleValue();
-			this.y = ((Number) data[1]).doubleValue();
-			if (data[2] != null) {
-				this.z = ((Number) data[1]).doubleValue();
+			this.x = ( (Number) data[0] ).doubleValue();
+			this.y = ( (Number) data[1] ).doubleValue();
+			if ( data[2] != null ) {
+				this.z = ( (Number) data[1] ).doubleValue();
 			}
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+		}
+		catch ( SQLException e ) {
+			throw new RuntimeException( e );
 		}
 	}
 
 	public String toString() {
 		StringBuilder stb = new StringBuilder();
-		stb.append("(").append(x).append(",").append(y).append(",").append(
-				z).append(")");
+		stb.append( "(" ).append( x ).append( "," ).append( y ).append( "," ).append(
+				z
+		).append( ")" );
 		return stb.toString();
 	}
 

@@ -22,6 +22,7 @@ package org.hibernate.spatial.criterion;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
@@ -54,13 +55,13 @@ public class SpatialFilter implements Criterion {
 
 	public SpatialFilter(String propertyName, Envelope envelope, int SRID) {
 		this.propertyName = propertyName;
-		this.filter = EnvelopeAdapter.toPolygon(envelope, SRID);
+		this.filter = EnvelopeAdapter.toPolygon( envelope, SRID );
 
 	}
 
 	public TypedValue[] getTypedValues(Criteria criteria,
 									   CriteriaQuery criteriaQuery) throws HibernateException {
-		return new TypedValue[]{
+		return new TypedValue[] {
 				criteriaQuery.getTypedValue(
 						criteria,
 						propertyName, filter
@@ -76,10 +77,11 @@ public class SpatialFilter implements Criterion {
 				this.propertyName
 		);
 		Dialect dialect = factory.getDialect();
-		if (dialect instanceof SpatialDialect) {
+		if ( dialect instanceof SpatialDialect ) {
 			SpatialDialect seDialect = (SpatialDialect) dialect;
-			return seDialect.getSpatialFilterExpression(columns[0]);
-		} else {
+			return seDialect.getSpatialFilterExpression( columns[0] );
+		}
+		else {
 			throw new IllegalStateException(
 					"Dialect must be spatially enabled dialect"
 			);

@@ -21,18 +21,19 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
+
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 import org.hibernate.spatial.jts.mgeom.MLineString;
-
-import java.util.List;
 
 class MultiLineStringDecoder extends AbstractGeometryCollectionDecoder<MultiLineString> {
 
 	public MultiLineStringDecoder(MGeometryFactory factory) {
-		super(factory);
+		super( factory );
 	}
 
 	@Override
@@ -43,12 +44,12 @@ class MultiLineStringDecoder extends AbstractGeometryCollectionDecoder<MultiLine
 
 	@Override
 	protected MultiLineString createGeometry(List<Geometry> geometries, boolean hasM) {
-		if (hasM) {
-			MLineString[] mlAr = geometries != null ? geometries.toArray(new MLineString[geometries.size()]) : null;
-			return getGeometryFactory().createMultiMLineString(mlAr);
+		if ( hasM ) {
+			MLineString[] mlAr = geometries != null ? geometries.toArray( new MLineString[geometries.size()] ) : null;
+			return getGeometryFactory().createMultiMLineString( mlAr );
 		}
-		LineString[] lAr = geometries != null ? geometries.toArray(new LineString[geometries.size()]) : null;
-		return getGeometryFactory().createMultiLineString(lAr);
+		LineString[] lAr = geometries != null ? geometries.toArray( new LineString[geometries.size()] ) : null;
+		return getGeometryFactory().createMultiLineString( lAr );
 	}
 
 }

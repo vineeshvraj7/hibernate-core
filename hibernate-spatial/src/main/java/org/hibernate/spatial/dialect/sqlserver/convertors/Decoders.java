@@ -21,12 +21,13 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.hibernate.spatial.jts.JTS;
-import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.vividsolutions.jts.geom.Geometry;
+
+import org.hibernate.spatial.jts.JTS;
+import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
 /**
  * Decodes SQL Server Geometry objects to JTS <code>Geometry</code>s.
@@ -41,50 +42,52 @@ public class Decoders {
 		MGeometryFactory factory = JTS.getDefaultGeomFactory();
 
 		//Decoders
-		DECODERS.add(new PointDecoder(factory));
-		DECODERS.add(new LineStringDecoder(factory));
-		DECODERS.add(new PolygonDecoder(factory));
-		DECODERS.add(new MultiLineStringDecoder(factory));
-		DECODERS.add(new MultiPolygonDecoder(factory));
-		DECODERS.add(new MultiPointDecoder(factory));
-		DECODERS.add(new GeometryCollectionDecoder(factory));
+		DECODERS.add( new PointDecoder( factory ) );
+		DECODERS.add( new LineStringDecoder( factory ) );
+		DECODERS.add( new PolygonDecoder( factory ) );
+		DECODERS.add( new MultiLineStringDecoder( factory ) );
+		DECODERS.add( new MultiPolygonDecoder( factory ) );
+		DECODERS.add( new MultiPointDecoder( factory ) );
+		DECODERS.add( new GeometryCollectionDecoder( factory ) );
 	}
 
 
 	private static Decoder<? extends Geometry> decoderFor(SqlServerGeometry object) {
-		for (Decoder<? extends Geometry> decoder : DECODERS) {
-			if (decoder.accepts(object)) {
+		for ( Decoder<? extends Geometry> decoder : DECODERS ) {
+			if ( decoder.accepts( object ) ) {
 				return decoder;
 			}
 		}
-		throw new IllegalArgumentException("No decoder for type " + object.openGisType());
+		throw new IllegalArgumentException( "No decoder for type " + object.openGisType() );
 	}
 
 	/**
 	 * Decodes the SQL Server Geometry object to its JTS Geometry instance
 	 *
 	 * @param raw
+	 *
 	 * @return
 	 */
 	public static Geometry decode(byte[] raw) {
-		SqlServerGeometry sqlServerGeom = SqlServerGeometry.deserialize(raw);
-		Decoder decoder = decoderFor(sqlServerGeom);
-		return decoder.decode(sqlServerGeom);
+		SqlServerGeometry sqlServerGeom = SqlServerGeometry.deserialize( raw );
+		Decoder decoder = decoderFor( sqlServerGeom );
+		return decoder.decode( sqlServerGeom );
 	}
 
 	/**
 	 * Returns the decoder capable of decoding an object of the specified OpenGisType
 	 *
 	 * @param type OpenGisType for which a decoder is returned
+	 *
 	 * @return
 	 */
 	public static Decoder<? extends Geometry> decoderFor(OpenGisType type) {
-		for (Decoder<? extends Geometry> decoder : DECODERS) {
-			if (decoder.accepts(type)) {
+		for ( Decoder<? extends Geometry> decoder : DECODERS ) {
+			if ( decoder.accepts( type ) ) {
 				return decoder;
 			}
 		}
-		throw new IllegalArgumentException("No decoder for type " + type);
+		throw new IllegalArgumentException( "No decoder for type " + type );
 	}
 
 }

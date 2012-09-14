@@ -25,14 +25,14 @@
 package org.hibernate.spatial.testing.dialects.h2geodb;
 
 
-import org.hibernate.spatial.testing.DataSourceUtils;
-import org.hibernate.spatial.testing.SQLExpressionTemplate;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import org.hibernate.spatial.testing.DataSourceUtils;
+import org.hibernate.spatial.testing.SQLExpressionTemplate;
 
 /**
  * Extension of the {@link DataSourceUtils} class which sets up an in-memory
@@ -46,9 +46,9 @@ public class GeoDBDataSourceUtils extends DataSourceUtils {
 	public GeoDBDataSourceUtils(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass,
 								SQLExpressionTemplate sqlExpressionTemplate)
 			throws SQLException, IOException {
-		super(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass, sqlExpressionTemplate);
+		super( jdbcDriver, jdbcUrl, jdbcUser, jdbcPass, sqlExpressionTemplate );
 		Connection conn = this.getConnection();
-		initGeoDB(conn);
+		initGeoDB( conn );
 	}
 
 	//initialise the GeoDB connection using Reflection
@@ -56,17 +56,21 @@ public class GeoDBDataSourceUtils extends DataSourceUtils {
 	private void initGeoDB(Connection conn) {
 		String errorMsg = "Problem initializing GeoDB.";
 		try {
-			Class<?> geoDB = Thread.currentThread().getContextClassLoader().loadClass("geodb.GeoDB");
-			Method m = geoDB.getDeclaredMethod("InitGeoDB", new Class[]{Connection.class});
-			m.invoke(null, conn);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(errorMsg, e);
-		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(errorMsg, e);
-		} catch (InvocationTargetException e) {
-			throw new RuntimeException(errorMsg, e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(errorMsg, e);
+			Class<?> geoDB = Thread.currentThread().getContextClassLoader().loadClass( "geodb.GeoDB" );
+			Method m = geoDB.getDeclaredMethod( "InitGeoDB", new Class[] { Connection.class } );
+			m.invoke( null, conn );
+		}
+		catch ( ClassNotFoundException e ) {
+			throw new RuntimeException( errorMsg, e );
+		}
+		catch ( NoSuchMethodException e ) {
+			throw new RuntimeException( errorMsg, e );
+		}
+		catch ( InvocationTargetException e ) {
+			throw new RuntimeException( errorMsg, e );
+		}
+		catch ( IllegalAccessException e ) {
+			throw new RuntimeException( errorMsg, e );
 		}
 	}
 }

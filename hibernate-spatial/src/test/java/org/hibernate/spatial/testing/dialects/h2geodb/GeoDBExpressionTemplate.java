@@ -42,8 +42,10 @@ public class GeoDBExpressionTemplate implements SQLExpressionTemplate {
 		  */
 	public String toInsertSql(TestDataElement testDataElement) {
 		return String
-				.format(SQL_TEMPLATE, testDataElement.id, testDataElement.type,
-						testDataElement.wkt, testDataElement.srid);
+				.format(
+						SQL_TEMPLATE, testDataElement.id, testDataElement.type,
+						testDataElement.wkt, testDataElement.srid
+				);
 	}
 
 }

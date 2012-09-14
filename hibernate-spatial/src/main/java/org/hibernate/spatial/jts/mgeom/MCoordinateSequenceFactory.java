@@ -20,11 +20,11 @@
  */
 package org.hibernate.spatial.jts.mgeom;
 
+import java.io.Serializable;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
-
-import java.io.Serializable;
 
 /**
  * Creates MCoordinateSequenceFactory internally represented as an array of
@@ -64,7 +64,7 @@ public class MCoordinateSequenceFactory implements CoordinateSequenceFactory,
 	}
 
 	public CoordinateSequence create(CoordinateSequence coordSeq) {
-		return new MCoordinateSequence(coordSeq);
+		return new MCoordinateSequence( coordSeq );
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class MCoordinateSequenceFactory implements CoordinateSequenceFactory,
 	 * @see com.vividsolutions.jts.geom.CoordinateSequenceFactory#create(int, int)
 	 */
 	public CoordinateSequence create(int size, int dimension) {
-		return new MCoordinateSequence(size);
+		return new MCoordinateSequence( size );
 	}
 
 }

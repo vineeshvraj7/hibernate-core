@@ -24,13 +24,14 @@ package org.hibernate.spatial.dialect.sqlserver.convertors;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.LineString;
+
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
 class LineStringDecoder extends AbstractDecoder<LineString> {
 
 	public LineStringDecoder(MGeometryFactory factory) {
-		super(factory);
+		super( factory );
 	}
 
 	@Override
@@ -39,33 +40,34 @@ class LineStringDecoder extends AbstractDecoder<LineString> {
 	}
 
 	protected LineString createNullGeometry() {
-		return getGeometryFactory().createLineString((CoordinateSequence) null);
+		return getGeometryFactory().createLineString( (CoordinateSequence) null );
 	}
 
 	protected LineString createGeometry(SqlServerGeometry nativeGeom) {
-		return createLineString(nativeGeom, new IndexRange(0, nativeGeom.getNumPoints()));
+		return createLineString( nativeGeom, new IndexRange( 0, nativeGeom.getNumPoints() ) );
 	}
 
 	@Override
 	protected LineString createGeometry(SqlServerGeometry nativeGeom, int shapeIndex) {
-		if (nativeGeom.isEmptyShape(shapeIndex)) {
+		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
 			return createNullGeometry();
 		}
-		int figureOffset = nativeGeom.getFiguresForShape(shapeIndex).start;
-		IndexRange pntIndexRange = nativeGeom.getPointsForFigure(figureOffset);
-		return createLineString(nativeGeom, pntIndexRange);
+		int figureOffset = nativeGeom.getFiguresForShape( shapeIndex ).start;
+		IndexRange pntIndexRange = nativeGeom.getPointsForFigure( figureOffset );
+		return createLineString( nativeGeom, pntIndexRange );
 	}
 
 	protected LineString createLineString(SqlServerGeometry nativeGeom, IndexRange pntIndexRange) {
-		Coordinate[] coordinates = nativeGeom.coordinateRange(pntIndexRange);
-		return createLineString(coordinates, nativeGeom.hasMValues());
+		Coordinate[] coordinates = nativeGeom.coordinateRange( pntIndexRange );
+		return createLineString( coordinates, nativeGeom.hasMValues() );
 	}
 
 	private LineString createLineString(Coordinate[] coords, boolean hasM) {
-		if (hasM) {
-			return getGeometryFactory().createMLineString((MCoordinate[]) coords);
-		} else {
-			return getGeometryFactory().createLineString(coords);
+		if ( hasM ) {
+			return getGeometryFactory().createMLineString( (MCoordinate[]) coords );
+		}
+		else {
+			return getGeometryFactory().createLineString( coords );
 		}
 
 	}

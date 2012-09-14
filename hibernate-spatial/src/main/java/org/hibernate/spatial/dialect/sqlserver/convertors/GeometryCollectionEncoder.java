@@ -21,11 +21,11 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
-
-import java.util.List;
 
 /**
  * <code>Encoder</code> for GeometryCollections.
@@ -41,31 +41,31 @@ class GeometryCollectionEncoder<T extends GeometryCollection> extends AbstractEn
 	}
 
 	public boolean accepts(Geometry geom) {
-		return this.openGisType.typeOf(geom);
+		return this.openGisType.typeOf( geom );
 	}
 
 	@Override
 	protected void encode(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
-		if (geom.isEmpty()) {
-			shapes.add(new Shape(parentShapeIndex, -1, this.openGisType));
+		if ( geom.isEmpty() ) {
+			shapes.add( new Shape( parentShapeIndex, -1, this.openGisType ) );
 			return;
 		}
 		int thisShapeIndex = shapes.size();
-		Shape thisShape = createShape(parentShapeIndex, figures);
-		shapes.add(thisShape);
-		for (int i = 0; i < geom.getNumGeometries(); i++) {
-			Geometry component = geom.getGeometryN(i);
-			encodeComponent(component, thisShapeIndex, coordinates, figures, shapes);
+		Shape thisShape = createShape( parentShapeIndex, figures );
+		shapes.add( thisShape );
+		for ( int i = 0; i < geom.getNumGeometries(); i++ ) {
+			Geometry component = geom.getGeometryN( i );
+			encodeComponent( component, thisShapeIndex, coordinates, figures, shapes );
 		}
 	}
 
 	protected Shape createShape(int parentShapeIndex, List<Figure> figures) {
-		Shape thisShape = new Shape(parentShapeIndex, figures.size(), this.openGisType);
+		Shape thisShape = new Shape( parentShapeIndex, figures.size(), this.openGisType );
 		return thisShape;
 	}
 
 	protected void encodeComponent(Geometry geom, int thisShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
-		AbstractEncoder<? extends Geometry> encoder = (AbstractEncoder<? extends Geometry>) Encoders.encoderFor(geom);
-		encoder.encode(geom, thisShapeIndex, coordinates, figures, shapes);
+		AbstractEncoder<? extends Geometry> encoder = (AbstractEncoder<? extends Geometry>) Encoders.encoderFor( geom );
+		encoder.encode( geom, thisShapeIndex, coordinates, figures, shapes );
 	}
 }

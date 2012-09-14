@@ -36,7 +36,7 @@ public class LogFactory {
 	public static Log make() {
 		Throwable t = new Throwable();
 		StackTraceElement directCaller = t.getStackTrace()[1];
-		return Logger.getMessageLogger(Log.class, directCaller.getClassName());
+		return Logger.getMessageLogger( Log.class, directCaller.getClassName() );
 	}
 
 

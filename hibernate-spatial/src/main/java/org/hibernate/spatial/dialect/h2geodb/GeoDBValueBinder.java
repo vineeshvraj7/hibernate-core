@@ -21,12 +21,13 @@
 
 package org.hibernate.spatial.dialect.h2geodb;
 
+import java.sql.Connection;
+
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.spatial.Log;
 import org.hibernate.spatial.LogFactory;
 import org.hibernate.spatial.dialect.AbstractJTSGeometryValueBinder;
-
-import java.sql.Connection;
 
 /**
  * @author Jan Boonen, Geodan IT b.v.
@@ -40,9 +41,10 @@ public class GeoDBValueBinder extends AbstractJTSGeometryValueBinder {
 	@Override
 	protected Object toNative(Geometry jtsGeom, Connection connection) {
 		try {
-			return WKB.toWKB(jtsGeom);
-		} catch (Exception e) {
-			LOG.warn("Could not convert JTS Geometry to a database object.");
+			return WKB.toWKB( jtsGeom );
+		}
+		catch ( Exception e ) {
+			LOG.warn( "Could not convert JTS Geometry to a database object." );
 			e.printStackTrace();
 			return null;
 		}

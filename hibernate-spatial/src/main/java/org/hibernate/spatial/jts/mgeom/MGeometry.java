@@ -20,12 +20,12 @@
  */
 package org.hibernate.spatial.jts.mgeom;
 
+import java.io.Serializable;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateSequence;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-
-import java.io.Serializable;
 
 /**
  * Defines geometries that carry measures in their CoordinateSequence.
@@ -58,14 +58,16 @@ public interface MGeometry extends Cloneable, Serializable {
 	/**
 	 * Returns the measure value at the Coordinate
 	 *
-	 * @param c		 the Coordinate for which the measure value is sought
+	 * @param c the Coordinate for which the measure value is sought
 	 * @param tolerance distance to the MGeometry within which Coordinate c has to lie
+	 *
 	 * @return the measure value if Coordinate c is within tolerance of the
 	 *         Geometry, else Double.NaN
 	 *         <p/>
 	 *         When the geometry is a ring or is self-intersecting more
 	 *         coordinates may be determined by one coordinate. In that case,
 	 *         the lowest measure is returned.
+	 *
 	 * @throws MGeometryException when this MGeometry is not monotone
 	 */
 	public double getMatCoordinate(Coordinate c, double tolerance)
@@ -76,8 +78,8 @@ public interface MGeometry extends Cloneable, Serializable {
 	 * (first coordinate) of the Geometry.
 	 *
 	 * @param keepBeginMeasure -
-	 *                         if true, the measure of the first coordinate is maintained and
-	 *                         used as start value, unless this measure is Double.NaN
+	 * if true, the measure of the first coordinate is maintained and
+	 * used as start value, unless this measure is Double.NaN
 	 */
 	public void measureOnLength(boolean keepBeginMeasure);
 
@@ -85,7 +87,9 @@ public interface MGeometry extends Cloneable, Serializable {
 	 * Returns the Coordinate along the Geometry at the measure value
 	 *
 	 * @param m measure value
+	 *
 	 * @return the Coordinate if m is on the MGeometry otherwise null
+	 *
 	 * @throws MGeometryException when MGeometry is not monotone
 	 */
 	public Coordinate getCoordinateAtM(double m) throws MGeometryException;
@@ -95,10 +99,12 @@ public interface MGeometry extends Cloneable, Serializable {
 	 * begin and end measures.
 	 *
 	 * @param begin begin measure
-	 * @param end   end measure
+	 * @param end end measure
+	 *
 	 * @return an array containing all coordinatesequences in order between
 	 *         begin and end. Each CoordinateSequence covers a contiguous
 	 *         stretch of the MGeometry.
+	 *
 	 * @throws MGeometryException when this MGeometry is not monotone
 	 */
 	public CoordinateSequence[] getCoordinatesBetween(double begin, double end)

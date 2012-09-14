@@ -40,7 +40,7 @@ public class MGeometryException extends Exception {
 	private final int type;
 
 	public MGeometryException(String s) {
-		super(s);
+		super( s );
 		type = 0;
 	}
 
@@ -50,7 +50,7 @@ public class MGeometryException extends Exception {
 	}
 
 	public MGeometryException(int type, String msg) {
-		super(msg);
+		super( msg );
 		this.type = type;
 	}
 

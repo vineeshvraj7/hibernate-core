@@ -22,6 +22,7 @@
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
 abstract class AbstractDecoder<G extends Geometry> implements Decoder<G> {
@@ -33,16 +34,16 @@ abstract class AbstractDecoder<G extends Geometry> implements Decoder<G> {
 	}
 
 	public G decode(SqlServerGeometry nativeGeom) {
-		if (!accepts(nativeGeom)) {
-			throw new IllegalArgumentException(getClass().getSimpleName() + " received object of type " + nativeGeom.openGisType());
+		if ( !accepts( nativeGeom ) ) {
+			throw new IllegalArgumentException( getClass().getSimpleName() + " received object of type " + nativeGeom.openGisType() );
 		}
-		if (nativeGeom.isEmpty()) {
+		if ( nativeGeom.isEmpty() ) {
 			G nullGeom = createNullGeometry();
-			setSrid(nativeGeom, nullGeom);
+			setSrid( nativeGeom, nullGeom );
 			return nullGeom;
 		}
-		G result = createGeometry(nativeGeom);
-		setSrid(nativeGeom, result);
+		G result = createGeometry( nativeGeom );
+		setSrid( nativeGeom, result );
 		return result;
 	}
 
@@ -51,7 +52,7 @@ abstract class AbstractDecoder<G extends Geometry> implements Decoder<G> {
 	}
 
 	public boolean accepts(SqlServerGeometry nativeGeom) {
-		return accepts(nativeGeom.openGisType());
+		return accepts( nativeGeom.openGisType() );
 	}
 
 	protected abstract OpenGisType getOpenGisType();
@@ -67,8 +68,8 @@ abstract class AbstractDecoder<G extends Geometry> implements Decoder<G> {
 	}
 
 	protected void setSrid(SqlServerGeometry sqlServerGeom, G result) {
-		if (sqlServerGeom.getSrid() != null) {
-			result.setSRID(sqlServerGeom.getSrid());
+		if ( sqlServerGeom.getSrid() != null ) {
+			result.setSRID( sqlServerGeom.getSrid() );
 		}
 	}
 

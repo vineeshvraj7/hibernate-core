@@ -22,7 +22,12 @@
 package org.hibernate.spatial.testing.dialects.mysql;
 
 
-import org.hibernate.spatial.testing.*;
+import org.hibernate.spatial.testing.AbstractExpectationsFactory;
+import org.hibernate.spatial.testing.DataSourceUtils;
+import org.hibernate.spatial.testing.GeometryEquality;
+import org.hibernate.spatial.testing.SQLExpressionTemplate;
+import org.hibernate.spatial.testing.TestData;
+import org.hibernate.spatial.testing.TestSupport;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 
 /**
@@ -33,16 +38,16 @@ public class MySQLTestSupport extends TestSupport {
 
 	@Override
 	public TestData createTestData(BaseCoreFunctionalTestCase testcase) {
-		if (testcase.getClass().getCanonicalName().contains("TestSpatialFunctions") ||
-				testcase.getClass().getCanonicalName().contains("TestSpatialRestrictions")) {
-			return TestData.fromFile("mysql/test-mysql-functions-data-set.xml");
+		if ( testcase.getClass().getCanonicalName().contains( "TestSpatialFunctions" ) ||
+				testcase.getClass().getCanonicalName().contains( "TestSpatialRestrictions" ) ) {
+			return TestData.fromFile( "mysql/test-mysql-functions-data-set.xml" );
 		}
-		return TestData.fromFile("test-data-set.xml");
+		return TestData.fromFile( "test-data-set.xml" );
 	}
 
 	@Override
 	public AbstractExpectationsFactory createExpectationsFactory(DataSourceUtils dataSourceUtils) {
-		return new MySQLExpectationsFactory(dataSourceUtils);
+		return new MySQLExpectationsFactory( dataSourceUtils );
 	}
 
 	@Override

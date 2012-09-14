@@ -21,20 +21,21 @@
 
 package org.hibernate.spatial.integration;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import org.hibernate.spatial.testing.EWKTReader;
-import org.hibernate.spatial.testing.TestDataElement;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+
+import org.hibernate.spatial.testing.EWKTReader;
+import org.hibernate.spatial.testing.TestDataElement;
 
 /**
  * Test class used in unit testing.
  */
 @Entity
-@Table(name="geomtest")
+@Table(name = "geomtest")
 public class GeomEntity {
 
 
@@ -72,26 +73,26 @@ public class GeomEntity {
 	public static GeomEntity createFrom(TestDataElement element) throws ParseException {
 		EWKTReader reader = new EWKTReader();
 		GeomEntity result = new GeomEntity();
-		result.setId(element.id);
-		Geometry geom = reader.read(element.wkt);
-		geom.setSRID(element.srid);
-		result.setGeom(geom);
-		result.setType(element.type);
+		result.setId( element.id );
+		Geometry geom = reader.read( element.wkt );
+		geom.setSRID( element.srid );
+		result.setGeom( geom );
+		result.setType( element.type );
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) {
+		if ( this == o ) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if ( o == null || getClass() != o.getClass() ) {
 			return false;
 		}
 
 		GeomEntity geomEntity = (GeomEntity) o;
 
-		if (id != geomEntity.id) {
+		if ( id != geomEntity.id ) {
 			return false;
 		}
 

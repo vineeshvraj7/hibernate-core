@@ -21,16 +21,16 @@
 
 package org.hibernate.spatial.testing.dialects.oracle;
 
+import java.sql.SQLException;
+
 import org.hibernate.spatial.testing.DataSourceUtils;
 import org.hibernate.spatial.testing.SQLExpressionTemplate;
-
-import java.sql.SQLException;
 
 
 public class SDODataSourceUtils extends DataSourceUtils {
 
 	public SDODataSourceUtils(String jdbcDriver, String jdbcUrl, String jdbcUser, String jdbcPass, SQLExpressionTemplate sqlExpressionTemplate) {
-		super(jdbcDriver, jdbcUrl, jdbcUser, jdbcPass, sqlExpressionTemplate);
+		super( jdbcDriver, jdbcUrl, jdbcUser, jdbcPass, sqlExpressionTemplate );
 	}
 
 	@Override
@@ -39,15 +39,16 @@ public class SDODataSourceUtils extends DataSourceUtils {
 		try {
 			setGeomMetaDataTo2D();
 			createIndex();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+		}
+		catch ( SQLException e ) {
+			throw new RuntimeException( e );
 		}
 
 	}
 
 	private void createIndex() throws SQLException {
 		String sql = "create index idx_spatial_geomtest on geomtest (geom) indextype is mdsys.spatial_index";
-		executeStatement(sql);
+		executeStatement( sql );
 	}
 
 	private void setGeomMetaDataTo2D() throws SQLException {
@@ -60,8 +61,8 @@ public class SDODataSourceUtils extends DataSourceUtils {
 				"    SDO_DIM_ELEMENT('Y', -90, 90, 0.00001)" +
 				"    )," +
 				"  4326)";
-		executeStatement(sql1);
-		executeStatement(sql2);
+		executeStatement( sql1 );
+		executeStatement( sql2 );
 
 	}
 

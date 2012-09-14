@@ -31,7 +31,7 @@ public class FinderException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public FinderException(String msg) {
-		super(msg);
+		super( msg );
 	}
 
 }
