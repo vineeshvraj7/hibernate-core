@@ -21,6 +21,7 @@
 package org.hibernate.spatial.criterion;
 
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
@@ -72,7 +73,7 @@ public class SpatialRelateExpression implements Criterion {
 
 	public TypedValue[] getTypedValues(Criteria criteria,
 									   CriteriaQuery criteriaQuery) throws HibernateException {
-		return new TypedValue[]{
+		return new TypedValue[] {
 				criteriaQuery.getTypedValue(
 						criteria,
 						propertyName, value
@@ -96,13 +97,14 @@ public class SpatialRelateExpression implements Criterion {
 				this.propertyName
 		);
 		Dialect dialect = factory.getDialect();
-		if (dialect instanceof SpatialDialect) {
+		if ( dialect instanceof SpatialDialect ) {
 			SpatialDialect seDialect = (SpatialDialect) dialect;
 			return seDialect.getSpatialRelateSQL(
 					columns[0],
 					spatialRelation
 			);
-		} else {
+		}
+		else {
 			throw new IllegalStateException(
 					"Dialect must be spatially enabled dialect"
 			);

@@ -24,6 +24,7 @@ package org.hibernate.spatial.dialect.sqlserver.convertors;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
+
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
 /**
@@ -32,7 +33,7 @@ import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 class PolygonDecoder extends AbstractDecoder<Polygon> {
 
 	public PolygonDecoder(MGeometryFactory factory) {
-		super(factory);
+		super( factory );
 	}
 
 	@Override
@@ -41,35 +42,36 @@ class PolygonDecoder extends AbstractDecoder<Polygon> {
 	}
 
 	protected Polygon createNullGeometry() {
-		return getGeometryFactory().createPolygon(null, null);
+		return getGeometryFactory().createPolygon( null, null );
 	}
 
 	protected Polygon createGeometry(SqlServerGeometry nativeGeom) {
-		return createGeometry(nativeGeom, 0);
+		return createGeometry( nativeGeom, 0 );
 	}
 
 	protected Polygon createGeometry(SqlServerGeometry nativeGeom, int shapeIndex) {
-		if (nativeGeom.isEmptyShape(shapeIndex)) {
+		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
 			return createNullGeometry();
 		}
 		//polygons consist of one exterior ring figure, and several interior ones.
-		IndexRange figureRange = nativeGeom.getFiguresForShape(shapeIndex);
+		IndexRange figureRange = nativeGeom.getFiguresForShape( shapeIndex );
 		LinearRing[] holes = new LinearRing[figureRange.length() - 1];
 		LinearRing shell = null;
-		for (int figureIdx = figureRange.start, i = 0; figureIdx < figureRange.end; figureIdx++) {
-			IndexRange pntIndexRange = nativeGeom.getPointsForFigure(figureIdx);
-			if (nativeGeom.isFigureInteriorRing(figureIdx)) {
-				holes[i++] = toLinearRing(nativeGeom, pntIndexRange);
-			} else {
-				shell = toLinearRing(nativeGeom, pntIndexRange);
+		for ( int figureIdx = figureRange.start, i = 0; figureIdx < figureRange.end; figureIdx++ ) {
+			IndexRange pntIndexRange = nativeGeom.getPointsForFigure( figureIdx );
+			if ( nativeGeom.isFigureInteriorRing( figureIdx ) ) {
+				holes[i++] = toLinearRing( nativeGeom, pntIndexRange );
+			}
+			else {
+				shell = toLinearRing( nativeGeom, pntIndexRange );
 			}
 		}
-		return getGeometryFactory().createPolygon(shell, holes);
+		return getGeometryFactory().createPolygon( shell, holes );
 	}
 
 	private LinearRing toLinearRing(SqlServerGeometry nativeGeom, IndexRange range) {
-		Coordinate[] coordinates = nativeGeom.coordinateRange(range);
-		return getGeometryFactory().createLinearRing(coordinates);
+		Coordinate[] coordinates = nativeGeom.coordinateRange( range );
+		return getGeometryFactory().createLinearRing( coordinates );
 	}
 
 }

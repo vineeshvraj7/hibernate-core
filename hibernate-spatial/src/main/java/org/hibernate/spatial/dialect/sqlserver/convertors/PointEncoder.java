@@ -21,12 +21,13 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
-import org.hibernate.spatial.jts.mgeom.MCoordinate;
 
-import java.util.List;
+import org.hibernate.spatial.jts.mgeom.MCoordinate;
 
 /**
  * @author Karel Maesen, Geovise BVBA.
@@ -40,63 +41,64 @@ class PointEncoder extends AbstractEncoder<Point> {
 	 * This is a specific implementation because points don't explicitly serialize figure and shape components.
 	 *
 	 * @param geom Geometry to serialize
+	 *
 	 * @return
 	 */
 	@Override
 	public SqlServerGeometry encode(Point geom) {
 
 		SqlServerGeometry sqlServerGeom = new SqlServerGeometry();
-		sqlServerGeom.setSrid(geom.getSRID());
+		sqlServerGeom.setSrid( geom.getSRID() );
 		sqlServerGeom.setIsValid();
 
-		if (geom.isEmpty()) {
-			sqlServerGeom.setNumberOfPoints(0);
-			sqlServerGeom.setNumberOfFigures(0);
-			sqlServerGeom.setNumberOfShapes(1);
-			sqlServerGeom.setShape(0, new Shape(-1, -1, OpenGisType.POINT));
+		if ( geom.isEmpty() ) {
+			sqlServerGeom.setNumberOfPoints( 0 );
+			sqlServerGeom.setNumberOfFigures( 0 );
+			sqlServerGeom.setNumberOfShapes( 1 );
+			sqlServerGeom.setShape( 0, new Shape( -1, -1, OpenGisType.POINT ) );
 			return sqlServerGeom;
 		}
 
 		sqlServerGeom.setIsSinglePoint();
-		sqlServerGeom.setNumberOfPoints(1);
+		sqlServerGeom.setNumberOfPoints( 1 );
 		Coordinate coordinate = geom.getCoordinate();
-		if (is3DPoint(coordinate)) {
+		if ( is3DPoint( coordinate ) ) {
 			sqlServerGeom.setHasZValues();
 			sqlServerGeom.allocateZValueArray();
 		}
-		if (isMPoint(coordinate)) {
+		if ( isMPoint( coordinate ) ) {
 			sqlServerGeom.setHasMValues();
 			sqlServerGeom.allocateMValueArray();
 		}
-		sqlServerGeom.setCoordinate(0, coordinate);
+		sqlServerGeom.setCoordinate( 0, coordinate );
 		return sqlServerGeom;
 	}
 
 	@Override
 	protected void encode(Geometry geom, int parentIdx, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
-		if (!(geom instanceof Point)) {
-			throw new IllegalArgumentException("Require Point geometry");
+		if ( !( geom instanceof Point ) ) {
+			throw new IllegalArgumentException( "Require Point geometry" );
 		}
-		if (geom.isEmpty()) {
-			shapes.add(new Shape(parentIdx, -1, OpenGisType.POINT));
+		if ( geom.isEmpty() ) {
+			shapes.add( new Shape( parentIdx, -1, OpenGisType.POINT ) );
 			return;
 		}
 		int pntOffset = coordinates.size();
 		int figureOffset = figures.size();
-		coordinates.add(geom.getCoordinate());
-		Figure figure = new Figure(FigureAttribute.Stroke, pntOffset);
-		figures.add(figure);
-		Shape shape = new Shape(parentIdx, figureOffset, OpenGisType.POINT);
-		shapes.add(shape);
+		coordinates.add( geom.getCoordinate() );
+		Figure figure = new Figure( FigureAttribute.Stroke, pntOffset );
+		figures.add( figure );
+		Shape shape = new Shape( parentIdx, figureOffset, OpenGisType.POINT );
+		shapes.add( shape );
 	}
 
 	private boolean isMPoint(Coordinate coordinate) {
-		return (coordinate instanceof MCoordinate) &&
-				!Double.isNaN(((MCoordinate) coordinate).m);
+		return ( coordinate instanceof MCoordinate ) &&
+				!Double.isNaN( ( (MCoordinate) coordinate ).m );
 	}
 
 	private boolean is3DPoint(Coordinate coordinate) {
-		return !Double.isNaN(coordinate.z);
+		return !Double.isNaN( coordinate.z );
 	}
 
 	public boolean accepts(Geometry geom) {

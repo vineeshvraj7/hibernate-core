@@ -30,6 +30,6 @@ public class SDOGeometryExpressionTemplate implements SQLExpressionTemplate {
 
 	public String toInsertSql(TestDataElement testDataElement) {
 		SDOTestDataElement sdoTestDataElement = (SDOTestDataElement) testDataElement;
-		return String.format(SQL_TEMPLATE, sdoTestDataElement.id, sdoTestDataElement.type, sdoTestDataElement.sdo);
+		return String.format( SQL_TEMPLATE, sdoTestDataElement.id, sdoTestDataElement.type, sdoTestDataElement.sdo );
 	}
 }

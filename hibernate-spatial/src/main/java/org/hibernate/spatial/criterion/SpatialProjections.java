@@ -41,7 +41,7 @@ public class SpatialProjections {
 
 			public Type[] getTypes(Criteria criteria,
 								   CriteriaQuery criteriaQuery) throws HibernateException {
-				return new Type[]{
+				return new Type[] {
 						criteriaQuery.getType(
 								criteria,
 								propertyName
@@ -58,7 +58,7 @@ public class SpatialProjections {
 						criteria, propertyName
 				);
 				Dialect dialect = factory.getDialect();
-				if (dialect instanceof SpatialDialect) {
+				if ( dialect instanceof SpatialDialect ) {
 					SpatialDialect seDialect = (SpatialDialect) dialect;
 
 					stbuf.append(
@@ -67,7 +67,7 @@ public class SpatialProjections {
 									SpatialAggregate.EXTENT
 							)
 					);
-					stbuf.append(" as y").append(position).append('_');
+					stbuf.append( " as y" ).append( position ).append( '_' );
 					return stbuf.toString();
 				}
 				return null;

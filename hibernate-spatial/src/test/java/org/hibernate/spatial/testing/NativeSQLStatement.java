@@ -38,7 +38,9 @@ public interface NativeSQLStatement {
 	 * create a PreparedStatement from the specified connection
 	 *
 	 * @param connection Connection to the database.
+	 *
 	 * @return
+	 *
 	 * @throws SQLException
 	 */
 	public PreparedStatement prepare(Connection connection) throws SQLException;

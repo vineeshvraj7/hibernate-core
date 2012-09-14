@@ -53,7 +53,7 @@ public class TestData implements List<TestDataElement> {
 	}
 
 	public boolean contains(Object o) {
-		return testDataElements.contains(o);
+		return testDataElements.contains( o );
 	}
 
 	public Iterator<TestDataElement> iterator() {
@@ -65,35 +65,35 @@ public class TestData implements List<TestDataElement> {
 	}
 
 	public <T> T[] toArray(T[] a) {
-		return testDataElements.toArray(a);
+		return testDataElements.toArray( a );
 	}
 
 	public boolean add(TestDataElement testDataElement) {
-		return testDataElements.add(testDataElement);
+		return testDataElements.add( testDataElement );
 	}
 
 	public boolean remove(Object o) {
-		return testDataElements.remove(o);
+		return testDataElements.remove( o );
 	}
 
 	public boolean containsAll(Collection<?> c) {
-		return testDataElements.containsAll(c);
+		return testDataElements.containsAll( c );
 	}
 
 	public boolean addAll(Collection<? extends TestDataElement> c) {
-		return testDataElements.addAll(c);
+		return testDataElements.addAll( c );
 	}
 
 	public boolean addAll(int index, Collection<? extends TestDataElement> c) {
-		return testDataElements.addAll(index, c);
+		return testDataElements.addAll( index, c );
 	}
 
 	public boolean removeAll(Collection<?> c) {
-		return testDataElements.removeAll(c);
+		return testDataElements.removeAll( c );
 	}
 
 	public boolean retainAll(Collection<?> c) {
-		return testDataElements.retainAll(c);
+		return testDataElements.retainAll( c );
 	}
 
 	public void clear() {
@@ -101,7 +101,7 @@ public class TestData implements List<TestDataElement> {
 	}
 
 	public boolean equals(Object o) {
-		return testDataElements.equals(o);
+		return testDataElements.equals( o );
 	}
 
 	public int hashCode() {
@@ -109,27 +109,27 @@ public class TestData implements List<TestDataElement> {
 	}
 
 	public TestDataElement get(int index) {
-		return testDataElements.get(index);
+		return testDataElements.get( index );
 	}
 
 	public TestDataElement set(int index, TestDataElement element) {
-		return testDataElements.set(index, element);
+		return testDataElements.set( index, element );
 	}
 
 	public void add(int index, TestDataElement element) {
-		testDataElements.add(index, element);
+		testDataElements.add( index, element );
 	}
 
 	public TestDataElement remove(int index) {
-		return testDataElements.remove(index);
+		return testDataElements.remove( index );
 	}
 
 	public int indexOf(Object o) {
-		return testDataElements.indexOf(o);
+		return testDataElements.indexOf( o );
 	}
 
 	public int lastIndexOf(Object o) {
-		return testDataElements.lastIndexOf(o);
+		return testDataElements.lastIndexOf( o );
 	}
 
 	public ListIterator<TestDataElement> listIterator() {
@@ -137,20 +137,20 @@ public class TestData implements List<TestDataElement> {
 	}
 
 	public ListIterator<TestDataElement> listIterator(int index) {
-		return testDataElements.listIterator(index);
+		return testDataElements.listIterator( index );
 	}
 
 	public List<TestDataElement> subList(int fromIndex, int toIndex) {
-		return testDataElements.subList(fromIndex, toIndex);
+		return testDataElements.subList( fromIndex, toIndex );
 	}
 
 	public static TestData fromFile(String fileName) {
 		TestDataReader reader = new TestDataReader();
-		return fromFile(fileName, reader);
+		return fromFile( fileName, reader );
 	}
 
 	public static TestData fromFile(String fileName, TestDataReader reader) {
-		List<TestDataElement> elements = reader.read(fileName);
+		List<TestDataElement> elements = reader.read( fileName );
 		TestData testData = new TestData();
 		testData.testDataElements = elements;
 		return testData;

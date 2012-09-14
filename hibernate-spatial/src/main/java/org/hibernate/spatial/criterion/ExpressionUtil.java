@@ -38,20 +38,20 @@ public class ExpressionUtil {
 
 	public static SpatialDialect getSpatialDialect(CriteriaQuery criteriaQuery, SpatialFunction function) {
 		Dialect dialect = criteriaQuery.getFactory().getDialect();
-		if (!(dialect instanceof SpatialDialect)) {
-			throw new HibernateException("A spatial expression requires a spatial dialect.");
+		if ( !( dialect instanceof SpatialDialect ) ) {
+			throw new HibernateException( "A spatial expression requires a spatial dialect." );
 		}
 		SpatialDialect spatialDialect = (SpatialDialect) dialect;
-		if (!spatialDialect.supports(function)) {
-			throw new HibernateException(function + " function not supported by this dialect");
+		if ( !spatialDialect.supports( function ) ) {
+			throw new HibernateException( function + " function not supported by this dialect" );
 		}
 		return spatialDialect;
 	}
 
 	public static String findColumn(String propertyName, Criteria criteria, CriteriaQuery criteriaQuery) {
-		String[] columns = criteriaQuery.findColumns(propertyName, criteria);
-		if (columns.length != 1) {
-			throw new HibernateException("Spatial Expression may only be used with single-column properties");
+		String[] columns = criteriaQuery.findColumns( propertyName, criteria );
+		if ( columns.length != 1 ) {
+			throw new HibernateException( "Spatial Expression may only be used with single-column properties" );
 		}
 		return columns[0];
 	}

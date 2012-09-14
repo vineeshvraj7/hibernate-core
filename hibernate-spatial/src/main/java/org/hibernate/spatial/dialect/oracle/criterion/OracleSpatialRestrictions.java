@@ -21,6 +21,7 @@
 package org.hibernate.spatial.dialect.oracle.criterion;
 
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
@@ -38,18 +39,19 @@ public class OracleSpatialRestrictions {
 	@SuppressWarnings("serial")
 	public static Criterion SDOFilter(String propertyName, Geometry geom,
 									  SDOParameterMap param) {
-		return new OracleSpatialCriterion(propertyName, geom, param) {
+		return new OracleSpatialCriterion( propertyName, geom, param ) {
 			@Override
 			public String toSqlString(Criteria criteria,
 									  CriteriaQuery criteriaQuery) throws HibernateException {
 				String[] columns = criteriaQuery.getColumnsUsingProjection(
-						criteria, this.propertyName);
-				StringBuilder sql = new StringBuilder("SDO_FILTER(");
-				sql.append(columns[0]).append(",").append("?");
-				if (param != null && !param.isEmpty()) {
-					sql.append(",").append(param.toQuotedString());
+						criteria, this.propertyName
+				);
+				StringBuilder sql = new StringBuilder( "SDO_FILTER(" );
+				sql.append( columns[0] ).append( "," ).append( "?" );
+				if ( param != null && !param.isEmpty() ) {
+					sql.append( "," ).append( param.toQuotedString() );
 				}
-				sql.append(") = 'TRUE'");
+				sql.append( ") = 'TRUE'" );
 				return sql.toString();
 			}
 		};
@@ -58,45 +60,48 @@ public class OracleSpatialRestrictions {
 	@SuppressWarnings("serial")
 	public static Criterion SDOFilter(String propertyName, Geometry geom,
 									  Double minResolution, Double maxResolution) {
-		if (minResolution == null && maxResolution == null) {
-			return SDOFilter(propertyName, geom, null);
-		} else {
+		if ( minResolution == null && maxResolution == null ) {
+			return SDOFilter( propertyName, geom, null );
+		}
+		else {
 			SDOParameterMap param = new SDOParameterMap();
-			param.setMinResolution(minResolution);
-			param.setMaxResolution(maxResolution);
-			return SDOFilter(propertyName, geom, param);
+			param.setMinResolution( minResolution );
+			param.setMaxResolution( maxResolution );
+			return SDOFilter( propertyName, geom, param );
 		}
 	}
 
 	@SuppressWarnings("serial")
 	public static Criterion SDONN(String propertyName, Geometry geom,
 								  Double distance, Integer numResults, String unit) {
-		if (distance == null && numResults == null && unit == null) {
-			return SDONN(propertyName, geom, null);
-		} else {
+		if ( distance == null && numResults == null && unit == null ) {
+			return SDONN( propertyName, geom, null );
+		}
+		else {
 			SDOParameterMap param = new SDOParameterMap();
-			param.setDistance(distance);
-			param.setSdoNumRes(numResults);
-			param.setUnit(unit);
-			return SDONN(propertyName, geom, param);
+			param.setDistance( distance );
+			param.setSdoNumRes( numResults );
+			param.setUnit( unit );
+			return SDONN( propertyName, geom, param );
 		}
 	}
 
 	@SuppressWarnings("serial")
 	public static Criterion SDONN(String propertyName, Geometry geom,
 								  SDOParameterMap param) {
-		return new OracleSpatialCriterion(propertyName, geom, param) {
+		return new OracleSpatialCriterion( propertyName, geom, param ) {
 			@Override
 			public String toSqlString(Criteria criteria,
 									  CriteriaQuery criteriaQuery) throws HibernateException {
 				String[] columns = criteriaQuery.getColumnsUsingProjection(
-						criteria, this.propertyName);
-				StringBuilder sql = new StringBuilder("SDO_NN(");
-				sql.append(columns[0]).append(",").append("?");
-				if (param != null && !param.isEmpty()) {
-					sql.append(",").append(param.toQuotedString());
+						criteria, this.propertyName
+				);
+				StringBuilder sql = new StringBuilder( "SDO_NN(" );
+				sql.append( columns[0] ).append( "," ).append( "?" );
+				if ( param != null && !param.isEmpty() ) {
+					sql.append( "," ).append( param.toQuotedString() );
 				}
-				sql.append(") = 'TRUE'");
+				sql.append( ") = 'TRUE'" );
 				return sql.toString();
 			}
 		};
@@ -105,18 +110,19 @@ public class OracleSpatialRestrictions {
 	@SuppressWarnings("serial")
 	public static Criterion SDORelate(String propertyName, Geometry geom,
 									  SDOParameterMap param) {
-		return new OracleSpatialCriterion(propertyName, geom, param) {
+		return new OracleSpatialCriterion( propertyName, geom, param ) {
 			@Override
 			public String toSqlString(Criteria criteria,
 									  CriteriaQuery criteriaQuery) throws HibernateException {
 				String[] columns = criteriaQuery.getColumnsUsingProjection(
-						criteria, this.propertyName);
-				StringBuilder sql = new StringBuilder("SDO_RELATE(");
-				sql.append(columns[0]).append(",").append("?");
-				if (param != null && !param.isEmpty()) {
-					sql.append(",").append(param.toQuotedString());
+						criteria, this.propertyName
+				);
+				StringBuilder sql = new StringBuilder( "SDO_RELATE(" );
+				sql.append( columns[0] ).append( "," ).append( "?" );
+				if ( param != null && !param.isEmpty() ) {
+					sql.append( "," ).append( param.toQuotedString() );
 				}
-				sql.append(") = 'TRUE'");
+				sql.append( ") = 'TRUE'" );
 				return sql.toString();
 			}
 		};
@@ -126,28 +132,29 @@ public class OracleSpatialRestrictions {
 	public static Criterion SDORelate(String propertyName, Geometry geom,
 									  RelationshipMask[] mask, Double minResolution, Double maxResolution) {
 		SDOParameterMap param = new SDOParameterMap();
-		param.setMask(RelationshipMask.booleanCombination(mask));
-		param.setMinResolution(minResolution);
-		param.setMaxResolution(maxResolution);
-		return SDORelate(propertyName, geom, param);
+		param.setMask( RelationshipMask.booleanCombination( mask ) );
+		param.setMinResolution( minResolution );
+		param.setMaxResolution( maxResolution );
+		return SDORelate( propertyName, geom, param );
 	}
 
 	@SuppressWarnings("serial")
 	public static Criterion SDOWithinDistance(String propertyName,
 											  Geometry geom, SDOParameterMap param) {
-		return new OracleSpatialCriterion(propertyName, geom, param) {
+		return new OracleSpatialCriterion( propertyName, geom, param ) {
 
 			@Override
 			public String toSqlString(Criteria criteria,
 									  CriteriaQuery criteriaQuery) throws HibernateException {
 				String[] columns = criteriaQuery.getColumnsUsingProjection(
-						criteria, this.propertyName);
-				StringBuilder sql = new StringBuilder("SDO_WITHIN_DISTANCE(");
-				sql.append(columns[0]).append(",").append("?");
-				if (param != null && !param.isEmpty()) {
-					sql.append(",").append(param.toQuotedString());
+						criteria, this.propertyName
+				);
+				StringBuilder sql = new StringBuilder( "SDO_WITHIN_DISTANCE(" );
+				sql.append( columns[0] ).append( "," ).append( "?" );
+				if ( param != null && !param.isEmpty() ) {
+					sql.append( "," ).append( param.toQuotedString() );
 				}
-				sql.append(") = 'TRUE'");
+				sql.append( ") = 'TRUE'" );
 				return sql.toString();
 			}
 		};
@@ -155,11 +162,11 @@ public class OracleSpatialRestrictions {
 
 	public static Criterion SDOWithinDistance(String propertyName,
 											  Geometry geom, Double distance, SDOParameterMap param) {
-		if (param == null) {
+		if ( param == null ) {
 			param = new SDOParameterMap();
 		}
-		param.setDistance(distance);
-		return SDOWithinDistance(propertyName, geom, param);
+		param.setDistance( distance );
+		return SDOWithinDistance( propertyName, geom, param );
 	}
 }
 
@@ -186,8 +193,12 @@ abstract class OracleSpatialCriterion implements Criterion {
 
 	public TypedValue[] getTypedValues(Criteria criteria,
 									   CriteriaQuery criteriaQuery) throws HibernateException {
-		return new TypedValue[]{criteriaQuery.getTypedValue(criteria,
-				propertyName, value)};
+		return new TypedValue[] {
+				criteriaQuery.getTypedValue(
+						criteria,
+						propertyName, value
+				)
+		};
 	}
 
 	abstract public String toSqlString(Criteria criteria,

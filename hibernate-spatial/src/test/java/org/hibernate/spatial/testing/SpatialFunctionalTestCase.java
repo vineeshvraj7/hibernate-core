@@ -21,7 +21,13 @@
 
 package org.hibernate.spatial.testing;
 
+import java.sql.BatchUpdateException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -33,12 +39,10 @@ import org.hibernate.spatial.integration.GeomEntity;
 import org.hibernate.testing.AfterClassOnce;
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 
-import java.sql.BatchUpdateException;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Karel Maesen, Geovise BVBA
@@ -56,11 +60,13 @@ public abstract class SpatialFunctionalTestCase extends BaseCoreFunctionalTestCa
 	 */
 	public void prepareTest() {
 		try {
-			dataSourceUtils.insertTestData(testData);
-		} catch(BatchUpdateException e) {
-            throw new RuntimeException(e.getNextException());
-        } catch (SQLException e) {
-			throw new RuntimeException(e);
+			dataSourceUtils.insertTestData( testData );
+		}
+		catch ( BatchUpdateException e ) {
+			throw new RuntimeException( e.getNextException() );
+		}
+		catch ( SQLException e ) {
+			throw new RuntimeException( e );
 		}
 	}
 
@@ -74,15 +80,17 @@ public abstract class SpatialFunctionalTestCase extends BaseCoreFunctionalTestCa
 			session = openSession();
 			tx = session.beginTransaction();
 			String hql = "delete from org.hibernate.spatial.integration.GeomEntity";
-			Query q = session.createQuery(hql);
+			Query q = session.createQuery( hql );
 			q.executeUpdate();
 			tx.commit();
-		} catch (Exception e) {
-			if (tx != null) {
+		}
+		catch ( Exception e ) {
+			if ( tx != null ) {
 				tx.rollback();
 			}
-		} finally {
-			if (session != null) {
+		}
+		finally {
+			if ( session != null ) {
 				session.close();
 			}
 		}
@@ -96,19 +104,20 @@ public abstract class SpatialFunctionalTestCase extends BaseCoreFunctionalTestCa
 	 */
 	protected Configuration constructConfiguration() {
 		Configuration cfg = super.constructConfiguration();
-		initializeSpatialTestSupport(cfg);
+		initializeSpatialTestSupport( cfg );
 		return cfg;
 	}
 
 	private void initializeSpatialTestSupport(Configuration cfg) {
 		try {
-			TestSupport support = TestSupportFactories.instance().getTestSupportFactory(getDialect());
-			dataSourceUtils = support.createDataSourceUtil(cfg);
-			expectationsFactory = support.createExpectationsFactory(dataSourceUtils);
-			testData = support.createTestData(this);
+			TestSupport support = TestSupportFactories.instance().getTestSupportFactory( getDialect() );
+			dataSourceUtils = support.createDataSourceUtil( cfg );
+			expectationsFactory = support.createExpectationsFactory( dataSourceUtils );
+			testData = support.createTestData( this );
 			geometryEquality = support.createGeometryEquality();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		}
+		catch ( Exception e ) {
+			throw new RuntimeException( e );
 		}
 	}
 
@@ -136,23 +145,24 @@ public abstract class SpatialFunctionalTestCase extends BaseCoreFunctionalTestCa
 	}
 
 	public String[] getMappings() {
-		return new String[]{}; //new String[]{"GeomEntity.hbm.xml"};
+		return new String[] { }; //new String[]{"GeomEntity.hbm.xml"};
 	}
 
 	@Override
-    protected Class<?>[] getAnnotatedClasses() {
-        return new Class<?>[]{GeomEntity.class};
-    }
+	protected Class<?>[] getAnnotatedClasses() {
+		return new Class<?>[] { GeomEntity.class };
+	}
 
 	/**
 	 * Returns true if the spatial dialect supports the specified function
 	 *
 	 * @param spatialFunction
+	 *
 	 * @return
 	 */
 	public boolean isSupportedByDialect(SpatialFunction spatialFunction) {
 		SpatialDialect dialect = (SpatialDialect) getDialect();
-		return dialect.supports(spatialFunction);
+		return dialect.supports( spatialFunction );
 	}
 
 	/**
@@ -175,50 +185,53 @@ public abstract class SpatialFunctionalTestCase extends BaseCoreFunctionalTestCa
 	 * identifier of a type assignable to Integer.
 	 *
 	 * @param result map of
-	 * @param query  the source Query
-	 * @param <T>    type of the second column in the query results
+	 * @param query the source Query
+	 * @param <T> type of the second column in the query results
 	 */
 	protected <T> void addQueryResults(Map<Integer, T> result, Query query) {
 		List<Object[]> rows = (List<Object[]>) query.list();
-		if (rows.size() == 0) {
-			getLogger().warn("No results returned for query!!");
+		if ( rows.size() == 0 ) {
+			getLogger().warn( "No results returned for query!!" );
 		}
-		for (Object[] row : rows) {
+		for ( Object[] row : rows ) {
 			Integer id = (Integer) row[0];
 			T val = (T) row[1];
-			result.put(id, val);
+			result.put( id, val );
 		}
 	}
 
 	protected <T> void compare(Map<Integer, T> expected, Map<Integer, T> received) {
-		for (Integer id : expected.keySet()) {
-			getLogger().debug("Case :" + id);
-			getLogger().debug("expected: " + expected.get(id));
-			getLogger().debug("received: " + received.get(id));
-			compare(id, expected.get(id), received.get(id));
+		for ( Integer id : expected.keySet() ) {
+			getLogger().debug( "Case :" + id );
+			getLogger().debug( "expected: " + expected.get( id ) );
+			getLogger().debug( "received: " + received.get( id ) );
+			compare( id, expected.get( id ), received.get( id ) );
 		}
 	}
 
 
 	protected void compare(Integer id, Object expected, Object received) {
-		assertTrue(expected != null || (expected == null && received == null));
-		if (expected instanceof byte[]) {
-			assertArrayEquals("Failure on testsuite-suite for case " + id, (byte[]) expected, (byte[]) received);
+		assertTrue( expected != null || ( expected == null && received == null ) );
+		if ( expected instanceof byte[] ) {
+			assertArrayEquals( "Failure on testsuite-suite for case " + id, (byte[]) expected, (byte[]) received );
 
-		} else if (expected instanceof Geometry) {
-			if (!(received instanceof Geometry)) {
-				fail("Expected a Geometry, but received an object of type " + received.getClass().getCanonicalName());
+		}
+		else if ( expected instanceof Geometry ) {
+			if ( !( received instanceof Geometry ) ) {
+				fail( "Expected a Geometry, but received an object of type " + received.getClass().getCanonicalName() );
 			}
 			assertTrue(
 					"Failure on testsuite-suite for case " + id,
-					geometryEquality.test((Geometry) expected, (Geometry) received)
+					geometryEquality.test( (Geometry) expected, (Geometry) received )
 			);
 
-		} else {
-			if (expected instanceof Long) {
-				assertEquals("Failure on testsuite-suite for case " + id, ((Long) expected).intValue(), received);
-			} else {
-				assertEquals("Failure on testsuite-suite for case " + id, expected, received);
+		}
+		else {
+			if ( expected instanceof Long ) {
+				assertEquals( "Failure on testsuite-suite for case " + id, ( (Long) expected ).intValue(), received );
+			}
+			else {
+				assertEquals( "Failure on testsuite-suite for case " + id, expected, received );
 			}
 		}
 	}

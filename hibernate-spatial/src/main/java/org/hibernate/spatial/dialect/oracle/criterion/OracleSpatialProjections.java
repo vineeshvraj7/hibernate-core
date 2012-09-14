@@ -31,22 +31,28 @@ public final class OracleSpatialProjections {
 	}
 
 	public static OracleSpatialProjection concatLrs(String propertyName) {
-		return new OracleSpatialProjection(OracleSpatialAggregate.LRS_CONCAT,
-				propertyName);
+		return new OracleSpatialProjection(
+				OracleSpatialAggregate.LRS_CONCAT,
+				propertyName
+		);
 	}
 
 	public static OracleSpatialProjection centroid(String propertyName) {
-		return new OracleSpatialProjection(OracleSpatialAggregate.CENTROID,
-				propertyName);
+		return new OracleSpatialProjection(
+				OracleSpatialAggregate.CENTROID,
+				propertyName
+		);
 	}
 
 	public static OracleSpatialProjection concatLines(String propertyName) {
-		return new OracleSpatialProjection(OracleSpatialAggregate.CONCAT_LINES,
-				propertyName);
+		return new OracleSpatialProjection(
+				OracleSpatialAggregate.CONCAT_LINES,
+				propertyName
+		);
 	}
 
 	public static OracleSpatialProjection projection(int projection,
 													 String propertyName) {
-		return new OracleSpatialProjection(projection, propertyName);
+		return new OracleSpatialProjection( projection, propertyName );
 	}
 }

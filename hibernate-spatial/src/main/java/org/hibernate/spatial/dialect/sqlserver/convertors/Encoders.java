@@ -21,13 +21,13 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPolygon;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Serializes a JTS <code>Geometry</code> to a byte-array.
@@ -41,29 +41,29 @@ public class Encoders {
 
 	static {
 		//Encoders
-		ENCODERS.add(new PointEncoder());
-		ENCODERS.add(new LineStringEncoder());
-		ENCODERS.add(new PolygonEncoder());
-		ENCODERS.add(new MultiPointEncoder());
-		ENCODERS.add(new GeometryCollectionEncoder<MultiLineString>(OpenGisType.MULTILINESTRING));
-		ENCODERS.add(new GeometryCollectionEncoder<MultiPolygon>(OpenGisType.MULTIPOLYGON));
-		ENCODERS.add(new GeometryCollectionEncoder<GeometryCollection>(OpenGisType.GEOMETRYCOLLECTION));
+		ENCODERS.add( new PointEncoder() );
+		ENCODERS.add( new LineStringEncoder() );
+		ENCODERS.add( new PolygonEncoder() );
+		ENCODERS.add( new MultiPointEncoder() );
+		ENCODERS.add( new GeometryCollectionEncoder<MultiLineString>( OpenGisType.MULTILINESTRING ) );
+		ENCODERS.add( new GeometryCollectionEncoder<MultiPolygon>( OpenGisType.MULTIPOLYGON ) );
+		ENCODERS.add( new GeometryCollectionEncoder<GeometryCollection>( OpenGisType.GEOMETRYCOLLECTION ) );
 
 	}
 
 	public static Encoder<? extends Geometry> encoderFor(Geometry geom) {
-		for (Encoder<? extends Geometry> encoder : ENCODERS) {
-			if (encoder.accepts(geom)) {
+		for ( Encoder<? extends Geometry> encoder : ENCODERS ) {
+			if ( encoder.accepts( geom ) ) {
 				return encoder;
 			}
 		}
-		throw new IllegalArgumentException("No encoder for type " + geom.getGeometryType());
+		throw new IllegalArgumentException( "No encoder for type " + geom.getGeometryType() );
 	}
 
 	public static <T extends Geometry> byte[] encode(T geom) {
-		Encoder<T> encoder = (Encoder<T>) encoderFor(geom);
-		SqlServerGeometry sqlServerGeometry = encoder.encode(geom);
-		return SqlServerGeometry.serialize(sqlServerGeometry);
+		Encoder<T> encoder = (Encoder<T>) encoderFor( geom );
+		SqlServerGeometry sqlServerGeometry = encoder.encode( geom );
+		return SqlServerGeometry.serialize( sqlServerGeometry );
 	}
 
 }

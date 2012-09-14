@@ -21,10 +21,11 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import org.junit.Test;
+
 import org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect;
 import org.hibernate.testing.BeforeClassOnce;
 import org.hibernate.testing.RequiresDialect;
-import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +40,7 @@ public class GeometryCollectionConvertorTest extends AbstractConvertorTest {
 	@BeforeClassOnce
 	public void beforeClass() {
 		super.beforeClass();
-		doDecoding(OpenGisType.GEOMETRYCOLLECTION);
+		doDecoding( OpenGisType.GEOMETRYCOLLECTION );
 		doEncoding();
 	}
 

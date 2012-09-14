@@ -37,24 +37,27 @@ public class SqlServer2008GeometryValueExtractor extends AbstractJTSGeometryValu
 
 	public Geometry toJTS(Object obj) {
 		byte[] raw = null;
-		if (obj == null) {
+		if ( obj == null ) {
 			return null;
 		}
-		if ((obj instanceof byte[])) {
+		if ( ( obj instanceof byte[] ) ) {
 			raw = (byte[]) obj;
-		} else if (obj instanceof Blob) {
-			raw = toByteArray((Blob) obj);
-		} else {
-			throw new IllegalArgumentException("Expected byte array.");
 		}
-		return Decoders.decode(raw);
+		else if ( obj instanceof Blob ) {
+			raw = toByteArray( (Blob) obj );
+		}
+		else {
+			throw new IllegalArgumentException( "Expected byte array." );
+		}
+		return Decoders.decode( raw );
 	}
 
 	private byte[] toByteArray(Blob blob) {
 		try {
-			return blob.getBytes(1, (int) blob.length());
-		} catch (SQLException e) {
-			throw new RuntimeException("Error on transforming blob into array.", e);
+			return blob.getBytes( 1, (int) blob.length() );
+		}
+		catch ( SQLException e ) {
+			throw new RuntimeException( "Error on transforming blob into array.", e );
 		}
 	}
 

@@ -21,12 +21,13 @@
 
 package org.hibernate.spatial.dialect.oracle;
 
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.type.Type;
-
-import java.util.List;
 
 /**
  * An HQL function that is implemented using Oracle's OGC compliance
@@ -36,14 +37,14 @@ class WrappedOGCFunction extends StandardSQLFunction {
 	private final boolean[] geomArrays;
 
 	/**
-	 * @param name	   function name
-	 * @param type	   return type of the function
+	 * @param name function name
+	 * @param type return type of the function
 	 * @param geomArrays indicates which argument places are occupied by
-	 *                   sdo_geometries
+	 * sdo_geometries
 	 */
 	WrappedOGCFunction(final String name, final Type type,
 					   final boolean[] geomArrays) {
-		super(name, type);
+		super( name, type );
 		this.geomArrays = geomArrays;
 	}
 
@@ -51,22 +52,24 @@ class WrappedOGCFunction extends StandardSQLFunction {
 						 final SessionFactoryImplementor factory) {
 
 		StringBuffer buf = new StringBuffer();
-		buf.append("MDSYS.").append(getName()).append("(");
-		for (int i = 0; i < args.size(); i++) {
-			if (i > 0) {
-				buf.append(",");
+		buf.append( "MDSYS." ).append( getName() ).append( "(" );
+		for ( int i = 0; i < args.size(); i++ ) {
+			if ( i > 0 ) {
+				buf.append( "," );
 			}
-			if (geomArrays[i]) {
-				buf.append("MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(").append(
-						args.get(i)).append(")");
-			} else {
-				buf.append(args.get(i));
+			if ( geomArrays[i] ) {
+				buf.append( "MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(" ).append(
+						args.get( i )
+				).append( ")" );
+			}
+			else {
+				buf.append( args.get( i ) );
 			}
 
 		}
-		buf.append(")");
-		return (getType().getReturnedClass() == Geometry.class) ? buf
-				.append(".geom").toString() : buf.toString();
+		buf.append( ")" );
+		return ( getType().getReturnedClass() == Geometry.class ) ? buf
+				.append( ".geom" ).toString() : buf.toString();
 	}
 
 }

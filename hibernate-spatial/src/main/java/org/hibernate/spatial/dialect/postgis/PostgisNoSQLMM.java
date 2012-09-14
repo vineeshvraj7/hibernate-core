@@ -34,7 +34,7 @@ import org.hibernate.type.StandardBasicTypes;
 public class PostgisNoSQLMM extends PostgisDialect {
 	@Override
 	protected void registerTypesAndFunctions() {
-		registerColumnType(java.sql.Types.STRUCT, "geometry");
+		registerColumnType( java.sql.Types.STRUCT, "geometry" );
 
 		// registering OGC functions
 		// (spec_simplefeatures_sql_99-04.pdf)
@@ -185,7 +185,7 @@ public class PostgisNoSQLMM extends PostgisDialect {
 		);
 		registerFunction(
 				"symdifference",
-				new StandardSQLFunction("symdifference", GeometryType.INSTANCE)
+				new StandardSQLFunction( "symdifference", GeometryType.INSTANCE )
 		);
 		registerFunction(
 				"geomunion", new StandardSQLFunction(
@@ -229,7 +229,7 @@ public class PostgisNoSQLMM extends PostgisDialect {
 
 	public String getSpatialRelateSQL(String columnName, int spatialRelation,
 									  boolean hasFilter) {
-		switch (spatialRelation) {
+		switch ( spatialRelation ) {
 			case SpatialRelation.WITHIN:
 				return hasFilter ? "(" + columnName + " && ?  AND   within("
 						+ columnName + ", ?))" : " within(" + columnName + ",?)";
@@ -265,6 +265,6 @@ public class PostgisNoSQLMM extends PostgisDialect {
 
 	@Override
 	public boolean supports(SpatialFunction function) {
-		return super.supports(function);
+		return super.supports( function );
 	}
 }

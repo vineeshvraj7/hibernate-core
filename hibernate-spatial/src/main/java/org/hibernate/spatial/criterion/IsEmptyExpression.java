@@ -46,9 +46,9 @@ public class IsEmptyExpression implements Criterion {
 	}
 
 	public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
-		String column = ExpressionUtil.findColumn(propertyName, criteria, criteriaQuery);
-		SpatialDialect spatialDialect = ExpressionUtil.getSpatialDialect(criteriaQuery, SpatialFunction.isempty);
-		return spatialDialect.getIsEmptySQL(column, isEmpty);
+		String column = ExpressionUtil.findColumn( propertyName, criteria, criteriaQuery );
+		SpatialDialect spatialDialect = ExpressionUtil.getSpatialDialect( criteriaQuery, SpatialFunction.isempty );
+		return spatialDialect.getIsEmptySQL( column, isEmpty );
 	}
 
 	public TypedValue[] getTypedValues(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {

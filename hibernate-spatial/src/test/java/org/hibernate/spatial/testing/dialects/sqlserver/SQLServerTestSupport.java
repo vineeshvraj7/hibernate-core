@@ -35,11 +35,11 @@ public class SQLServerTestSupport extends TestSupport {
 
 
 	public TestData createTestData(BaseCoreFunctionalTestCase testcase) {
-		return TestData.fromFile("test-data-set.xml");
+		return TestData.fromFile( "test-data-set.xml" );
 	}
 
 	public SqlServerExpectationsFactory createExpectationsFactory(DataSourceUtils dataSourceUtils) {
-		return new SqlServerExpectationsFactory(dataSourceUtils);
+		return new SqlServerExpectationsFactory( dataSourceUtils );
 	}
 
 	@Override

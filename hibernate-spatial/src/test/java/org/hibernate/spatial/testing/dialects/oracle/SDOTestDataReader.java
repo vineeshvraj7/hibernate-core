@@ -21,11 +21,12 @@
 
 package org.hibernate.spatial.testing.dialects.oracle;
 
+import java.util.List;
+
 import org.dom4j.Element;
+
 import org.hibernate.spatial.testing.TestDataElement;
 import org.hibernate.spatial.testing.TestDataReader;
-
-import java.util.List;
 
 
 public class SDOTestDataReader extends TestDataReader {
@@ -33,13 +34,13 @@ public class SDOTestDataReader extends TestDataReader {
 
 	@Override
 	protected void addDataElement(Element element, List<TestDataElement> testDataElements) {
-		int id = Integer.valueOf(element.selectSingleNode("id").getText());
-		String type = element.selectSingleNode("type").getText();
-		String wkt = element.selectSingleNode("wkt").getText();
-		int srid = Integer.valueOf(element.selectSingleNode("srid").getText());
-		String sdo = element.selectSingleNode("sdo").getText();
-		TestDataElement testDataElement = new SDOTestDataElement(id, type, wkt, srid, sdo);
-		testDataElements.add(testDataElement);
+		int id = Integer.valueOf( element.selectSingleNode( "id" ).getText() );
+		String type = element.selectSingleNode( "type" ).getText();
+		String wkt = element.selectSingleNode( "wkt" ).getText();
+		int srid = Integer.valueOf( element.selectSingleNode( "srid" ).getText() );
+		String sdo = element.selectSingleNode( "sdo" ).getText();
+		TestDataElement testDataElement = new SDOTestDataElement( id, type, wkt, srid, sdo );
+		testDataElements.add( testDataElement );
 	}
 
 }

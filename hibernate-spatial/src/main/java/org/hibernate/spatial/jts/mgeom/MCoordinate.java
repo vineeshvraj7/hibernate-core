@@ -52,26 +52,27 @@ public class MCoordinate extends Coordinate {
 	}
 
 	public MCoordinate(double x, double y, double z, double m) {
-		super(x, y, z);
+		super( x, y, z );
 		this.m = m;
 	}
 
 	public MCoordinate(double x, double y) {
-		super(x, y);
+		super( x, y );
 		m = Double.NaN;
 	}
 
 	public MCoordinate(Coordinate coord) {
-		super(coord);
-		if (coord instanceof MCoordinate) {
-			m = ((MCoordinate) coord).m;
-		} else {
+		super( coord );
+		if ( coord instanceof MCoordinate ) {
+			m = ( (MCoordinate) coord ).m;
+		}
+		else {
 			m = Double.NaN;
 		}
 	}
 
 	public MCoordinate(MCoordinate coord) {
-		super(coord);
+		super( coord );
 		m = coord.m;
 	}
 
@@ -87,11 +88,12 @@ public class MCoordinate extends Coordinate {
 	 * recommended.
 	 *
 	 * @param ordinateIndex the desired ordinate index.
+	 *
 	 * @return the value of stored in the ordinate index. Incorrect or unused
 	 *         indexes shall return Double.NaN
 	 */
 	public double getOrdinate(int ordinateIndex) {
-		switch (ordinateIndex) {
+		switch ( ordinateIndex ) {
 			case CoordinateSequence.X:
 				return this.x;
 			case CoordinateSequence.Y:
@@ -110,12 +112,13 @@ public class MCoordinate extends Coordinate {
 	 * CoordinateSequence ordinate index constants.
 	 *
 	 * @param ordinateIndex the desired ordinate index.
-	 * @param value		 the new ordinate value
+	 * @param value the new ordinate value
+	 *
 	 * @throws IllegalArgumentException if the ordinateIndex value is incorrect
 	 * @see #getOrdinate(int)
 	 */
 	public void setOrdinate(int ordinateIndex, double value) {
-		switch (ordinateIndex) {
+		switch ( ordinateIndex ) {
 			case CoordinateSequence.X:
 				this.x = value;
 				break;
@@ -129,24 +132,24 @@ public class MCoordinate extends Coordinate {
 				this.m = value;
 				break;
 			default:
-				throw new IllegalArgumentException("invalid ordinateIndex");
+				throw new IllegalArgumentException( "invalid ordinateIndex" );
 		}
 	}
 
 	public boolean equals2DWithMeasure(Coordinate other) {
-		boolean result = this.equals2D(other);
-		if (result) {
-			MCoordinate mc = convertCoordinate(other);
-			result = (Double.compare(this.m, mc.m) == 0);
+		boolean result = this.equals2D( other );
+		if ( result ) {
+			MCoordinate mc = convertCoordinate( other );
+			result = ( Double.compare( this.m, mc.m ) == 0 );
 		}
 		return result;
 	}
 
 	public boolean equals3DWithMeasure(Coordinate other) {
-		boolean result = this.equals3D(other);
-		if (result) {
-			MCoordinate mc = convertCoordinate(other);
-			result = (Double.compare(this.m, mc.m) == 0);
+		boolean result = this.equals3D( other );
+		if ( result ) {
+			MCoordinate mc = convertCoordinate( other );
+			result = ( Double.compare( this.m, mc.m ) == 0 );
 		}
 		return result;
 	}
@@ -162,9 +165,10 @@ public class MCoordinate extends Coordinate {
 	 * @see com.vividsolutions.jts.geom.Coordinate#equals(java.lang.Object)
 	 */
 	public boolean equals(Object other) {
-		if (other instanceof Coordinate) {
-			return equals2D((Coordinate) other);
-		} else {
+		if ( other instanceof Coordinate ) {
+			return equals2D( (Coordinate) other );
+		}
+		else {
 			return false;
 		}
 	}
@@ -180,17 +184,18 @@ public class MCoordinate extends Coordinate {
 	 * coordinate is initialized to Double.NaN.
 	 *
 	 * @param coordinate The coordinate to be converted
+	 *
 	 * @return an instance of MCoordinate corresponding to the
 	 *         <code>coordinate</code> parameter
 	 */
 	public static MCoordinate convertCoordinate(Coordinate coordinate) {
-		if (coordinate == null) {
+		if ( coordinate == null ) {
 			return null;
 		}
-		if (coordinate instanceof MCoordinate) {
+		if ( coordinate instanceof MCoordinate ) {
 			return (MCoordinate) coordinate;
 		}
-		return new MCoordinate(coordinate);
+		return new MCoordinate( coordinate );
 	}
 
 	/**
@@ -201,10 +206,11 @@ public class MCoordinate extends Coordinate {
 	 * @param x the x coordinate value
 	 * @param y the y coordinate value
 	 * @param m the lrs measure value
+	 *
 	 * @return The constructed MCoordinate value
 	 */
 	public static MCoordinate create2dWithMeasure(double x, double y, double m) {
-		return new MCoordinate(x, y, Double.NaN, m);
+		return new MCoordinate( x, y, Double.NaN, m );
 	}
 
 	/**
@@ -214,10 +220,11 @@ public class MCoordinate extends Coordinate {
 	 *
 	 * @param x the x coordinate value
 	 * @param y the y coordinate value
+	 *
 	 * @return The constructed MCoordinate value
 	 */
 	public static MCoordinate create2d(double x, double y) {
-		return new MCoordinate(x, y, Double.NaN, Double.NaN);
+		return new MCoordinate( x, y, Double.NaN, Double.NaN );
 	}
 
 	/**
@@ -228,11 +235,12 @@ public class MCoordinate extends Coordinate {
 	 * @param y the y coordinate value
 	 * @param z the z coordinate value
 	 * @param m the lrs measure value
+	 *
 	 * @return The constructed MCoordinate value
 	 */
 	public static MCoordinate create3dWithMeasure(double x, double y, double z,
 												  double m) {
-		return new MCoordinate(x, y, z, m);
+		return new MCoordinate( x, y, z, m );
 	}
 
 	/**
@@ -243,9 +251,10 @@ public class MCoordinate extends Coordinate {
 	 * @param x the x coordinate value
 	 * @param y the y coordinate value
 	 * @param z the z coordinate value
+	 *
 	 * @return The constructed MCoordinate value
 	 */
 	public static MCoordinate create3d(double x, double y, double z) {
-		return new MCoordinate(x, y, z, Double.NaN);
+		return new MCoordinate( x, y, z, Double.NaN );
 	}
 }

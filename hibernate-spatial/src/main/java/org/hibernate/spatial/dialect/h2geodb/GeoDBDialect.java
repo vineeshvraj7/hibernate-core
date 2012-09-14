@@ -24,7 +24,11 @@ package org.hibernate.spatial.dialect.h2geodb;
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernate.spatial.*;
+import org.hibernate.spatial.GeometrySqlTypeDescriptor;
+import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.SpatialDialect;
+import org.hibernate.spatial.SpatialFunction;
+import org.hibernate.spatial.SpatialRelation;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
@@ -92,56 +96,123 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 		super();
 
 		// Register Geometry column type
-		registerColumnType(java.sql.Types.ARRAY, "BLOB");
+		registerColumnType( java.sql.Types.ARRAY, "BLOB" );
 
 		// Register functions that operate on spatial types
 // NOT YET AVAILABLE IN GEODB
 //		registerFunction("dimension", new StandardSQLFunction("dimension",
 //				Hibernate.INTEGER));
-		registerFunction("geometrytype", new StandardSQLFunction(
-				"GeometryType", StandardBasicTypes.STRING));
-		registerFunction("srid", new StandardSQLFunction("ST_SRID",
-				StandardBasicTypes.INTEGER));
-		registerFunction("envelope", new StandardSQLFunction("ST_Envelope",
-				GeometryType.INSTANCE));
-		registerFunction("astext", new StandardSQLFunction("ST_AsText",
-				StandardBasicTypes.STRING));
-		registerFunction("asbinary", new StandardSQLFunction("ST_AsEWKB",
-				StandardBasicTypes.BINARY));
-		registerFunction("isempty", new StandardSQLFunction("ST_IsEmpty",
-				StandardBasicTypes.BOOLEAN));
-		registerFunction("issimple", new StandardSQLFunction("ST_IsSimple",
-				StandardBasicTypes.BOOLEAN));
+		registerFunction(
+				"geometrytype", new StandardSQLFunction(
+				"GeometryType", StandardBasicTypes.STRING
+		)
+		);
+		registerFunction(
+				"srid", new StandardSQLFunction(
+				"ST_SRID",
+				StandardBasicTypes.INTEGER
+		)
+		);
+		registerFunction(
+				"envelope", new StandardSQLFunction(
+				"ST_Envelope",
+				GeometryType.INSTANCE
+		)
+		);
+		registerFunction(
+				"astext", new StandardSQLFunction(
+				"ST_AsText",
+				StandardBasicTypes.STRING
+		)
+		);
+		registerFunction(
+				"asbinary", new StandardSQLFunction(
+				"ST_AsEWKB",
+				StandardBasicTypes.BINARY
+		)
+		);
+		registerFunction(
+				"isempty", new StandardSQLFunction(
+				"ST_IsEmpty",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
+		registerFunction(
+				"issimple", new StandardSQLFunction(
+				"ST_IsSimple",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
 // NOT YET AVAILABLE IN GEODB
 //		registerFunction("boundary", new StandardSQLFunction("boundary",
 //				new CustomType(GeoDBGeometryUserType.class, null)));
 
 		// Register functions for spatial relation constructs
-		registerFunction("overlaps", new StandardSQLFunction("ST_Overlaps",
-				StandardBasicTypes.BOOLEAN));
-		registerFunction("intersects", new StandardSQLFunction("ST_Intersects",
-				StandardBasicTypes.BOOLEAN));
-		registerFunction("equals", new StandardSQLFunction("ST_Equals",
-				StandardBasicTypes.BOOLEAN));
-		registerFunction("contains", new StandardSQLFunction("ST_Contains",
-				StandardBasicTypes.BOOLEAN));
-		registerFunction("crosses", new StandardSQLFunction("ST_Crosses",
-				StandardBasicTypes.BOOLEAN));
-		registerFunction("disjoint", new StandardSQLFunction("ST_Disjoint",
-				StandardBasicTypes.BOOLEAN));
-		registerFunction("touches", new StandardSQLFunction("ST_Touches",
-				StandardBasicTypes.BOOLEAN));
-		registerFunction("within", new StandardSQLFunction("ST_Within",
-				StandardBasicTypes.BOOLEAN));
+		registerFunction(
+				"overlaps", new StandardSQLFunction(
+				"ST_Overlaps",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
+		registerFunction(
+				"intersects", new StandardSQLFunction(
+				"ST_Intersects",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
+		registerFunction(
+				"equals", new StandardSQLFunction(
+				"ST_Equals",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
+		registerFunction(
+				"contains", new StandardSQLFunction(
+				"ST_Contains",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
+		registerFunction(
+				"crosses", new StandardSQLFunction(
+				"ST_Crosses",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
+		registerFunction(
+				"disjoint", new StandardSQLFunction(
+				"ST_Disjoint",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
+		registerFunction(
+				"touches", new StandardSQLFunction(
+				"ST_Touches",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
+		registerFunction(
+				"within", new StandardSQLFunction(
+				"ST_Within",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
 // NOT YET AVAILABLE IN GEODB
 //		registerFunction("relate", new StandardSQLFunction("relate",
 //				Hibernate.BOOLEAN));
 
 		// register the spatial analysis functions
-		registerFunction("distance", new StandardSQLFunction("ST_Distance",
-				StandardBasicTypes.DOUBLE));
-		registerFunction("buffer", new StandardSQLFunction("ST_Buffer",
-				GeometryType.INSTANCE));
+		registerFunction(
+				"distance", new StandardSQLFunction(
+				"ST_Distance",
+				StandardBasicTypes.DOUBLE
+		)
+		);
+		registerFunction(
+				"buffer", new StandardSQLFunction(
+				"ST_Buffer",
+				GeometryType.INSTANCE
+		)
+		);
 // NOT YET AVAILABLE IN GEODB
 //		registerFunction("convexhull", new StandardSQLFunction("convexhull",
 //				new CustomType(GeoDBGeometryUserType.class, null)));
@@ -160,8 +231,12 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 //		registerFunction("extent", new StandardSQLFunction("extent",
 //				new CustomType(GeoDBGeometryUserType.class, null)));
 
-		registerFunction("dwithin", new StandardSQLFunction("ST_DWithin",
-				StandardBasicTypes.BOOLEAN));
+		registerFunction(
+				"dwithin", new StandardSQLFunction(
+				"ST_DWithin",
+				StandardBasicTypes.BOOLEAN
+		)
+		);
 
 	}
 
@@ -173,26 +248,29 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 	 * parameters. In the case of typecode == 3000, it returns this dialect's spatial type which is
 	 * <code>GEOMETRY</code>.
 	 *
-	 * @param code	  The {@link java.sql.Types} typecode
-	 * @param length	The datatype length
+	 * @param code The {@link java.sql.Types} typecode
+	 * @param length The datatype length
 	 * @param precision The datatype precision
-	 * @param scale	 The datatype scale
-	 * @return
-	 * @throws org.hibernate.HibernateException
+	 * @param scale The datatype scale
 	 *
+	 * @return
+	 *
+	 * @throws org.hibernate.HibernateException
 	 */
 	@Override
 	public String getTypeName(int code, long length, int precision, int scale) throws HibernateException {
-		if (code == 3000) return "GEOMETRY";
-		return super.getTypeName(code, length, precision, scale);
+		if ( code == 3000 ) {
+			return "GEOMETRY";
+		}
+		return super.getTypeName( code, length, precision, scale );
 	}
 
 	@Override
 	public SqlTypeDescriptor remapSqlTypeDescriptor(SqlTypeDescriptor sqlTypeDescriptor) {
-		if (sqlTypeDescriptor instanceof GeometrySqlTypeDescriptor) {
+		if ( sqlTypeDescriptor instanceof GeometrySqlTypeDescriptor ) {
 			return GeoDBGeometryTypeDescriptor.INSTANCE;
 		}
-		return super.remapSqlTypeDescriptor(sqlTypeDescriptor);
+		return super.remapSqlTypeDescriptor( sqlTypeDescriptor );
 	}
 
 	/* (non-Javadoc)
@@ -200,15 +278,17 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 		  */
 
 	public String getSpatialAggregateSQL(String columnName, int aggregation) {
-		switch (aggregation) {
+		switch ( aggregation ) {
 // NOT YET AVAILABLE IN GEODB
 //		case SpatialAggregate.EXTENT:
 //			StringBuilder stbuf = new StringBuilder();
 //			stbuf.append("extent(").append(columnName).append(")");
 //			return stbuf.toString();
 			default:
-				throw new IllegalArgumentException("Aggregations of type "
-						+ aggregation + " are not supported by this dialect");
+				throw new IllegalArgumentException(
+						"Aggregations of type "
+								+ aggregation + " are not supported by this dialect"
+				);
 		}
 	}
 
@@ -237,7 +317,7 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 		  */
 
 	public String getSpatialRelateSQL(String columnName, int spatialRelation) {
-		switch (spatialRelation) {
+		switch ( spatialRelation ) {
 			case SpatialRelation.WITHIN:
 				return " ST_Within(" + columnName + ", ?)";
 			case SpatialRelation.CONTAINS:
@@ -256,7 +336,8 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 				return " ST_Equals(" + columnName + ", ?)";
 			default:
 				throw new IllegalArgumentException(
-						"Spatial relation is not known by this dialect");
+						"Spatial relation is not known by this dialect"
+				);
 		}
 	}
 
@@ -281,8 +362,10 @@ public class GeoDBDialect extends H2Dialect implements SpatialDialect {
 	}
 
 	public boolean supports(SpatialFunction function) {
-		if (function == SpatialFunction.difference) return false;
-		return (getFunctions().get(function.toString()) != null);
+		if ( function == SpatialFunction.difference ) {
+			return false;
+		}
+		return ( getFunctions().get( function.toString() ) != null );
 	}
 
 }

@@ -39,8 +39,8 @@ class Shape {
 	}
 
 	void store(ByteBuffer buffer) {
-		buffer.putInt(parentOffset);
-		buffer.putInt(figureOffset);
-		buffer.put(openGisType.byteValue);
+		buffer.putInt( parentOffset );
+		buffer.putInt( figureOffset );
+		buffer.put( openGisType.byteValue );
 	}
 }

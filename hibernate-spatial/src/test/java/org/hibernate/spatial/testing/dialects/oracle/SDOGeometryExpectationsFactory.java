@@ -23,6 +23,7 @@ package org.hibernate.spatial.testing.dialects.oracle;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+
 import org.hibernate.spatial.dialect.oracle.SDOGeometryValueExtractor;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
 import org.hibernate.spatial.testing.DataSourceUtils;
@@ -38,7 +39,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	private final SDOGeometryValueExtractor decoder = new SDOGeometryValueExtractor();
 
 	public SDOGeometryExpectationsFactory(DataSourceUtils dataSourceUtils) {
-		super(dataSourceUtils);
+		super( dataSourceUtils );
 	}
 
 	@Override
@@ -105,7 +106,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeBufferStatement(Double distance) {
 		return createNativeSQLStatement(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Buffer(?).GEOM from GEOMTEST T where t.GEOM.SDO_SRID = 4326",
-				new Double[]{distance}
+				new Double[] { distance }
 		);
 	}
 
@@ -151,12 +152,12 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 
 	@Override
 	protected NativeSQLStatement createNativeAsTextStatement() {
-		return createNativeSQLStatement("select t.ID, t.GEOM.GET_WKT() FROM GEOMTEST T");
+		return createNativeSQLStatement( "select t.ID, t.GEOM.GET_WKT() FROM GEOMTEST T" );
 	}
 
 	@Override
 	protected NativeSQLStatement createNativeSridStatement() {
-		return createNativeSQLStatement("SELECT t.ID, t.GEOM.SDO_SRID FROM GEOMTEST t");
+		return createNativeSQLStatement( "SELECT t.ID, t.GEOM.SDO_SRID FROM GEOMTEST t" );
 	}
 
 	@Override
@@ -197,7 +198,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 
 	@Override
 	protected NativeSQLStatement createNativeAsBinaryStatement() {
-		return createNativeSQLStatement("select t.ID, t.GEOM.GET_WKB() FROM GEOMTEST T");
+		return createNativeSQLStatement( "select t.ID, t.GEOM.GET_WKB() FROM GEOMTEST T" );
 	}
 
 	@Override
@@ -256,11 +257,11 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 
 	@Override
 	protected NativeSQLStatement createNativeHavingSRIDStatement(int srid) {
-		return createNativeSQLStatement("select t.id, 1 from GeomTest t where t.geom.SDO_SRID =  " + srid);
+		return createNativeSQLStatement( "select t.id, 1 from GeomTest t where t.geom.SDO_SRID =  " + srid );
 	}
 
 	@Override
 	protected Geometry decode(Object o) {
-		return decoder.toJTS(o);
+		return decoder.toJTS( o );
 	}
 }
