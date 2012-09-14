@@ -19,43 +19,25 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver;
+package org.hibernate.spatial.integration;
 
-import java.sql.Blob;
-import java.sql.SQLException;
-
-import com.vividsolutions.jts.geom.Geometry;
-
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueExtractor;
-import org.hibernate.spatial.dialect.sqlserver.convertors.Decoders;
+import org.hibernate.metamodel.spi.MetadataImplementor;
+import org.hibernate.metamodel.spi.TypeContributor;
+import org.hibernate.spatial.GeometryType;
 
 /**
  * @author Karel Maesen, Geovise BVBA
- *         creation-date: 8/23/11
+ *         creation-date: 7/27/11
  */
-public class SqlServer2008GeometryValueExtractor extends AbstractJTSGeometryValueExtractor {
+public class SpatialTypeContributor implements TypeContributor {
 
-	public Geometry toJTS(Object obj) {
-		byte[] raw = null;
-		if (obj == null) {
-			return null;
-		}
-		if ((obj instanceof byte[])) {
-			raw = (byte[]) obj;
-		} else if (obj instanceof Blob) {
-			raw = toByteArray((Blob) obj);
-		} else {
-			throw new IllegalArgumentException("Expected byte array.");
-		}
-		return Decoders.decode(raw);
+	//TODO -- remove this; only added for testing purposes
+	public SpatialTypeContributor() {
+		System.out.println( "Initing contributor" );
 	}
 
-	private byte[] toByteArray(Blob blob) {
-		try {
-			return blob.getBytes(1, (int) blob.length());
-		} catch (SQLException e) {
-			throw new RuntimeException("Error on transforming blob into array.", e);
-		}
+	public void contribute(MetadataImplementor builder) {
+		builder.getTypeResolver().registerTypeOverride( GeometryType.INSTANCE );
 	}
 
 }
