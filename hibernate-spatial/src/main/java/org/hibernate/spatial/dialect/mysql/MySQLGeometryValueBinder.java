@@ -29,16 +29,21 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ByteOrderValues;
 import com.vividsolutions.jts.io.WKBWriter;
 
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueBinder;
+import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
 import org.hibernate.spatial.jts.JTS;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 1/19/12
  */
-public class MySQLGeometryValueBinder extends AbstractJTSGeometryValueBinder {
+public class MySQLGeometryValueBinder<X> extends AbstractGeometryValueBinder {
 
 	private static final int SRIDLEN = 4;
+
+	public MySQLGeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
+		super( javaDescriptor, MySQLGeometryTypeDescriptor.INSTANCE );
+	}
 
 	@Override
 	protected Object toNative(Geometry jtsGeom, Connection connection) {
