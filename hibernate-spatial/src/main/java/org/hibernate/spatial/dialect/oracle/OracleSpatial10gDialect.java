@@ -35,7 +35,7 @@ import org.hibernate.dialect.Oracle10gDialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.spatial.GeometrySqlTypeDescriptor;
-import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.JTSGeometryType;
 import org.hibernate.spatial.Log;
 import org.hibernate.spatial.LogFactory;
 import org.hibernate.spatial.SpatialAnalysis;
@@ -177,7 +177,10 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		configure();
 
 		// register geometry type
-		registerColumnType( java.sql.Types.STRUCT, "MDSYS.SDO_GEOMETRY" );
+		registerColumnType(
+				SDOGeometryTypeDescriptor.INSTANCE.getSqlType(),
+				SDOGeometryTypeDescriptor.INSTANCE.getTypeName()
+		);
 
 		// registering OGC functions
 		// (spec_simplefeatures_sql_99-04.pdf)
@@ -193,7 +196,7 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		);
 		registerFunction(
 				"envelope",
-				new StandardSQLFunction( "SDO_GEOM.SDO_MBR", GeometryType.INSTANCE )
+				new StandardSQLFunction( "SDO_GEOM.SDO_MBR", JTSGeometryType.INSTANCE )
 		);
 		registerFunction( "astext", new AsTextFunction() );
 
@@ -217,7 +220,7 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		registerFunction(
 				"boundary", new WrappedOGCFunction(
 				"OGC_BOUNDARY",
-				GeometryType.INSTANCE,
+				JTSGeometryType.INSTANCE,
 				new boolean[] { true }
 		)
 		);
@@ -292,38 +295,38 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		registerFunction(
 				"buffer", new SpatialAnalysisFunction(
 				"buffer",
-				GeometryType.INSTANCE,
+				JTSGeometryType.INSTANCE,
 				SpatialAnalysis.BUFFER
 		)
 		);
 		registerFunction(
 				"convexhull", new SpatialAnalysisFunction(
-				"convexhull", GeometryType.INSTANCE,
+				"convexhull", JTSGeometryType.INSTANCE,
 				SpatialAnalysis.CONVEXHULL
 		)
 		);
 		registerFunction(
 				"difference", new SpatialAnalysisFunction(
-				"difference", GeometryType.INSTANCE,
+				"difference", JTSGeometryType.INSTANCE,
 				SpatialAnalysis.DIFFERENCE
 		)
 		);
 		registerFunction(
 				"intersection", new SpatialAnalysisFunction(
-				"intersection", GeometryType.INSTANCE,
+				"intersection", JTSGeometryType.INSTANCE,
 				SpatialAnalysis.INTERSECTION
 		)
 		);
 		registerFunction(
 				"symdifference", new SpatialAnalysisFunction(
-				"symdifference", GeometryType.INSTANCE,
+				"symdifference", JTSGeometryType.INSTANCE,
 				SpatialAnalysis.SYMDIFFERENCE
 		)
 		);
 		registerFunction(
 				"geomunion", new SpatialAnalysisFunction(
 				"union",
-				GeometryType.INSTANCE,
+				JTSGeometryType.INSTANCE,
 				SpatialAnalysis.UNION
 		)
 		);
@@ -334,7 +337,7 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		registerFunction(
 				"extent", new SpatialAggregationFunction(
 				"extent",
-				GeometryType.INSTANCE, false,
+				JTSGeometryType.INSTANCE, false,
 				OracleSpatialAggregate.EXTENT
 		)
 		);
@@ -343,7 +346,7 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		registerFunction(
 				"transform", new StandardSQLFunction(
 				"SDO_CS.TRANSFORM",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 
@@ -351,21 +354,21 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		registerFunction(
 				"centroid", new SpatialAggregationFunction(
 				"extent",
-				GeometryType.INSTANCE, false,
+				JTSGeometryType.INSTANCE, false,
 				OracleSpatialAggregate.CENTROID
 		)
 		);
 
 		registerFunction(
 				"concat_lines", new SpatialAggregationFunction(
-				"extent", GeometryType.INSTANCE, false,
+				"extent", JTSGeometryType.INSTANCE, false,
 				OracleSpatialAggregate.CONCAT_LINES
 		)
 		);
 
 		registerFunction(
 				"aggr_convexhull", new SpatialAggregationFunction(
-				"extent", GeometryType.INSTANCE, false,
+				"extent", JTSGeometryType.INSTANCE, false,
 				OracleSpatialAggregate.CONVEXHULL
 		)
 		);
@@ -373,14 +376,14 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		registerFunction(
 				"aggr_union", new SpatialAggregationFunction(
 				"extent",
-				GeometryType.INSTANCE, false,
+				JTSGeometryType.INSTANCE, false,
 				OracleSpatialAggregate.UNION
 		)
 		);
 
 		registerFunction(
 				"lrs_concat", new SpatialAggregationFunction(
-				"lrsconcat", GeometryType.INSTANCE,
+				"lrsconcat", JTSGeometryType.INSTANCE,
 				false, OracleSpatialAggregate.LRS_CONCAT
 		)
 		);

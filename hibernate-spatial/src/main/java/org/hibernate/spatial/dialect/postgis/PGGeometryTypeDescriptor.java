@@ -23,23 +23,28 @@ package org.hibernate.spatial.dialect.postgis;
 
 import java.sql.Types;
 
+import org.hibernate.spatial.GeometrySqlTypeDescriptor;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
-import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 7/27/11
  */
-public class PGGeometryTypeDescriptor implements SqlTypeDescriptor {
+public class PGGeometryTypeDescriptor extends GeometrySqlTypeDescriptor {
 
 
-	public static final SqlTypeDescriptor INSTANCE = new PGGeometryTypeDescriptor();
+	public static final PGGeometryTypeDescriptor INSTANCE = new PGGeometryTypeDescriptor();
 
 	@Override
 	public int getSqlType() {
-		return Types.STRUCT;
+		return Types.OTHER;
+	}
+
+	@Override
+	public String getTypeName() {
+		return "GEOMETRY";
 	}
 
 	@Override
@@ -49,11 +54,11 @@ public class PGGeometryTypeDescriptor implements SqlTypeDescriptor {
 
 	@Override
 	public <X> ValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
-		return (ValueBinder<X>) new PGGeometryValueBinder();
+		return (ValueBinder<X>) new PGGeometryValueBinder(javaTypeDescriptor);
 	}
 
 	@Override
 	public <X> ValueExtractor<X> getExtractor(final JavaTypeDescriptor<X> javaTypeDescriptor) {
-		return (ValueExtractor<X>) new PGGeometryValueExtractor();
+		return (ValueExtractor<X>) new PGGeometryValueExtractor(javaTypeDescriptor);
 	}
 }

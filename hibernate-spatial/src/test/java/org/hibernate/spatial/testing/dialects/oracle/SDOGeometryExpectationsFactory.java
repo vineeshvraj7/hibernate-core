@@ -24,6 +24,7 @@ package org.hibernate.spatial.testing.dialects.oracle;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+import org.hibernate.spatial.JTSGeometryJavaTypeDescriptor;
 import org.hibernate.spatial.dialect.oracle.SDOGeometryValueExtractor;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
 import org.hibernate.spatial.testing.DataSourceUtils;
@@ -36,7 +37,7 @@ import org.hibernate.spatial.testing.NativeSQLStatement;
  */
 public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory {
 
-	private final SDOGeometryValueExtractor decoder = new SDOGeometryValueExtractor();
+	private final SDOGeometryValueExtractor decoder = new SDOGeometryValueExtractor( JTSGeometryJavaTypeDescriptor.INSTANCE );
 
 	public SDOGeometryExpectationsFactory(DataSourceUtils dataSourceUtils) {
 		super( dataSourceUtils );

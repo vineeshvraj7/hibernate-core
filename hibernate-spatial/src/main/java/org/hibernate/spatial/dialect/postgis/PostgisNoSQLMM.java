@@ -22,7 +22,7 @@
 package org.hibernate.spatial.dialect.postgis;
 
 import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.JTSGeometryType;
 import org.hibernate.spatial.SpatialFunction;
 import org.hibernate.spatial.SpatialRelation;
 import org.hibernate.type.StandardBasicTypes;
@@ -34,7 +34,11 @@ import org.hibernate.type.StandardBasicTypes;
 public class PostgisNoSQLMM extends PostgisDialect {
 	@Override
 	protected void registerTypesAndFunctions() {
-		registerColumnType( java.sql.Types.STRUCT, "geometry" );
+
+		registerColumnType(
+				PGGeometryTypeDescriptor.INSTANCE.getSqlType(),
+				PGGeometryTypeDescriptor.INSTANCE.getTypeName()
+		);
 
 		// registering OGC functions
 		// (spec_simplefeatures_sql_99-04.pdf)
@@ -63,7 +67,7 @@ public class PostgisNoSQLMM extends PostgisDialect {
 		registerFunction(
 				"envelope", new StandardSQLFunction(
 				"envelope",
-				new GeometryType()
+				new JTSGeometryType()
 		)
 		);
 		registerFunction(
@@ -93,7 +97,7 @@ public class PostgisNoSQLMM extends PostgisDialect {
 		registerFunction(
 				"boundary", new StandardSQLFunction(
 				"boundary",
-				new GeometryType()
+				new JTSGeometryType()
 		)
 		);
 
@@ -163,34 +167,34 @@ public class PostgisNoSQLMM extends PostgisDialect {
 		registerFunction(
 				"buffer", new StandardSQLFunction(
 				"buffer",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 		registerFunction(
 				"convexhull", new StandardSQLFunction(
 				"convexhull",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 		registerFunction(
 				"difference", new StandardSQLFunction(
 				"difference",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 		registerFunction(
 				"intersection", new StandardSQLFunction(
-				"intersection", new GeometryType()
+				"intersection", new JTSGeometryType()
 		)
 		);
 		registerFunction(
 				"symdifference",
-				new StandardSQLFunction( "symdifference", GeometryType.INSTANCE )
+				new StandardSQLFunction( "symdifference", JTSGeometryType.INSTANCE )
 		);
 		registerFunction(
 				"geomunion", new StandardSQLFunction(
 				"geomunion",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 
@@ -198,7 +202,7 @@ public class PostgisNoSQLMM extends PostgisDialect {
 		registerFunction(
 				"extent", new StandardSQLFunction(
 				"extent",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 
@@ -206,7 +210,7 @@ public class PostgisNoSQLMM extends PostgisDialect {
 		registerFunction(
 				"transform", new StandardSQLFunction(
 				"transform",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 	}

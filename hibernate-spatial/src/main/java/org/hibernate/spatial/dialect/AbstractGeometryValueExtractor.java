@@ -27,21 +27,21 @@ import java.sql.SQLException;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import org.hibernate.spatial.GeometryJavaTypeDescriptor;
 import org.hibernate.spatial.GeometrySqlTypeDescriptor;
 import org.hibernate.spatial.jts.JTS;
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 import org.hibernate.type.descriptor.WrapperOptions;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 import org.hibernate.type.descriptor.sql.BasicExtractor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 1/19/12
  */
-public abstract class AbstractJTSGeometryValueExtractor extends BasicExtractor<Geometry> {
+public abstract class AbstractGeometryValueExtractor<X> extends BasicExtractor<X> {
 
-	public AbstractJTSGeometryValueExtractor() {
-		super( new GeometryJavaTypeDescriptor( Geometry.class ), new GeometrySqlTypeDescriptor() );
+	public AbstractGeometryValueExtractor(JavaTypeDescriptor<X> javaDescriptor, GeometrySqlTypeDescriptor typeDescriptor) {
+		super( javaDescriptor, typeDescriptor );
 	}
 
 	protected MGeometryFactory getGeometryFactory() {
@@ -49,22 +49,22 @@ public abstract class AbstractJTSGeometryValueExtractor extends BasicExtractor<G
 	}
 
 	@Override
-	protected Geometry doExtract(ResultSet rs, String name, WrapperOptions options) throws SQLException {
+	protected X doExtract(ResultSet rs, String name, WrapperOptions options) throws SQLException {
 		Object geomObj = rs.getObject( name );
-		return toJTS( geomObj );
+		return (X) toJTS( geomObj );
 
 	}
 
 	@Override
-	protected Geometry doExtract(CallableStatement statement, int index, WrapperOptions options) throws SQLException {
+	protected X doExtract(CallableStatement statement, int index, WrapperOptions options) throws SQLException {
 		Object geomObj = statement.getObject( index );
-		return toJTS( geomObj );
+		return (X) toJTS( geomObj );
 	}
 
 	@Override
-	protected Geometry doExtract(CallableStatement statement, String name, WrapperOptions options) throws SQLException {
+	protected X doExtract(CallableStatement statement, String name, WrapperOptions options) throws SQLException {
 		Object geomObj = statement.getObject( name );
-		return toJTS( geomObj );
+		return (X) toJTS( geomObj );
 	}
 
 	abstract public Geometry toJTS(Object object);

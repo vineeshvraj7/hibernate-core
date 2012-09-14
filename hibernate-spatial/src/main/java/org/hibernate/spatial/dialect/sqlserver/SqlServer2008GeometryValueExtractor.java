@@ -26,14 +26,19 @@ import java.sql.SQLException;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueExtractor;
+import org.hibernate.spatial.dialect.AbstractGeometryValueExtractor;
 import org.hibernate.spatial.dialect.sqlserver.convertors.Decoders;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 8/23/11
  */
-public class SqlServer2008GeometryValueExtractor extends AbstractJTSGeometryValueExtractor {
+public class SqlServer2008GeometryValueExtractor<X> extends AbstractGeometryValueExtractor<X> {
+
+	public SqlServer2008GeometryValueExtractor(JavaTypeDescriptor<X> javaDescriptor) {
+		super( javaDescriptor, SqlServer2008GeometryTypeDescriptor.INSTANCE );
+	}
 
 	public Geometry toJTS(Object obj) {
 		byte[] raw = null;

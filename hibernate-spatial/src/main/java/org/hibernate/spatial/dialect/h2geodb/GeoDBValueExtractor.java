@@ -34,15 +34,20 @@ import com.vividsolutions.jts.io.WKBConstants;
 import org.hibernate.HibernateException;
 import org.hibernate.spatial.Log;
 import org.hibernate.spatial.LogFactory;
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueExtractor;
+import org.hibernate.spatial.dialect.AbstractGeometryValueExtractor;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 2/29/12
  */
-public class GeoDBValueExtractor extends AbstractJTSGeometryValueExtractor {
+public class GeoDBValueExtractor<X> extends AbstractGeometryValueExtractor<X> {
 
 	private static Log LOG = LogFactory.make();
+
+	public GeoDBValueExtractor(JavaTypeDescriptor<X> javaDescriptor) {
+		super( javaDescriptor, GeoDBGeometryTypeDescriptor.INSTANCE );
+	}
 
 	@Override
 	public Geometry toJTS(Object object) {

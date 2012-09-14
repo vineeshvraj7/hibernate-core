@@ -27,16 +27,21 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import org.hibernate.spatial.Log;
 import org.hibernate.spatial.LogFactory;
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueBinder;
+import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Jan Boonen, Geodan IT b.v.
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 2/29/12
  */
-public class GeoDBValueBinder extends AbstractJTSGeometryValueBinder {
+public class GeoDBValueBinder<X> extends AbstractGeometryValueBinder {
 
 	private static Log LOG = LogFactory.make();
+
+	public GeoDBValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
+		super( javaDescriptor, GeoDBGeometryTypeDescriptor.INSTANCE );
+	}
 
 	@Override
 	protected Object toNative(Geometry jtsGeom, Connection connection) {

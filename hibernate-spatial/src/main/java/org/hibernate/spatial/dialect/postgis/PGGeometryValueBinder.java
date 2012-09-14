@@ -36,17 +36,22 @@ import org.postgis.PGgeometry;
 import org.postgis.Point;
 import org.postgis.Polygon;
 
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueBinder;
+import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
 import org.hibernate.spatial.jts.JTS;
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 import org.hibernate.spatial.jts.mgeom.MGeometry;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 7/27/11
  */
-public class PGGeometryValueBinder extends AbstractJTSGeometryValueBinder {
+public class PGGeometryValueBinder<X> extends AbstractGeometryValueBinder<X> {
 
+
+	public PGGeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
+		super( javaDescriptor, PGGeometryTypeDescriptor.INSTANCE );
+	}
 
 	/**
 	 * Converts a JTS <code>Geometry</code> to a native geometry object.

@@ -24,6 +24,7 @@ package org.hibernate.spatial.testing.dialects.mysql;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+import org.hibernate.spatial.JTSGeometryJavaTypeDescriptor;
 import org.hibernate.spatial.dialect.mysql.MySQLGeometryValueExtractor;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
 import org.hibernate.spatial.testing.DataSourceUtils;
@@ -38,7 +39,7 @@ import org.hibernate.spatial.testing.NativeSQLStatement;
 
 public class MySQLExpectationsFactory extends AbstractExpectationsFactory {
 
-	private final MySQLGeometryValueExtractor decoder = new MySQLGeometryValueExtractor();
+	private final MySQLGeometryValueExtractor decoder = new MySQLGeometryValueExtractor( JTSGeometryJavaTypeDescriptor.INSTANCE);
 
 	public MySQLExpectationsFactory(DataSourceUtils dataSourceUtils) {
 		super( dataSourceUtils );

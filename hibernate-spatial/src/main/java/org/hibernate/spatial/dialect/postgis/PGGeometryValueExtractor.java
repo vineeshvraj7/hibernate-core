@@ -32,16 +32,20 @@ import org.postgis.PGgeometry;
 import org.postgis.Point;
 import org.postgis.Polygon;
 
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueExtractor;
+import org.hibernate.spatial.dialect.AbstractGeometryValueExtractor;
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 import org.hibernate.spatial.jts.mgeom.MLineString;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 7/27/11
  */
-public class PGGeometryValueExtractor extends AbstractJTSGeometryValueExtractor {
+public class PGGeometryValueExtractor<X> extends AbstractGeometryValueExtractor<X> {
 
+	public PGGeometryValueExtractor(JavaTypeDescriptor<X> javaDescriptor) {
+		super( javaDescriptor , PGGeometryTypeDescriptor.INSTANCE);
+	}
 
 	public Geometry toJTS(Object object) {
 		if ( object == null ) {
