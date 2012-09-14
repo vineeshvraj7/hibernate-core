@@ -25,7 +25,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.dialect.PostgreSQLDialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.spatial.GeometrySqlTypeDescriptor;
-import org.hibernate.spatial.GeometryType;
+import org.hibernate.spatial.JTSGeometryType;
 import org.hibernate.spatial.SpatialAggregate;
 import org.hibernate.spatial.SpatialDialect;
 import org.hibernate.spatial.SpatialFunction;
@@ -49,7 +49,11 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 
 	protected void registerTypesAndFunctions() {
 
-		registerColumnType( java.sql.Types.STRUCT, "geometry" );
+		registerColumnType(
+				PGGeometryTypeDescriptor.INSTANCE.getSqlType(),
+				PGGeometryTypeDescriptor.INSTANCE.getTypeName()
+		);
+
 		// registering OGC functions
 		// (spec_simplefeatures_sql_99-04.pdf)
 
@@ -77,7 +81,7 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 		registerFunction(
 				"envelope", new StandardSQLFunction(
 				"st_envelope",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 		registerFunction(
@@ -107,7 +111,7 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 		registerFunction(
 				"boundary", new StandardSQLFunction(
 				"st_boundary",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 
@@ -177,34 +181,34 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 		registerFunction(
 				"buffer", new StandardSQLFunction(
 				"st_buffer",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 		registerFunction(
 				"convexhull", new StandardSQLFunction(
 				"st_convexhull",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 		registerFunction(
 				"difference", new StandardSQLFunction(
 				"st_difference",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 		registerFunction(
 				"intersection", new StandardSQLFunction(
-				"st_intersection", new GeometryType()
+				"st_intersection", new JTSGeometryType()
 		)
 		);
 		registerFunction(
 				"symdifference",
-				new StandardSQLFunction( "st_symdifference", GeometryType.INSTANCE )
+				new StandardSQLFunction( "st_symdifference", JTSGeometryType.INSTANCE )
 		);
 		registerFunction(
 				"geomunion", new StandardSQLFunction(
 				"st_union",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 
@@ -212,7 +216,7 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 		registerFunction(
 				"extent", new StandardSQLFunction(
 				"extent",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 
@@ -226,7 +230,7 @@ public class PostgisDialect extends PostgreSQLDialect implements SpatialDialect 
 		registerFunction(
 				"transform", new StandardSQLFunction(
 				"st_transform",
-				GeometryType.INSTANCE
+				JTSGeometryType.INSTANCE
 		)
 		);
 	}

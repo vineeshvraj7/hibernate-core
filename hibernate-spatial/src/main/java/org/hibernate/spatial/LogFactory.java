@@ -26,7 +26,7 @@ import org.jboss.logging.Logger;
 /**
  * A static factory for <code>Log</code>s.
  * <p/>
- * <p>This class is based on hibernate-ogm LoggerFactory class.</p>
+ * <p>The implementation is based on the hibernate-ogm LoggerFactory class.</p>
  *
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 1/14/12

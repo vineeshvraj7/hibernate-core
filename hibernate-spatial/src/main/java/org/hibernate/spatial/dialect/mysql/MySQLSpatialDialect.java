@@ -20,19 +20,15 @@
  */
 package org.hibernate.spatial.dialect.mysql;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.spatial.GeometrySqlTypeDescriptor;
-import org.hibernate.spatial.GeometryType;
 import org.hibernate.spatial.SpatialDialect;
 import org.hibernate.spatial.SpatialFunction;
 import org.hibernate.spatial.SpatialRelation;
-import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 /**
@@ -46,195 +42,13 @@ public class MySQLSpatialDialect extends MySQLDialect implements SpatialDialect 
 
 	public MySQLSpatialDialect() {
 		super();
-		Map<String, StandardSQLFunction> functionsToRegister = getFunctionsToRegister();
-		Map<String, Integer> columnTypes = getColumnTypesToRegister();
-		if ( null != columnTypes ) {
-			Iterator<String> keys = columnTypes.keySet().iterator();
-			while ( keys.hasNext() ) {
-				String aKey = keys.next();
-				registerColumnType( columnTypes.get( aKey ), aKey );
-			}
+		registerColumnType(
+				MySQLGeometryTypeDescriptor.INSTANCE.getSqlType(),
+				MySQLGeometryTypeDescriptor.INSTANCE.getTypeName()
+		);
+		for ( Map.Entry<String, StandardSQLFunction> entry : new MySQLSpatialFunctions() ) {
+			registerFunction( entry.getKey(), entry.getValue() );
 		}
-
-		if ( null != functionsToRegister ) {
-			Iterator<String> keys = functionsToRegister.keySet().iterator();
-			while ( keys.hasNext() ) {
-				String aKey = keys.next();
-				registerFunction( aKey, functionsToRegister.get( aKey ) );
-
-			}
-		}
-	}
-
-	protected Map<String, Integer> getColumnTypesToRegister() {
-		Map<String, Integer> columnTypes = new HashMap<String, Integer>();
-		columnTypes.put( "GEOMETRY", java.sql.Types.ARRAY );
-		return columnTypes;
-	}
-
-	protected Map<String, StandardSQLFunction> getFunctionsToRegister() {
-		Map<String, StandardSQLFunction> functionsToRegister = new HashMap<String, StandardSQLFunction>();
-
-		// registering OGC functions
-		// (spec_simplefeatures_sql_99-04.pdf)
-
-		// section 2.1.1.1
-		// Registerfunction calls for registering geometry functions:
-		// first argument is the OGC standard functionname, second the name as
-		// it occurs in the spatial dialect
-
-		functionsToRegister.put(
-				"dimension", new StandardSQLFunction(
-				"dimension",
-				StandardBasicTypes.INTEGER
-		)
-		);
-		functionsToRegister.put(
-				"geometrytype", new StandardSQLFunction(
-				"geometrytype", StandardBasicTypes.STRING
-		)
-		);
-		functionsToRegister.put(
-				"srid", new StandardSQLFunction(
-				"srid",
-				StandardBasicTypes.INTEGER
-		)
-		);
-		functionsToRegister.put(
-				"envelope", new StandardSQLFunction(
-				"envelope",
-				GeometryType.INSTANCE
-		)
-		);
-		functionsToRegister.put(
-				"astext", new StandardSQLFunction(
-				"astext",
-				StandardBasicTypes.STRING
-		)
-		);
-		functionsToRegister.put(
-				"asbinary", new StandardSQLFunction(
-				"asbinary",
-				StandardBasicTypes.BINARY
-		)
-		);
-		functionsToRegister.put(
-				"isempty", new StandardSQLFunction(
-				"isempty",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"issimple", new StandardSQLFunction(
-				"issimple",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"boundary", new StandardSQLFunction(
-				"boundary",
-				GeometryType.INSTANCE
-		)
-		);
-
-		// Register functions for spatial relation constructs
-		functionsToRegister.put(
-				"overlaps", new StandardSQLFunction(
-				"overlaps",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"intersects", new StandardSQLFunction(
-				"intersects",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"equals", new StandardSQLFunction(
-				"equals",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"contains", new StandardSQLFunction(
-				"contains",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"crosses", new StandardSQLFunction(
-				"crosses",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"disjoint", new StandardSQLFunction(
-				"disjoint",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"touches", new StandardSQLFunction(
-				"touches",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"within", new StandardSQLFunction(
-				"within",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-		functionsToRegister.put(
-				"relate", new StandardSQLFunction(
-				"relate",
-				StandardBasicTypes.BOOLEAN
-		)
-		);
-
-		// register the spatial analysis functions
-		functionsToRegister.put(
-				"distance", new StandardSQLFunction(
-				"distance",
-				StandardBasicTypes.DOUBLE
-		)
-		);
-		functionsToRegister.put(
-				"buffer", new StandardSQLFunction(
-				"buffer",
-				GeometryType.INSTANCE
-		)
-		);
-		functionsToRegister.put(
-				"convexhull", new StandardSQLFunction(
-				"convexhull",
-				GeometryType.INSTANCE
-		)
-		);
-		functionsToRegister.put(
-				"difference", new StandardSQLFunction(
-				"difference",
-				GeometryType.INSTANCE
-		)
-		);
-		functionsToRegister.put(
-				"intersection", new StandardSQLFunction(
-				"intersection", GeometryType.INSTANCE
-		)
-		);
-		functionsToRegister.put(
-				"symdifference", new StandardSQLFunction(
-				"symdifference", GeometryType.INSTANCE
-		)
-		);
-		functionsToRegister.put(
-				"geomunion", new StandardSQLFunction(
-				"union",
-				GeometryType.INSTANCE
-		)
-		);
-		return functionsToRegister;
 	}
 
 

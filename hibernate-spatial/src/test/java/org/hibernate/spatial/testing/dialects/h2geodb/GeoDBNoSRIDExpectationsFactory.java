@@ -27,6 +27,7 @@ package org.hibernate.spatial.testing.dialects.h2geodb;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
+import org.hibernate.spatial.JTSGeometryJavaTypeDescriptor;
 import org.hibernate.spatial.dialect.h2geodb.GeoDBValueExtractor;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
 import org.hibernate.spatial.testing.NativeSQLStatement;
@@ -40,7 +41,7 @@ import org.hibernate.spatial.testing.NativeSQLStatement;
  */
 public class GeoDBNoSRIDExpectationsFactory extends AbstractExpectationsFactory {
 
-	private final GeoDBValueExtractor decoder = new GeoDBValueExtractor();
+	private final GeoDBValueExtractor decoder = new GeoDBValueExtractor( JTSGeometryJavaTypeDescriptor.INSTANCE );
 
 	public GeoDBNoSRIDExpectationsFactory(GeoDBDataSourceUtils dataSourceUtils) {
 		super( dataSourceUtils );

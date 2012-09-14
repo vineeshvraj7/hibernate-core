@@ -24,7 +24,6 @@ package org.hibernate.spatial.dialect.oracle;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -38,36 +37,68 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import org.hibernate.HibernateException;
+import org.hibernate.spatial.Log;
+import org.hibernate.spatial.LogFactory;
 import org.hibernate.spatial.helper.FinderException;
-import org.hibernate.spatial.jts.JTS;
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
-import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
+import org.hibernate.type.descriptor.JdbcTypeNameMapper;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.WrapperOptions;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 8/22/11
  */
-public class SDOGeometryValueBinder implements ValueBinder<Geometry> {
+public class SDOGeometryValueBinder<J> implements ValueBinder<J> {
 
-	@Override
-	public void bind(PreparedStatement st, Geometry value, int index, WrapperOptions options) throws SQLException {
+	private static final Log LOG = LogFactory.make();
+
+	private static final String BIND_MSG_TEMPLATE = "binding parameter [%s] as [%s] - %s";
+	private static final String NULL_BIND_MSG_TEMPLATE = "binding parameter [%s] as [%s] - <null>";
+
+	private final JavaTypeDescriptor<J> javaDescriptor;
+
+
+	public SDOGeometryValueBinder(JavaTypeDescriptor<J> javaDescriptor) {
+		this.javaDescriptor = javaDescriptor;
+	}
+
+	public final void bind(PreparedStatement st, J value, int index, WrapperOptions options) throws SQLException {
 		if ( value == null ) {
-			st.setNull( index, Types.STRUCT, SDOGeometry.getTypeName() );
+			if ( LOG.isTraceEnabled() ) {
+				LOG.trace(
+						String.format(
+								NULL_BIND_MSG_TEMPLATE,
+								index,
+								JdbcTypeNameMapper.getTypeName( SDOGeometryTypeDescriptor.INSTANCE.getSqlType() )
+						)
+				);
+			}
+			st.setNull(
+					index,
+					SDOGeometryTypeDescriptor.INSTANCE.getSqlType(),
+					SDOGeometryTypeDescriptor.INSTANCE.getTypeName()
+			);
 		}
 		else {
-			Geometry jtsGeom = (Geometry) value;
+			if ( LOG.isTraceEnabled() ) {
+				LOG.trace(
+						String.format(
+								BIND_MSG_TEMPLATE,
+								index,
+								JdbcTypeNameMapper.getTypeName( SDOGeometryTypeDescriptor.INSTANCE.getSqlType() ),
+								javaDescriptor.extractLoggableRepresentation( value )
+						)
+				);
+			}
+			Geometry jtsGeom = javaDescriptor.unwrap( value, Geometry.class, options );
 			Object dbGeom = toNative( jtsGeom, st.getConnection() );
 			st.setObject( index, dbGeom );
 		}
 	}
 
-	public MGeometryFactory getGeometryFactory() {
-		return JTS.getDefaultGeomFactory();
-	}
-
-	private Object toNative(Geometry jtsGeom, Connection connection) {
+	protected Object toNative(Geometry jtsGeom, Connection connection) {
 		SDOGeometry geom = convertJTSGeometry( jtsGeom );
 		if ( geom != null ) {
 			try {

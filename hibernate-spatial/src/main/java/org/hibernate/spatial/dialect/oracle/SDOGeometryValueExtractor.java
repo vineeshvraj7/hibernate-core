@@ -38,15 +38,20 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import org.hibernate.HibernateException;
 import org.hibernate.spatial.Circle;
-import org.hibernate.spatial.dialect.AbstractJTSGeometryValueExtractor;
+import org.hibernate.spatial.dialect.AbstractGeometryValueExtractor;
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 import org.hibernate.spatial.jts.mgeom.MLineString;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 8/22/11
  */
-public class SDOGeometryValueExtractor extends AbstractJTSGeometryValueExtractor {
+public class SDOGeometryValueExtractor<X> extends AbstractGeometryValueExtractor<X> {
+
+	public SDOGeometryValueExtractor(JavaTypeDescriptor<X> javaDescriptor) {
+		super( javaDescriptor, SDOGeometryTypeDescriptor.INSTANCE );
+	}
 
 	public Geometry toJTS(Object struct) {
 		if ( struct == null ) {
