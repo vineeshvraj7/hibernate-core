@@ -21,33 +21,51 @@
 
 package org.hibernate.spatial.dialect;
 
-import com.vividsolutions.jts.geom.Geometry;
-import org.hibernate.spatial.jts.JTS;
-import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
-import org.hibernate.type.descriptor.ValueExtractor;
-import org.hibernate.type.descriptor.WrapperOptions;
-
+import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.vividsolutions.jts.geom.Geometry;
+
+import org.hibernate.spatial.GeometryJavaTypeDescriptor;
+import org.hibernate.spatial.GeometrySqlTypeDescriptor;
+import org.hibernate.spatial.jts.JTS;
+import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
+import org.hibernate.type.descriptor.WrapperOptions;
+import org.hibernate.type.descriptor.sql.BasicExtractor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 1/19/12
  */
-public abstract class AbstractJTSGeometryValueExtractor implements ValueExtractor<Geometry> {
+public abstract class AbstractJTSGeometryValueExtractor extends BasicExtractor<Geometry> {
 
-	@Override
-	public Geometry extract(ResultSet rs, String name, WrapperOptions options) throws SQLException {
-		Object geomObj = rs.getObject(name);
-		return toJTS(geomObj);
+	public AbstractJTSGeometryValueExtractor() {
+		super( new GeometryJavaTypeDescriptor( Geometry.class ), new GeometrySqlTypeDescriptor() );
 	}
 
 	protected MGeometryFactory getGeometryFactory() {
 		return JTS.getDefaultGeomFactory();
 	}
 
-	//Note: access is public because it is also used in test class. Besides it is
-	//side-effect free and doesn't use any intermediate state. So public access is safe.
+	@Override
+	protected Geometry doExtract(ResultSet rs, String name, WrapperOptions options) throws SQLException {
+		Object geomObj = rs.getObject(name);
+		return toJTS(geomObj);
+
+	}
+
+	@Override
+	protected Geometry doExtract(CallableStatement statement, int index, WrapperOptions options) throws SQLException {
+		Object geomObj = statement.getObject( index );
+		return toJTS(geomObj);
+	}
+
+	@Override
+	protected Geometry doExtract(CallableStatement statement, String name, WrapperOptions options) throws SQLException {
+		Object geomObj = statement.getObject( name );
+		return toJTS(geomObj);
+	}
 
 	abstract public Geometry toJTS(Object object);
 
