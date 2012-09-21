@@ -105,7 +105,7 @@ public class PGGeometryValueBinder<X> extends AbstractGeometryValueBinder<X> {
 		if ( forced.isEmpty() ) {
 			GeometryFactory factory = jtsGeom.getFactory();
 			if ( factory == null ) {
-				factory = JTS.getDefaultGeomFactory();
+				factory = JTS.getDefaultGeometryFactory();
 			}
 			forced = factory.createGeometryCollection( null );
 			forced.setSRID( jtsGeom.getSRID() );

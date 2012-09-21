@@ -94,7 +94,7 @@ public class MySQLGeometryValueBinder<X> extends AbstractGeometryValueBinder {
 	private Geometry createEmptyGeometryCollection(Geometry jtsGeom) {
 		GeometryFactory factory = jtsGeom.getFactory();
 		if ( factory == null ) {
-			factory = JTS.getDefaultGeomFactory();
+			factory = JTS.getDefaultGeometryFactory();
 		}
 		Geometry empty = factory.createGeometryCollection( null );
 		empty.setSRID( jtsGeom.getSRID() );
