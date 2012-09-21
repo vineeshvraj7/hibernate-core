@@ -21,18 +21,17 @@
 
 package org.hibernate.spatial.dialect;
 
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import com.vividsolutions.jts.geom.Geometry;
-
 import org.hibernate.spatial.GeometrySqlTypeDescriptor;
 import org.hibernate.spatial.jts.JTS;
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 import org.hibernate.type.descriptor.sql.BasicExtractor;
+
+import java.sql.CallableStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author Karel Maesen, Geovise BVBA
@@ -45,7 +44,7 @@ public abstract class AbstractGeometryValueExtractor<X> extends BasicExtractor<X
 	}
 
 	protected MGeometryFactory getGeometryFactory() {
-		return JTS.getDefaultGeomFactory();
+		return JTS.getDefaultGeometryFactory();
 	}
 
 	@Override
