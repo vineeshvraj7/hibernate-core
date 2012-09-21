@@ -39,7 +39,7 @@ public class Decoders {
 	final private static List<Decoder<? extends Geometry>> DECODERS = new ArrayList<Decoder<? extends Geometry>>();
 
 	static {
-		MGeometryFactory factory = JTS.getDefaultGeomFactory();
+		MGeometryFactory factory = JTS.getDefaultGeometryFactory();
 
 		//Decoders
 		DECODERS.add( new PointDecoder( factory ) );

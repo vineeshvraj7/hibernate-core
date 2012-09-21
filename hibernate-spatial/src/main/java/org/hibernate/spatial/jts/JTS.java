@@ -37,7 +37,7 @@ public class JTS {
 	private JTS() {
 	}
 
-	public static MGeometryFactory getDefaultGeomFactory() {
+	public static MGeometryFactory getDefaultGeometryFactory() {
 		return defaultGeomFactory;
 	}
 

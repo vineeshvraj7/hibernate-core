@@ -37,7 +37,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import org.hibernate.HibernateException;
-import org.hibernate.spatial.Circle;
+import org.hibernate.spatial.jts.Circle;
 import org.hibernate.spatial.dialect.AbstractGeometryValueExtractor;
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 import org.hibernate.spatial.jts.mgeom.MLineString;
@@ -483,7 +483,7 @@ public class SDOGeometryValueExtractor<X> extends AbstractGeometryValueExtractor
 				coords = Circle.linearizeCircle( x1, y1, x2, y2, x3, y3 );
 			}
 			else {
-				coords = Circle.linearizeArc( x1, y1, x2, y2, x3, y3 );
+				coords = Circle.linearizeArc(x1, y1, x2, y2, x3, y3);
 			}
 
 			// if this is an LRS geometry, fill the measure values into
