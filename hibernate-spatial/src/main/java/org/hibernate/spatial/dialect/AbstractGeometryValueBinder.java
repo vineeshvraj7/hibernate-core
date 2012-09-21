@@ -51,7 +51,7 @@ public abstract class AbstractGeometryValueBinder<X> extends BasicBinder<X> {
 	}
 
 	protected MGeometryFactory getGeometryFactory() {
-		return JTS.getDefaultGeomFactory();
+		return JTS.getDefaultGeometryFactory();
 	}
 
 	protected abstract Object toNative(Geometry jtsGeom, Connection connection);
