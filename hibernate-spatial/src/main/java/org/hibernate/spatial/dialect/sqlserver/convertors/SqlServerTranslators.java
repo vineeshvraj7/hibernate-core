@@ -53,7 +53,7 @@ public class SqlServerTranslators {
 
 
 	private static SqlServerToGeometryTranslator<? extends Geometry> decoderFor(SqlServerGeometry object) {
-		for (SqlServerToGeometryTranslator<? extends Geometry> decoder : DECODERS ) {
+		for ( SqlServerToGeometryTranslator<? extends Geometry> decoder : DECODERS ) {
 			if ( decoder.accepts( object ) ) {
 				return decoder;
 			}
@@ -70,8 +70,8 @@ public class SqlServerTranslators {
 	 */
 	public static Geometry decode(byte[] raw) {
 		SqlServerGeometry sqlServerGeom = SqlServerGeometry.deserialize( raw );
-		SqlServerToGeometryTranslator< ? extends Geometry> decoder = decoderFor( sqlServerGeom );
-		return decoder.getOutputType().cast( decoder.translate( sqlServerGeom ) );
+		SqlServerToGeometryTranslator<? extends Geometry> decoder = decoderFor( sqlServerGeom );
+		return decoder.translate( sqlServerGeom );
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class SqlServerTranslators {
 	 * @return
 	 */
 	public static SqlServerToGeometryTranslator<? extends Geometry> decoderFor(OpenGisType type) {
-		for ( SqlServerToGeometryTranslator< ? extends Geometry> decoder : DECODERS ) {
+		for ( SqlServerToGeometryTranslator<? extends Geometry> decoder : DECODERS ) {
 			if ( decoder.accepts( type ) ) {
 				return decoder;
 			}

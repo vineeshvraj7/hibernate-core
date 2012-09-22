@@ -33,14 +33,14 @@ import com.vividsolutions.jts.geom.Polygon;
  *
  * @uthor Karel Maesen, Geovise BVBA
  */
-class PolygonEncoder extends AbstractEncoder<Polygon> {
+class PolygonToSqlServerGeometryTranslator extends GeometryToSqlServerTranslator {
 
 	public boolean accepts(Geometry geom) {
 		return geom instanceof Polygon;
 	}
 
 	@Override
-	protected void encode(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
+	protected void translate(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
 		if ( !( geom instanceof Polygon ) ) {
 			throw new IllegalArgumentException( "Polygon geometry expected." );
 		}

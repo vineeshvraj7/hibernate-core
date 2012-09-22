@@ -29,7 +29,8 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
-abstract class SqlServerToGeometryCollectionTranslator<T extends GeometryCollection> extends SqlServerToGeometryTranslator<T> {
+abstract class SqlServerToGeometryCollectionTranslator<T extends GeometryCollection>
+		extends SqlServerToGeometryTranslator<T> {
 
 	SqlServerToGeometryCollectionTranslator(MGeometryFactory factory) {
 		super( factory );
@@ -46,7 +47,6 @@ abstract class SqlServerToGeometryCollectionTranslator<T extends GeometryCollect
 		geometry.setSRID( encoded.getSrid() );
 		return geometry;
 	}
-
 
 
 	@Override
@@ -68,13 +68,12 @@ abstract class SqlServerToGeometryCollectionTranslator<T extends GeometryCollect
 			Geometry geometry = decoder.translatePart( nativeGeom, childIdx );
 			geometries.add( geometry );
 		}
-		GeometryCollection geom =  createGeometry( geometries, nativeGeom.hasMValues() );
-		if (shapeIndex == 0) {
+		GeometryCollection geom = createGeometry( geometries, nativeGeom.hasMValues() );
+		if ( shapeIndex == 0 ) {
 			geom.setSRID( nativeGeom.getSrid() );
 		}
-		return getOutputType().cast(geom);
+		return getOutputType().cast( geom );
 	}
-
 
 
 	abstract protected T createGeometry(List<Geometry> geometries, boolean hasM);

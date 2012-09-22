@@ -26,7 +26,7 @@ import java.sql.Connection;
 import com.vividsolutions.jts.geom.Geometry;
 
 import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
-import org.hibernate.spatial.dialect.sqlserver.convertors.Encoders;
+import org.hibernate.spatial.dialect.sqlserver.convertors.GeometryTranslators;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
@@ -44,7 +44,7 @@ public class SqlServer2008GeometryValueBinder<X> extends AbstractGeometryValueBi
 		if ( geom == null ) {
 			throw new IllegalArgumentException( "Null geometry passed." );
 		}
-		return Encoders.encode( geom );
+		return GeometryTranslators.translate( geom );
 	}
 
 }

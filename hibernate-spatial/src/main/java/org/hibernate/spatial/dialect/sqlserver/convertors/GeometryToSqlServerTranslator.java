@@ -27,12 +27,14 @@ import java.util.List;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 
+import org.hibernate.spatial.dialect.Translator;
 import org.hibernate.spatial.jts.mgeom.MGeometry;
 
 
-abstract class AbstractEncoder<G extends Geometry> implements Encoder<G> {
+abstract class GeometryToSqlServerTranslator implements Translator<Geometry, SqlServerGeometry> {
 
-	public SqlServerGeometry encode(G geom) {
+	@Override
+	public SqlServerGeometry translate(Geometry geom) {
 		SqlServerGeometry nativeGeom = new SqlServerGeometry();
 		nativeGeom.setSrid( geom.getSRID() );
 		if ( geom.isValid() ) {
@@ -47,11 +49,17 @@ abstract class AbstractEncoder<G extends Geometry> implements Encoder<G> {
 		List<Figure> figures = new ArrayList<Figure>();
 		List<Shape> shapes = new ArrayList<Shape>();
 
-		encode( geom, -1, coordinates, figures, shapes );
+		translate( geom, -1, coordinates, figures, shapes );
 		encodePoints( nativeGeom, coordinates );
-		encodeFigures( nativeGeom, figures );
+		translateFigures( nativeGeom, figures );
 		encodeShapes( nativeGeom, shapes );
 		return nativeGeom;
+	}
+
+
+	@Override
+	public Class<SqlServerGeometry> getOutputType() {
+		return SqlServerGeometry.class;
 	}
 
 	/**
@@ -63,7 +71,7 @@ abstract class AbstractEncoder<G extends Geometry> implements Encoder<G> {
 	 * @param figures figure list to append to
 	 * @param shapes shape list to append to
 	 */
-	protected abstract void encode(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes);
+	protected abstract void translate(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes);
 
 	protected void encodeShapes(SqlServerGeometry nativeGeom, List<Shape> shapes) {
 		nativeGeom.setNumberOfShapes( shapes.size() );
@@ -72,17 +80,17 @@ abstract class AbstractEncoder<G extends Geometry> implements Encoder<G> {
 		}
 	}
 
-	protected void encodeFigures(SqlServerGeometry nativeGeom, List<Figure> figures) {
+	protected void translateFigures(SqlServerGeometry nativeGeom, List<Figure> figures) {
 		nativeGeom.setNumberOfFigures( figures.size() );
 		for ( int i = 0; i < figures.size(); i++ ) {
 			nativeGeom.setFigure( i, figures.get( i ) );
 		}
 	}
 
-	protected boolean hasMValues(G geom) {
+
+	protected boolean hasMValues(Geometry geom) {
 		return geom instanceof MGeometry;
 	}
-
 
 	protected void encodePoints(SqlServerGeometry nativeGeom, List<Coordinate> coordinates) {
 		nativeGeom.setNumberOfPoints( coordinates.size() );
@@ -100,5 +108,4 @@ abstract class AbstractEncoder<G extends Geometry> implements Encoder<G> {
 
 		nativeGeom.setCoordinate( idx, coordinate );
 	}
-
 }

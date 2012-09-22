@@ -27,10 +27,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
-class LineStringEncoder extends AbstractEncoder<LineString> {
+class LineStringToSqlServerGeometryTranslator extends GeometryToSqlServerTranslator {
 
 	@Override
-	protected void encode(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
+	protected void translate(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
 		if ( !( geom instanceof LineString ) ) {
 			throw new IllegalArgumentException( "Require LineString geometry" );
 		}

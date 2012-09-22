@@ -38,6 +38,7 @@ class SqlServerToLineStringTranslator extends SqlServerToGeometryTranslator<Line
 	OpenGisType getOpenGisType() {
 		return OpenGisType.LINESTRING;
 	}
+
 	@Override
 	protected LineString decodeEmpty(SqlServerGeometry encoded) {
 		LineString ls = getGeometryFactory().createLineString( (CoordinateSequence) null );
@@ -47,13 +48,13 @@ class SqlServerToLineStringTranslator extends SqlServerToGeometryTranslator<Line
 
 	@Override
 	public LineString translatePart(SqlServerGeometry nativeGeom, int shapeIndex) {
-		if (nativeGeom.isEmptyShape(  shapeIndex )) {
+		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
 			return getGeometryFactory().createLineString( (CoordinateSequence) null );
 		}
 		int figureOffset = nativeGeom.getFiguresForShape( shapeIndex ).start;
 		IndexRange pntIndexRange = nativeGeom.getPointsForFigure( figureOffset );
-		LineString ls =  createLineString( nativeGeom, pntIndexRange );
-		if (shapeIndex == 0) {
+		LineString ls = createLineString( nativeGeom, pntIndexRange );
+		if ( shapeIndex == 0 ) {
 			ls.setSRID( nativeGeom.getSrid() );
 		}
 		return ls;

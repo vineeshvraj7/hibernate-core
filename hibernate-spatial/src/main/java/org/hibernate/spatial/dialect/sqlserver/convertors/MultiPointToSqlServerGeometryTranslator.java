@@ -21,20 +21,29 @@
 
 package org.hibernate.spatial.dialect.sqlserver.convertors;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPoint;
 
-/**
- * Decodes native database objects to geometries of type T.
- *
- * @author Karel Maesen, Geovise BVBA.
- */
-public interface Decoder<T extends Geometry> {
-
-	public T decode(SqlServerGeometry nativeGeom);
-
-	public boolean accepts(SqlServerGeometry nativeGeom);
-
-	public boolean accepts(OpenGisType type);
+import org.hibernate.spatial.jts.mgeom.MCoordinate;
 
 
+class MultiPointToSqlServerGeometryTranslator extends GeometryCollectionToSqlServerTranslator<MultiPoint> {
+
+	public MultiPointToSqlServerGeometryTranslator() {
+		super( OpenGisType.MULTIPOINT );
+	}
+
+	@Override
+	protected boolean hasMValues(Geometry geom) {
+		for ( Coordinate c : geom.getCoordinates() ) {
+			if ( !( c instanceof MCoordinate ) ) {
+				return false;
+			}
+			if ( !Double.isNaN( ( (MCoordinate) c ).m ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -33,7 +33,7 @@ import org.hibernate.spatial.jts.mgeom.MCoordinate;
  * @author Karel Maesen, Geovise BVBA.
  *         Date: Nov 2, 2009
  */
-class PointEncoder extends AbstractEncoder<Point> {
+class PointToSqlServerGeometryTranslator extends GeometryToSqlServerTranslator {
 
 	/**
 	 * Encodes a point as an <code>SQLGeometryV1</code> object.
@@ -45,7 +45,7 @@ class PointEncoder extends AbstractEncoder<Point> {
 	 * @return
 	 */
 	@Override
-	public SqlServerGeometry encode(Point geom) {
+	public SqlServerGeometry translate(Geometry geom) {
 
 		SqlServerGeometry sqlServerGeom = new SqlServerGeometry();
 		sqlServerGeom.setSrid( geom.getSRID() );
@@ -75,7 +75,7 @@ class PointEncoder extends AbstractEncoder<Point> {
 	}
 
 	@Override
-	protected void encode(Geometry geom, int parentIdx, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
+	protected void translate(Geometry geom, int parentIdx, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
 		if ( !( geom instanceof Point ) ) {
 			throw new IllegalArgumentException( "Require Point geometry" );
 		}

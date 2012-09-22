@@ -43,20 +43,20 @@ class SqlServerToPointTranslator extends SqlServerToGeometryTranslator<Point> {
 
 	@Override
 	protected Point decodeEmpty(SqlServerGeometry encoded) {
-		Point pnt =  getGeometryFactory().createPoint( (Coordinate) null );
+		Point pnt = getGeometryFactory().createPoint( (Coordinate) null );
 		pnt.setSRID( encoded.getSrid() );
 		return pnt;
 	}
 
 	@Override
 	public Point translatePart(SqlServerGeometry nativeGeom, int shapeIndex) {
-		if (nativeGeom.isEmptyShape(  shapeIndex )) {
+		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
 			return getGeometryFactory().createPoint( (Coordinate) null );
 		}
 		int figureOffset = nativeGeom.getFiguresForShape( shapeIndex ).start;
 		int pntOffset = nativeGeom.getPointsForFigure( figureOffset ).start;
-		Point result =  createPoint( nativeGeom, pntOffset );
-		if (shapeIndex == 0) {
+		Point result = createPoint( nativeGeom, pntOffset );
+		if ( shapeIndex == 0 ) {
 			result.setSRID( nativeGeom.getSrid() );
 		}
 		return result;
@@ -71,7 +71,6 @@ class SqlServerToPointTranslator extends SqlServerToGeometryTranslator<Point> {
 	private Point createPoint(SqlServerGeometry nativeGeom, int pntOffset) {
 		return getGeometryFactory().createPoint( nativeGeom.getCoordinate( pntOffset ) );
 	}
-
 
 
 }

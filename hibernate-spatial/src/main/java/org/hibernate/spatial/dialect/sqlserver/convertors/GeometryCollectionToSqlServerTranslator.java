@@ -32,11 +32,11 @@ import com.vividsolutions.jts.geom.GeometryCollection;
  *
  * @Author Karel Maesen
  */
-class GeometryCollectionEncoder<T extends GeometryCollection> extends AbstractEncoder<T> {
+class GeometryCollectionToSqlServerTranslator<T extends GeometryCollection> extends GeometryToSqlServerTranslator {
 
 	private final OpenGisType openGisType;
 
-	GeometryCollectionEncoder(OpenGisType openGisType) {
+	GeometryCollectionToSqlServerTranslator(OpenGisType openGisType) {
 		this.openGisType = openGisType;
 	}
 
@@ -45,7 +45,7 @@ class GeometryCollectionEncoder<T extends GeometryCollection> extends AbstractEn
 	}
 
 	@Override
-	protected void encode(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
+	protected void translate(Geometry geom, int parentShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
 		if ( geom.isEmpty() ) {
 			shapes.add( new Shape( parentShapeIndex, -1, this.openGisType ) );
 			return;
@@ -65,7 +65,7 @@ class GeometryCollectionEncoder<T extends GeometryCollection> extends AbstractEn
 	}
 
 	protected void encodeComponent(Geometry geom, int thisShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
-		AbstractEncoder<? extends Geometry> encoder = (AbstractEncoder<? extends Geometry>) Encoders.encoderFor( geom );
-		encoder.encode( geom, thisShapeIndex, coordinates, figures, shapes );
+		GeometryToSqlServerTranslator encoder = GeometryTranslators.getTranslatorFor( geom );
+		encoder.translate( geom, thisShapeIndex, coordinates, figures, shapes );
 	}
 }

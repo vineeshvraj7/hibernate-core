@@ -34,35 +34,35 @@ import com.vividsolutions.jts.geom.MultiPolygon;
  *
  * @author Karel Maesen, Geovise BVBA.
  */
-public class Encoders {
+public class GeometryTranslators {
 
-	final private static List<Encoder<? extends Geometry>> ENCODERS = new ArrayList<Encoder<? extends Geometry>>();
+	final private static List<GeometryToSqlServerTranslator> TRANSLATORS = new ArrayList<GeometryToSqlServerTranslator>();
 
 
 	static {
 		//Encoders
-		ENCODERS.add( new PointEncoder() );
-		ENCODERS.add( new LineStringEncoder() );
-		ENCODERS.add( new PolygonEncoder() );
-		ENCODERS.add( new MultiPointEncoder() );
-		ENCODERS.add( new GeometryCollectionEncoder<MultiLineString>( OpenGisType.MULTILINESTRING ) );
-		ENCODERS.add( new GeometryCollectionEncoder<MultiPolygon>( OpenGisType.MULTIPOLYGON ) );
-		ENCODERS.add( new GeometryCollectionEncoder<GeometryCollection>( OpenGisType.GEOMETRYCOLLECTION ) );
+		TRANSLATORS.add( new PointToSqlServerGeometryTranslator() );
+		TRANSLATORS.add( new LineStringToSqlServerGeometryTranslator() );
+		TRANSLATORS.add( new PolygonToSqlServerGeometryTranslator() );
+		TRANSLATORS.add( new MultiPointToSqlServerGeometryTranslator() );
+		TRANSLATORS.add( new GeometryCollectionToSqlServerTranslator<MultiLineString>( OpenGisType.MULTILINESTRING ) );
+		TRANSLATORS.add( new GeometryCollectionToSqlServerTranslator<MultiPolygon>( OpenGisType.MULTIPOLYGON ) );
+		TRANSLATORS.add( new GeometryCollectionToSqlServerTranslator<GeometryCollection>( OpenGisType.GEOMETRYCOLLECTION ) );
 
 	}
 
-	public static Encoder<? extends Geometry> encoderFor(Geometry geom) {
-		for ( Encoder<? extends Geometry> encoder : ENCODERS ) {
-			if ( encoder.accepts( geom ) ) {
-				return encoder;
+	public static GeometryToSqlServerTranslator getTranslatorFor(Geometry geom) {
+		for ( GeometryToSqlServerTranslator translator : TRANSLATORS ) {
+			if ( translator.accepts( geom ) ) {
+				return translator;
 			}
 		}
 		throw new IllegalArgumentException( "No encoder for type " + geom.getGeometryType() );
 	}
 
-	public static <T extends Geometry> byte[] encode(T geom) {
-		Encoder<T> encoder = (Encoder<T>) encoderFor( geom );
-		SqlServerGeometry sqlServerGeometry = encoder.encode( geom );
+	public static <T extends Geometry> byte[] translate(T geom) {
+		GeometryToSqlServerTranslator translator = getTranslatorFor( geom );
+		SqlServerGeometry sqlServerGeometry = translator.translate( geom );
 		return SqlServerGeometry.serialize( sqlServerGeometry );
 	}
 
