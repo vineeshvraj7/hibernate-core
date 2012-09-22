@@ -23,6 +23,7 @@ package org.hibernate.spatial.dialect.sqlserver;
 
 import java.sql.Blob;
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -30,11 +31,13 @@ import java.sql.Types;
 import com.vividsolutions.jts.geom.Geometry;
 
 import org.hibernate.spatial.GeometrySqlTypeDescriptor;
+import org.hibernate.spatial.dialect.sqlserver.translators.GeometryTranslators;
 import org.hibernate.spatial.dialect.sqlserver.translators.SqlServerTranslators;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.sql.BasicBinder;
 import org.hibernate.type.descriptor.sql.BasicExtractor;
 
 /**
@@ -62,7 +65,15 @@ public class SqlServer2008GeometryTypeDescriptor extends GeometrySqlTypeDescript
 
 	@Override
 	public <X> ValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
-		return (ValueBinder<X>) new SqlServer2008GeometryValueBinder( javaTypeDescriptor );
+		return new BasicBinder<X>(javaTypeDescriptor, this){
+			@Override
+			protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options) throws SQLException {
+				Geometry jtsGeom = getJavaDescriptor().unwrap( value, Geometry.class, options );
+				byte[] bytes = GeometryTranslators.translate( jtsGeom );
+				st.setObject( index, bytes );
+			}
+
+		};
 	}
 
 	@Override
