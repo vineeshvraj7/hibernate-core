@@ -30,14 +30,14 @@ import com.vividsolutions.jts.geom.MultiLineString;
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 import org.hibernate.spatial.jts.mgeom.MLineString;
 
-class MultiLineStringDecoder extends AbstractGeometryCollectionDecoder<MultiLineString> {
+class SqlServerToMultiLineStringTranslator extends SqlServerToGeometryCollectionTranslator<MultiLineString> {
 
-	public MultiLineStringDecoder(MGeometryFactory factory) {
+	public SqlServerToMultiLineStringTranslator(MGeometryFactory factory) {
 		super( factory );
 	}
 
 	@Override
-	protected OpenGisType getOpenGisType() {
+	OpenGisType getOpenGisType() {
 		return OpenGisType.MULTILINESTRING;
 	}
 
@@ -52,4 +52,8 @@ class MultiLineStringDecoder extends AbstractGeometryCollectionDecoder<MultiLine
 		return getGeometryFactory().createMultiLineString( lAr );
 	}
 
+	@Override
+	public Class<MultiLineString> getOutputType() {
+		return MultiLineString.class;
+	}
 }

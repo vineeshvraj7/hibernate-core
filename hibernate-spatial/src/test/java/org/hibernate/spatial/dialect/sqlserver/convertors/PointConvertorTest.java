@@ -84,15 +84,5 @@ public class PointConvertorTest extends AbstractConvertorTest {
 		super.test_decoding();
 	}
 
-	@Test
-	public void test_test_empty_point() {
-		//TODO  -- How?
-	}
-
-	@Test
-	public void test_no_srid() {
-		//TODO -- How?
-	}
-
 
 }

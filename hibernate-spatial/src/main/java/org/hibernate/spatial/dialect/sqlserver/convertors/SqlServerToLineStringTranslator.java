@@ -28,33 +28,40 @@ import com.vividsolutions.jts.geom.LineString;
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
-class LineStringDecoder extends AbstractDecoder<LineString> {
+class SqlServerToLineStringTranslator extends SqlServerToGeometryTranslator<LineString> {
 
-	public LineStringDecoder(MGeometryFactory factory) {
+	public SqlServerToLineStringTranslator(MGeometryFactory factory) {
 		super( factory );
 	}
 
 	@Override
-	protected OpenGisType getOpenGisType() {
+	OpenGisType getOpenGisType() {
 		return OpenGisType.LINESTRING;
 	}
-
-	protected LineString createNullGeometry() {
-		return getGeometryFactory().createLineString( (CoordinateSequence) null );
-	}
-
-	protected LineString createGeometry(SqlServerGeometry nativeGeom) {
-		return createLineString( nativeGeom, new IndexRange( 0, nativeGeom.getNumPoints() ) );
+	@Override
+	protected LineString decodeEmpty(SqlServerGeometry encoded) {
+		LineString ls = getGeometryFactory().createLineString( (CoordinateSequence) null );
+		ls.setSRID( encoded.getSrid() );
+		return ls;
 	}
 
 	@Override
-	protected LineString createGeometry(SqlServerGeometry nativeGeom, int shapeIndex) {
-		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
-			return createNullGeometry();
+	public LineString translatePart(SqlServerGeometry nativeGeom, int shapeIndex) {
+		if (nativeGeom.isEmptyShape(  shapeIndex )) {
+			return getGeometryFactory().createLineString( (CoordinateSequence) null );
 		}
 		int figureOffset = nativeGeom.getFiguresForShape( shapeIndex ).start;
 		IndexRange pntIndexRange = nativeGeom.getPointsForFigure( figureOffset );
-		return createLineString( nativeGeom, pntIndexRange );
+		LineString ls =  createLineString( nativeGeom, pntIndexRange );
+		if (shapeIndex == 0) {
+			ls.setSRID( nativeGeom.getSrid() );
+		}
+		return ls;
+	}
+
+	@Override
+	public Class<LineString> getOutputType() {
+		return LineString.class;
 	}
 
 	protected LineString createLineString(SqlServerGeometry nativeGeom, IndexRange pntIndexRange) {
@@ -71,6 +78,4 @@ class LineStringDecoder extends AbstractDecoder<LineString> {
 		}
 
 	}
-
-
 }

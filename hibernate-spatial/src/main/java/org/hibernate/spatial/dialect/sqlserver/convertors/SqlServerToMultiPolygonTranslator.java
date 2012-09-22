@@ -29,15 +29,15 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
-class MultiPolygonDecoder extends AbstractGeometryCollectionDecoder<MultiPolygon> {
+class SqlServerToMultiPolygonTranslator extends SqlServerToGeometryCollectionTranslator<MultiPolygon> {
 
-	public MultiPolygonDecoder(MGeometryFactory factory) {
+	SqlServerToMultiPolygonTranslator(MGeometryFactory factory) {
 		super( factory );
 	}
 
 
 	@Override
-	protected OpenGisType getOpenGisType() {
+	OpenGisType getOpenGisType() {
 		return OpenGisType.MULTIPOLYGON;
 	}
 
@@ -48,4 +48,8 @@ class MultiPolygonDecoder extends AbstractGeometryCollectionDecoder<MultiPolygon
 	}
 
 
+	@Override
+	public Class<MultiPolygon> getOutputType() {
+		return MultiPolygon.class;
+	}
 }

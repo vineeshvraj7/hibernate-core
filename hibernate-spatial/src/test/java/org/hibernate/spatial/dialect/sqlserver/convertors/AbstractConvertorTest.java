@@ -41,6 +41,7 @@ import org.hibernate.spatial.testing.TestData;
 import org.hibernate.spatial.testing.TestSupport;
 import org.hibernate.spatial.testing.dialects.sqlserver.SQLServerExpressionTemplate;
 import org.hibernate.spatial.testing.dialects.sqlserver.SQLServerTestSupport;
+import org.hibernate.testing.AfterClassOnce;
 
 import static org.junit.Assert.assertTrue;
 
@@ -79,17 +80,18 @@ public abstract class AbstractConvertorTest extends SpatialFunctionalTestCase {
 			throw new RuntimeException( e );
 		}
 	}
-//
-//    public void afterClass() {
-//        try {
-//            String sql = dataSourceUtils.parseSqlIn("sqlserver/drop-sqlserver-test-schema.sql");
-//            dataSourceUtils.executeStatement(sql);
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+
+	@AfterClassOnce
+    public void afterClass() {
+        try {
+            String sql = dataSourceUtils.parseSqlIn("sqlserver/drop-sqlserver-test-schema.sql");
+            dataSourceUtils.executeStatement(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	public void doDecoding(OpenGisType type) {
 		rawResults = dataSourceUtils.rawDbObjects( type.toString() );
@@ -98,7 +100,7 @@ public abstract class AbstractConvertorTest extends SpatialFunctionalTestCase {
 		decodedGeoms = new HashMap<Integer, Geometry>();
 
 		for ( Integer id : rawResults.keySet() ) {
-			Geometry geometry = Decoders.decode( (byte[]) rawResults.get( id ) );
+			Geometry geometry = SqlServerTranslators.decode( (byte[]) rawResults.get( id ) );
 			decodedGeoms.put( id, geometry );
 		}
 	}

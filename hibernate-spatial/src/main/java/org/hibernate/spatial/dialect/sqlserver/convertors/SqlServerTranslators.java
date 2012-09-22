@@ -34,26 +34,26 @@ import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
  *
  * @author Karel Maesen, Geovise BVBA.
  */
-public class Decoders {
+public class SqlServerTranslators {
 
-	final private static List<Decoder<? extends Geometry>> DECODERS = new ArrayList<Decoder<? extends Geometry>>();
+	final private static List<SqlServerToGeometryTranslator<? extends Geometry>> DECODERS = new ArrayList<SqlServerToGeometryTranslator<? extends Geometry>>();
 
 	static {
 		MGeometryFactory factory = JTS.getDefaultGeometryFactory();
 
 		//Decoders
-		DECODERS.add( new PointDecoder( factory ) );
-		DECODERS.add( new LineStringDecoder( factory ) );
-		DECODERS.add( new PolygonDecoder( factory ) );
-		DECODERS.add( new MultiLineStringDecoder( factory ) );
-		DECODERS.add( new MultiPolygonDecoder( factory ) );
-		DECODERS.add( new MultiPointDecoder( factory ) );
+		DECODERS.add( new SqlServerToPointTranslator( factory ) );
+		DECODERS.add( new SqlServerToLineStringTranslator( factory ) );
+		DECODERS.add( new SqlServerToPolygonTranslator( factory ) );
+		DECODERS.add( new SqlServerToMultiLineStringTranslator( factory ) );
+		DECODERS.add( new SqlServerToMultiPolygonTranslator( factory ) );
+		DECODERS.add( new SqlServerToMultiPointTranslator( factory ) );
 		DECODERS.add( new GeometryCollectionDecoder( factory ) );
 	}
 
 
-	private static Decoder<? extends Geometry> decoderFor(SqlServerGeometry object) {
-		for ( Decoder<? extends Geometry> decoder : DECODERS ) {
+	private static SqlServerToGeometryTranslator<? extends Geometry> decoderFor(SqlServerGeometry object) {
+		for (SqlServerToGeometryTranslator<? extends Geometry> decoder : DECODERS ) {
 			if ( decoder.accepts( object ) ) {
 				return decoder;
 			}
@@ -70,8 +70,8 @@ public class Decoders {
 	 */
 	public static Geometry decode(byte[] raw) {
 		SqlServerGeometry sqlServerGeom = SqlServerGeometry.deserialize( raw );
-		Decoder decoder = decoderFor( sqlServerGeom );
-		return decoder.decode( sqlServerGeom );
+		SqlServerToGeometryTranslator< ? extends Geometry> decoder = decoderFor( sqlServerGeom );
+		return decoder.getOutputType().cast( decoder.translate( sqlServerGeom ) );
 	}
 
 	/**
@@ -81,8 +81,8 @@ public class Decoders {
 	 *
 	 * @return
 	 */
-	public static Decoder<? extends Geometry> decoderFor(OpenGisType type) {
-		for ( Decoder<? extends Geometry> decoder : DECODERS ) {
+	public static SqlServerToGeometryTranslator<? extends Geometry> decoderFor(OpenGisType type) {
+		for ( SqlServerToGeometryTranslator< ? extends Geometry> decoder : DECODERS ) {
 			if ( decoder.accepts( type ) ) {
 				return decoder;
 			}

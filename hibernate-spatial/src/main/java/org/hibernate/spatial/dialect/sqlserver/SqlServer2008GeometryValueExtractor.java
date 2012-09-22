@@ -27,7 +27,7 @@ import java.sql.SQLException;
 import com.vividsolutions.jts.geom.Geometry;
 
 import org.hibernate.spatial.dialect.AbstractGeometryValueExtractor;
-import org.hibernate.spatial.dialect.sqlserver.convertors.Decoders;
+import org.hibernate.spatial.dialect.sqlserver.convertors.SqlServerTranslators;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
@@ -54,7 +54,7 @@ public class SqlServer2008GeometryValueExtractor<X> extends AbstractGeometryValu
 		else {
 			throw new IllegalArgumentException( "Expected byte array." );
 		}
-		return Decoders.decode( raw );
+		return SqlServerTranslators.decode( raw );
 	}
 
 	private byte[] toByteArray(Blob blob) {

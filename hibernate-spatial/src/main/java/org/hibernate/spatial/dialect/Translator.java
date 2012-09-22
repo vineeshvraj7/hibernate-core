@@ -19,38 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver.convertors;
+package org.hibernate.spatial.dialect;
 
-import java.util.List;
+public interface Translator<I, O> {
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
+	public O translate(I value);
 
-import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
+	public boolean accepts(I value);
 
-/**
- * <code>Decoder</code> for GeometryCollections.
- *
- * @author Karel Maesen, Geovise BVBA
- */
-
-class MultiPointDecoder extends AbstractGeometryCollectionDecoder<MultiPoint> {
-
-	public MultiPointDecoder(MGeometryFactory factory) {
-		super( factory );
-	}
-
-
-	@Override
-	protected OpenGisType getOpenGisType() {
-		return OpenGisType.MULTIPOINT;
-	}
-
-	@Override
-	protected MultiPoint createGeometry(List<Geometry> geometries, boolean hasM) {
-		Point[] points = geometries != null ? geometries.toArray( new Point[geometries.size()] ) : null;
-		return getGeometryFactory().createMultiPoint( points );
-	}
+	public Class<O> getOutputType();
 
 }

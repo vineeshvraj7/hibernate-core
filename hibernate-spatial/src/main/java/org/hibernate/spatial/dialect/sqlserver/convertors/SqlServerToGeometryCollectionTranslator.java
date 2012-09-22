@@ -29,45 +29,53 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
-abstract class AbstractGeometryCollectionDecoder<T extends GeometryCollection> extends AbstractDecoder<T> {
+abstract class SqlServerToGeometryCollectionTranslator<T extends GeometryCollection> extends SqlServerToGeometryTranslator<T> {
 
-	public AbstractGeometryCollectionDecoder(MGeometryFactory factory) {
+	SqlServerToGeometryCollectionTranslator(MGeometryFactory factory) {
 		super( factory );
 	}
 
 	@Override
-	protected OpenGisType getOpenGisType() {
+	OpenGisType getOpenGisType() {
 		return OpenGisType.GEOMETRYCOLLECTION;
 	}
 
 	@Override
-	protected T createNullGeometry() {
-		return createGeometry( (List<Geometry>) null, false );
+	protected T decodeEmpty(SqlServerGeometry encoded) {
+		T geometry = createGeometry( (List<Geometry>) null, false );
+		geometry.setSRID( encoded.getSrid() );
+		return geometry;
 	}
 
-	@Override
-	protected T createGeometry(SqlServerGeometry nativeGeom) {
-		return createGeometry( nativeGeom, 0 );
-	}
+
 
 	@Override
-	protected T createGeometry(SqlServerGeometry nativeGeom, int shapeIndex) {
+	public T translatePart(SqlServerGeometry nativeGeom, int shapeIndex) {
+		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
+			return createGeometry( (List<Geometry>) null, false );
+		}
 		int startChildIdx = shapeIndex + 1;
 		List<Geometry> geometries = new ArrayList<Geometry>( nativeGeom.getNumShapes() );
 		for ( int childIdx = startChildIdx; childIdx < nativeGeom.getNumShapes(); childIdx++ ) {
 			if ( !nativeGeom.isParentShapeOf( shapeIndex, childIdx ) ) {
 				continue;
 			}
-			AbstractDecoder<?> decoder = (AbstractDecoder<?>) Decoders.decoderFor(
+			SqlServerToGeometryTranslator<?> decoder = SqlServerTranslators.decoderFor(
 					nativeGeom.getOpenGisTypeOfShape(
 							childIdx
 					)
 			);
-			Geometry geometry = decoder.createGeometry( nativeGeom, childIdx );
+			Geometry geometry = decoder.translatePart( nativeGeom, childIdx );
 			geometries.add( geometry );
 		}
-		return createGeometry( geometries, nativeGeom.hasMValues() );
+		GeometryCollection geom =  createGeometry( geometries, nativeGeom.hasMValues() );
+		if (shapeIndex == 0) {
+			geom.setSRID( nativeGeom.getSrid() );
+		}
+		return getOutputType().cast(geom);
 	}
+
+
 
 	abstract protected T createGeometry(List<Geometry> geometries, boolean hasM);
 

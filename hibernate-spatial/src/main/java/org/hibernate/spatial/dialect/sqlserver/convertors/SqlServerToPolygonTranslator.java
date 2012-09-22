@@ -30,30 +30,34 @@ import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 /**
  * @author Karel Maesen, Geovise BVBA
  */
-class PolygonDecoder extends AbstractDecoder<Polygon> {
+class SqlServerToPolygonTranslator extends SqlServerToGeometryTranslator<Polygon> {
 
-	public PolygonDecoder(MGeometryFactory factory) {
+	SqlServerToPolygonTranslator(MGeometryFactory factory) {
 		super( factory );
 	}
 
 	@Override
-	protected OpenGisType getOpenGisType() {
+	OpenGisType getOpenGisType() {
 		return OpenGisType.POLYGON;
 	}
 
-	protected Polygon createNullGeometry() {
-		return getGeometryFactory().createPolygon( null, null );
+	private LinearRing toLinearRing(SqlServerGeometry nativeGeom, IndexRange range) {
+		Coordinate[] coordinates = nativeGeom.coordinateRange( range );
+		return getGeometryFactory().createLinearRing( coordinates );
 	}
 
-	protected Polygon createGeometry(SqlServerGeometry nativeGeom) {
-		return createGeometry( nativeGeom, 0 );
+	@Override
+	protected Polygon decodeEmpty(SqlServerGeometry encoded) {
+		Polygon pg = getGeometryFactory().createPolygon( null, null );
+		pg.setSRID( encoded.getSrid() );
+		return pg;
 	}
 
-	protected Polygon createGeometry(SqlServerGeometry nativeGeom, int shapeIndex) {
+	@Override
+	public Polygon translatePart(SqlServerGeometry nativeGeom, int shapeIndex) {
 		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
-			return createNullGeometry();
+			return getGeometryFactory().createPolygon( null, null );
 		}
-		//polygons consist of one exterior ring figure, and several interior ones.
 		IndexRange figureRange = nativeGeom.getFiguresForShape( shapeIndex );
 		LinearRing[] holes = new LinearRing[figureRange.length() - 1];
 		LinearRing shell = null;
@@ -66,12 +70,15 @@ class PolygonDecoder extends AbstractDecoder<Polygon> {
 				shell = toLinearRing( nativeGeom, pntIndexRange );
 			}
 		}
-		return getGeometryFactory().createPolygon( shell, holes );
+		Polygon pg = getGeometryFactory().createPolygon( shell, holes );
+		if ( shapeIndex == 0 ) {
+			pg.setSRID( nativeGeom.getSrid() );
+		}
+		return pg;
 	}
 
-	private LinearRing toLinearRing(SqlServerGeometry nativeGeom, IndexRange range) {
-		Coordinate[] coordinates = nativeGeom.coordinateRange( range );
-		return getGeometryFactory().createLinearRing( coordinates );
+	@Override
+	public Class<Polygon> getOutputType() {
+		return Polygon.class;
 	}
-
 }

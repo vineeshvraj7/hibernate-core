@@ -30,38 +30,48 @@ import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
  * @author Karel Maesen, Geovise BVBA.
  *         Date: Nov 2, 2009
  */
-class PointDecoder extends AbstractDecoder<Point> {
+class SqlServerToPointTranslator extends SqlServerToGeometryTranslator<Point> {
 
-	public PointDecoder(MGeometryFactory factory) {
+	public SqlServerToPointTranslator(MGeometryFactory factory) {
 		super( factory );
 	}
 
 	@Override
-	protected OpenGisType getOpenGisType() {
-		return OpenGisType.POINT;
-	}
-
-	protected Point createNullGeometry() {
-		return getGeometryFactory().createPoint( (Coordinate) null );
-	}
-
-	protected Point createGeometry(SqlServerGeometry nativeGeom) {
-		return createPoint( nativeGeom, 0 );
+	public Class<Point> getOutputType() {
+		return Point.class;
 	}
 
 	@Override
-	protected Point createGeometry(SqlServerGeometry nativeGeom, int shapeIndex) {
-		if ( nativeGeom.isEmptyShape( shapeIndex ) ) {
-			return createNullGeometry();
+	protected Point decodeEmpty(SqlServerGeometry encoded) {
+		Point pnt =  getGeometryFactory().createPoint( (Coordinate) null );
+		pnt.setSRID( encoded.getSrid() );
+		return pnt;
+	}
+
+	@Override
+	public Point translatePart(SqlServerGeometry nativeGeom, int shapeIndex) {
+		if (nativeGeom.isEmptyShape(  shapeIndex )) {
+			return getGeometryFactory().createPoint( (Coordinate) null );
 		}
 		int figureOffset = nativeGeom.getFiguresForShape( shapeIndex ).start;
 		int pntOffset = nativeGeom.getPointsForFigure( figureOffset ).start;
-		return createPoint( nativeGeom, pntOffset );
+		Point result =  createPoint( nativeGeom, pntOffset );
+		if (shapeIndex == 0) {
+			result.setSRID( nativeGeom.getSrid() );
+		}
+		return result;
 	}
+
+	@Override
+	OpenGisType getOpenGisType() {
+		return OpenGisType.POINT;
+	}
+
 
 	private Point createPoint(SqlServerGeometry nativeGeom, int pntOffset) {
 		return getGeometryFactory().createPoint( nativeGeom.getCoordinate( pntOffset ) );
 	}
+
 
 
 }
