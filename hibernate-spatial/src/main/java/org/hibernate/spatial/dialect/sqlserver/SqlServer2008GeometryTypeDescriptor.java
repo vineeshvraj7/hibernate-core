@@ -30,7 +30,7 @@ import java.sql.Types;
 import com.vividsolutions.jts.geom.Geometry;
 
 import org.hibernate.spatial.GeometrySqlTypeDescriptor;
-import org.hibernate.spatial.dialect.sqlserver.convertors.SqlServerTranslators;
+import org.hibernate.spatial.dialect.sqlserver.translators.SqlServerTranslators;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.ValueExtractor;
 import org.hibernate.type.descriptor.WrapperOptions;

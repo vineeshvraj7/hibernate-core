@@ -19,32 +19,39 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver;
+package org.hibernate.spatial.dialect.sqlserver.translators;
 
-import java.sql.Connection;
+import org.junit.Test;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
-import org.hibernate.spatial.dialect.sqlserver.translators.GeometryTranslators;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.spatial.dialect.sqlserver.SqlServer2008SpatialDialect;
+import org.hibernate.testing.BeforeClassOnce;
+import org.hibernate.testing.RequiresDialect;
 
 /**
- * @author Karel Maesen, Geovise BVBA
- *         creation-date: 8/23/11
+ * Created by IntelliJ IDEA.
+ * User: maesenka
+ * Date: Jan 24, 2010
+ * Time: 5:33:19 PM
+ * To change this template use File | Settings | File Templates.
  */
-public class SqlServer2008GeometryValueBinder<X> extends AbstractGeometryValueBinder {
+@RequiresDialect(value = SqlServer2008SpatialDialect.class)
+public class GeometryCollectionConvertorTest extends AbstractConvertorTest {
 
-
-	public SqlServer2008GeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
-		super( javaDescriptor, SqlServer2008GeometryTypeDescriptor.INSTANCE );
+	@BeforeClassOnce
+	public void beforeClass() {
+		super.beforeClass();
+		doDecoding( OpenGisType.GEOMETRYCOLLECTION );
+		doEncoding();
 	}
 
-	public Object toNative(Geometry geom, Connection connection) {
-		if ( geom == null ) {
-			throw new IllegalArgumentException( "Null geometry passed." );
-		}
-		return GeometryTranslators.translate( geom );
+	@Test
+	public void test_encoding() {
+		super.test_encoding();
+	}
+
+	@Test
+	public void test_decoding() {
+		super.test_decoding();
 	}
 
 }

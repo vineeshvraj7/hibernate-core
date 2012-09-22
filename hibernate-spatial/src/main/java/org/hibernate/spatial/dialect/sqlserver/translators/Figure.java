@@ -19,32 +19,40 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver;
+package org.hibernate.spatial.dialect.sqlserver.translators;
 
-import java.sql.Connection;
+import java.nio.ByteBuffer;
 
-import com.vividsolutions.jts.geom.Geometry;
-
-import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
-import org.hibernate.spatial.dialect.sqlserver.translators.GeometryTranslators;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
-
-/**
- * @author Karel Maesen, Geovise BVBA
- *         creation-date: 8/23/11
- */
-public class SqlServer2008GeometryValueBinder<X> extends AbstractGeometryValueBinder {
+class Figure {
 
 
-	public SqlServer2008GeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
-		super( javaDescriptor, SqlServer2008GeometryTypeDescriptor.INSTANCE );
+	final FigureAttribute figureAttribute;
+	final int pointOffset;
+
+	Figure(FigureAttribute attribute, int offset) {
+		this.figureAttribute = attribute;
+		this.pointOffset = offset;
 	}
 
-	public Object toNative(Geometry geom, Connection connection) {
-		if ( geom == null ) {
-			throw new IllegalArgumentException( "Null geometry passed." );
-		}
-		return GeometryTranslators.translate( geom );
+	static int getByteSize() {
+		return 5;
+	}
+
+	void store(ByteBuffer buffer) {
+		buffer.put( figureAttribute.byteValue );
+		buffer.putInt( pointOffset );
+	}
+
+	boolean isInteriorRing() {
+		return this.figureAttribute.equals( FigureAttribute.InteriorRing );
+	}
+
+	boolean isExteriorRing() {
+		return this.figureAttribute.equals( FigureAttribute.ExteriorRing );
+	}
+
+	boolean isStroke() {
+		return this.figureAttribute.equals( FigureAttribute.Stroke );
 	}
 
 }

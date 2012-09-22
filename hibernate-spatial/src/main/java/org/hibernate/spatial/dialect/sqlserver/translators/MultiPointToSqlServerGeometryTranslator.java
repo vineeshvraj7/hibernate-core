@@ -19,32 +19,31 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver;
+package org.hibernate.spatial.dialect.sqlserver.translators;
 
-import java.sql.Connection;
-
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPoint;
 
-import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
-import org.hibernate.spatial.dialect.sqlserver.translators.GeometryTranslators;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
-
-/**
- * @author Karel Maesen, Geovise BVBA
- *         creation-date: 8/23/11
- */
-public class SqlServer2008GeometryValueBinder<X> extends AbstractGeometryValueBinder {
+import org.hibernate.spatial.jts.mgeom.MCoordinate;
 
 
-	public SqlServer2008GeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
-		super( javaDescriptor, SqlServer2008GeometryTypeDescriptor.INSTANCE );
+class MultiPointToSqlServerGeometryTranslator extends GeometryCollectionToSqlServerTranslator<MultiPoint> {
+
+	public MultiPointToSqlServerGeometryTranslator() {
+		super( OpenGisType.MULTIPOINT );
 	}
 
-	public Object toNative(Geometry geom, Connection connection) {
-		if ( geom == null ) {
-			throw new IllegalArgumentException( "Null geometry passed." );
+	@Override
+	protected boolean hasMValues(Geometry geom) {
+		for ( Coordinate c : geom.getCoordinates() ) {
+			if ( !( c instanceof MCoordinate ) ) {
+				return false;
+			}
+			if ( !Double.isNaN( ( (MCoordinate) c ).m ) ) {
+				return true;
+			}
 		}
-		return GeometryTranslators.translate( geom );
+		return false;
 	}
-
 }

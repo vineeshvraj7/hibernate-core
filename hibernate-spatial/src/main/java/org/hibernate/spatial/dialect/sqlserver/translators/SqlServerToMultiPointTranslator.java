@@ -19,32 +19,42 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver;
+package org.hibernate.spatial.dialect.sqlserver.translators;
 
-import java.sql.Connection;
+import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.Point;
 
-import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
-import org.hibernate.spatial.dialect.sqlserver.translators.GeometryTranslators;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
 /**
+ * <code>Decoder</code> for GeometryCollections.
+ *
  * @author Karel Maesen, Geovise BVBA
- *         creation-date: 8/23/11
  */
-public class SqlServer2008GeometryValueBinder<X> extends AbstractGeometryValueBinder {
 
+class SqlServerToMultiPointTranslator extends SqlServerToGeometryCollectionTranslator<MultiPoint> {
 
-	public SqlServer2008GeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
-		super( javaDescriptor, SqlServer2008GeometryTypeDescriptor.INSTANCE );
+	SqlServerToMultiPointTranslator(MGeometryFactory factory) {
+		super( factory );
 	}
 
-	public Object toNative(Geometry geom, Connection connection) {
-		if ( geom == null ) {
-			throw new IllegalArgumentException( "Null geometry passed." );
-		}
-		return GeometryTranslators.translate( geom );
+
+	@Override
+	OpenGisType getOpenGisType() {
+		return OpenGisType.MULTIPOINT;
 	}
 
+	@Override
+	protected MultiPoint createGeometry(List<Geometry> geometries, boolean hasM) {
+		Point[] points = geometries != null ? geometries.toArray( new Point[geometries.size()] ) : null;
+		return getGeometryFactory().createMultiPoint( points );
+	}
+
+	@Override
+	public Class<MultiPoint> getOutputType() {
+		return MultiPoint.class;
+	}
 }

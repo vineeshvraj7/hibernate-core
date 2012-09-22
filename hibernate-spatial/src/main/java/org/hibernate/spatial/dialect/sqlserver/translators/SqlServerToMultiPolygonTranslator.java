@@ -19,32 +19,37 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver;
+package org.hibernate.spatial.dialect.sqlserver.translators;
 
-import java.sql.Connection;
+import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 
-import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
-import org.hibernate.spatial.dialect.sqlserver.translators.GeometryTranslators;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
-/**
- * @author Karel Maesen, Geovise BVBA
- *         creation-date: 8/23/11
- */
-public class SqlServer2008GeometryValueBinder<X> extends AbstractGeometryValueBinder {
+class SqlServerToMultiPolygonTranslator extends SqlServerToGeometryCollectionTranslator<MultiPolygon> {
 
-
-	public SqlServer2008GeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
-		super( javaDescriptor, SqlServer2008GeometryTypeDescriptor.INSTANCE );
+	SqlServerToMultiPolygonTranslator(MGeometryFactory factory) {
+		super( factory );
 	}
 
-	public Object toNative(Geometry geom, Connection connection) {
-		if ( geom == null ) {
-			throw new IllegalArgumentException( "Null geometry passed." );
-		}
-		return GeometryTranslators.translate( geom );
+
+	@Override
+	OpenGisType getOpenGisType() {
+		return OpenGisType.MULTIPOLYGON;
 	}
 
+	@Override
+	protected MultiPolygon createGeometry(List<Geometry> geometries, boolean hasM) {
+		Polygon[] polygons = geometries != null ? geometries.toArray( new Polygon[geometries.size()] ) : null;
+		return getGeometryFactory().createMultiPolygon( polygons );
+	}
+
+
+	@Override
+	public Class<MultiPolygon> getOutputType() {
+		return MultiPolygon.class;
+	}
 }

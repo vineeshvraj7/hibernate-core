@@ -19,32 +19,23 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver;
-
-import java.sql.Connection;
-
-import com.vividsolutions.jts.geom.Geometry;
-
-import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
-import org.hibernate.spatial.dialect.sqlserver.translators.GeometryTranslators;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+package org.hibernate.spatial.dialect.sqlserver.translators;
 
 /**
- * @author Karel Maesen, Geovise BVBA
- *         creation-date: 8/23/11
+ * A Range of indices.
  */
-public class SqlServer2008GeometryValueBinder<X> extends AbstractGeometryValueBinder {
+class IndexRange {
 
+	final int start;
+	final int end;
 
-	public SqlServer2008GeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
-		super( javaDescriptor, SqlServer2008GeometryTypeDescriptor.INSTANCE );
+	IndexRange(int start, int end) {
+		this.start = start;
+		this.end = end;
 	}
 
-	public Object toNative(Geometry geom, Connection connection) {
-		if ( geom == null ) {
-			throw new IllegalArgumentException( "Null geometry passed." );
-		}
-		return GeometryTranslators.translate( geom );
+	int length() {
+		return this.end - this.start;
 	}
 
 }

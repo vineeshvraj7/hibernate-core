@@ -19,32 +19,30 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.hibernate.spatial.dialect.sqlserver;
 
-import java.sql.Connection;
-
-import com.vividsolutions.jts.geom.Geometry;
-
-import org.hibernate.spatial.dialect.AbstractGeometryValueBinder;
-import org.hibernate.spatial.dialect.sqlserver.translators.GeometryTranslators;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+package org.hibernate.spatial.dialect.sqlserver.translators;
 
 /**
  * @author Karel Maesen, Geovise BVBA
- *         creation-date: 8/23/11
+ * @Date 2009-11-29
  */
-public class SqlServer2008GeometryValueBinder<X> extends AbstractGeometryValueBinder {
+enum FigureAttribute {
+	InteriorRing( (byte) 0 ),
+	Stroke( (byte) 1 ),
+	ExteriorRing( (byte) 2 );
 
+	final byte byteValue;
 
-	public SqlServer2008GeometryValueBinder(JavaTypeDescriptor<X> javaDescriptor) {
-		super( javaDescriptor, SqlServer2008GeometryTypeDescriptor.INSTANCE );
+	FigureAttribute(byte v) {
+		byteValue = v;
 	}
 
-	public Object toNative(Geometry geom, Connection connection) {
-		if ( geom == null ) {
-			throw new IllegalArgumentException( "Null geometry passed." );
+	static FigureAttribute valueOf(byte b) {
+		for ( FigureAttribute fa : values() ) {
+			if ( fa.byteValue == b ) {
+				return fa;
+			}
 		}
-		return GeometryTranslators.translate( geom );
+		throw new IllegalArgumentException( String.format( "Can't interpret value %d as FigureAttribute.", b ) );
 	}
-
 }

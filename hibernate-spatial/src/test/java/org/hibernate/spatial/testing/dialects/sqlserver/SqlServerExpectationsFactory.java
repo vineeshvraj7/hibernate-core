@@ -24,7 +24,7 @@ package org.hibernate.spatial.testing.dialects.sqlserver;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-import org.hibernate.spatial.dialect.sqlserver.convertors.SqlServerTranslators;
+import org.hibernate.spatial.dialect.sqlserver.translators.SqlServerTranslators;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
 import org.hibernate.spatial.testing.DataSourceUtils;
 import org.hibernate.spatial.testing.NativeSQLStatement;
