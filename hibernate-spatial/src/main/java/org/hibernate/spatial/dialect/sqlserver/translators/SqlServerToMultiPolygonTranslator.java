@@ -49,7 +49,7 @@ class SqlServerToMultiPolygonTranslator extends SqlServerToGeometryCollectionTra
 
 
 	@Override
-	public Class<MultiPolygon> getOutputType() {
+	public Class<MultiPolygon> getTranslatedType() {
 		return MultiPolygon.class;
 	}
 }

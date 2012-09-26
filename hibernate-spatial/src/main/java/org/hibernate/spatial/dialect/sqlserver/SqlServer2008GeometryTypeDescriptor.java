@@ -110,9 +110,9 @@ public class SqlServer2008GeometryTypeDescriptor extends GeometrySqlTypeDescript
 			raw = toByteArray( (Blob) obj );
 		}
 		else {
-			throw new IllegalArgumentException( "Expected byte array." );
+			throw new IllegalArgumentException( "Expected byte array or BLOB" );
 		}
-		return SqlServerTranslators.decode( raw );
+		return SqlServerTranslators.translate( raw );
 	}
 
 	private byte[] toByteArray(Blob blob) {

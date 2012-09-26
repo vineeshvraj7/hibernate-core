@@ -65,7 +65,7 @@ class GeometryCollectionToSqlServerTranslator<T extends GeometryCollection> exte
 	}
 
 	protected void encodeComponent(Geometry geom, int thisShapeIndex, List<Coordinate> coordinates, List<Figure> figures, List<Shape> shapes) {
-		GeometryToSqlServerTranslator encoder = GeometryTranslators.getTranslatorFor( geom );
-		encoder.translate( geom, thisShapeIndex, coordinates, figures, shapes );
+		GeometryToSqlServerTranslator translator = (GeometryToSqlServerTranslator) GeometryTranslators.getTranslator( geom );
+		translator.translate( geom, thisShapeIndex, coordinates, figures, shapes );
 	}
 }

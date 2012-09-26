@@ -37,7 +37,7 @@ class SqlServerToPointTranslator extends SqlServerToGeometryTranslator<Point> {
 	}
 
 	@Override
-	public Class<Point> getOutputType() {
+	public Class<Point> getTranslatedType() {
 		return Point.class;
 	}
 

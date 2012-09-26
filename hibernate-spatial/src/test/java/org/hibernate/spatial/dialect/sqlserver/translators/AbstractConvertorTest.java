@@ -100,7 +100,7 @@ public abstract class AbstractConvertorTest extends SpatialFunctionalTestCase {
 		decodedGeoms = new HashMap<Integer, Geometry>();
 
 		for ( Integer id : rawResults.keySet() ) {
-			Geometry geometry = SqlServerTranslators.decode( (byte[]) rawResults.get( id ) );
+			Geometry geometry = SqlServerTranslators.translate( (byte[]) rawResults.get( id ) );
 			decodedGeoms.put( id, geometry );
 		}
 	}

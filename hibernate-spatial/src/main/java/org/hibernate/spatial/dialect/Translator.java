@@ -27,6 +27,6 @@ public interface Translator<I, O> {
 
 	public boolean accepts(I value);
 
-	public Class<O> getOutputType();
+	public Class<O> getTranslatedType();
 
 }

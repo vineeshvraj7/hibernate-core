@@ -78,7 +78,7 @@ class SqlServerToPolygonTranslator extends SqlServerToGeometryTranslator<Polygon
 	}
 
 	@Override
-	public Class<Polygon> getOutputType() {
+	public Class<Polygon> getTranslatedType() {
 		return Polygon.class;
 	}
 }

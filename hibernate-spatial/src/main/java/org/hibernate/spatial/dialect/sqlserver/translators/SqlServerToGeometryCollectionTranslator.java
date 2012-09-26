@@ -60,23 +60,26 @@ abstract class SqlServerToGeometryCollectionTranslator<T extends GeometryCollect
 			if ( !nativeGeom.isParentShapeOf( shapeIndex, childIdx ) ) {
 				continue;
 			}
-			SqlServerToGeometryTranslator<?> decoder = SqlServerTranslators.decoderFor(
+			SqlServerToGeometryTranslator<?> translator = (SqlServerToGeometryTranslator<?>) SqlServerTranslators.getTranslator(
 					nativeGeom.getOpenGisTypeOfShape(
 							childIdx
 					)
 			);
-			Geometry geometry = decoder.translatePart( nativeGeom, childIdx );
+			Geometry geometry = translator.translatePart( nativeGeom, childIdx );
 			geometries.add( geometry );
 		}
 		GeometryCollection geom = createGeometry( geometries, nativeGeom.hasMValues() );
 		if ( shapeIndex == 0 ) {
 			geom.setSRID( nativeGeom.getSrid() );
 		}
-		return getOutputType().cast( geom );
+		return getTranslatedType().cast( geom );
 	}
 
 
-	abstract protected T createGeometry(List<Geometry> geometries, boolean hasM);
+	protected T createGeometry(List<Geometry> geometries, boolean hasM) {
+		Geometry[] geomArray = geometries != null ? geometries.toArray( new Geometry[geometries.size()] ) : null;
+		return getTranslatedType().cast( getGeometryFactory().createGeometryCollection( geomArray ) );
+	}
 
 
 }

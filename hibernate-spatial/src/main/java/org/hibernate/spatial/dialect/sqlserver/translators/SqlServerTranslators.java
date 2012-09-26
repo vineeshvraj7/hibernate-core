@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 
+import org.hibernate.spatial.dialect.Translator;
 import org.hibernate.spatial.jts.JTS;
 import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
 
@@ -36,29 +38,35 @@ import org.hibernate.spatial.jts.mgeom.MGeometryFactory;
  */
 public class SqlServerTranslators {
 
-	final private static List<SqlServerToGeometryTranslator<? extends Geometry>> DECODERS = new ArrayList<SqlServerToGeometryTranslator<? extends Geometry>>();
+	final private static List<SqlServerToGeometryTranslator<? extends Geometry>> TRANSLATORS = new ArrayList<SqlServerToGeometryTranslator<? extends Geometry>>();
 
 	static {
 		MGeometryFactory factory = JTS.getDefaultGeometryFactory();
 
 		//Decoders
-		DECODERS.add( new SqlServerToPointTranslator( factory ) );
-		DECODERS.add( new SqlServerToLineStringTranslator( factory ) );
-		DECODERS.add( new SqlServerToPolygonTranslator( factory ) );
-		DECODERS.add( new SqlServerToMultiLineStringTranslator( factory ) );
-		DECODERS.add( new SqlServerToMultiPolygonTranslator( factory ) );
-		DECODERS.add( new SqlServerToMultiPointTranslator( factory ) );
-		DECODERS.add( new GeometryCollectionDecoder( factory ) );
+		TRANSLATORS.add( new SqlServerToPointTranslator( factory ) );
+		TRANSLATORS.add( new SqlServerToLineStringTranslator( factory ) );
+		TRANSLATORS.add( new SqlServerToPolygonTranslator( factory ) );
+		TRANSLATORS.add( new SqlServerToMultiLineStringTranslator( factory ) );
+		TRANSLATORS.add( new SqlServerToMultiPolygonTranslator( factory ) );
+		TRANSLATORS.add( new SqlServerToMultiPointTranslator( factory ) );
+		TRANSLATORS.add( new SqlServerToGeometryCollectionTranslator<GeometryCollection>( factory ) {
+			@Override
+			public Class<GeometryCollection> getTranslatedType() {
+				return GeometryCollection.class;
+			}
+		});
+
 	}
 
 
-	private static SqlServerToGeometryTranslator<? extends Geometry> decoderFor(SqlServerGeometry object) {
-		for ( SqlServerToGeometryTranslator<? extends Geometry> decoder : DECODERS ) {
-			if ( decoder.accepts( object ) ) {
-				return decoder;
+	private static SqlServerToGeometryTranslator<? extends Geometry> getTranslator(SqlServerGeometry object) {
+		for ( SqlServerToGeometryTranslator<? extends Geometry> translator : TRANSLATORS ) {
+			if ( translator.accepts( object ) ) {
+				return translator;
 			}
 		}
-		throw new IllegalArgumentException( "No decoder for type " + object.openGisType() );
+		throw new IllegalArgumentException( "No translator to JTS for type " + object.openGisType() );
 	}
 
 	/**
@@ -68,26 +76,27 @@ public class SqlServerTranslators {
 	 *
 	 * @return
 	 */
-	public static Geometry decode(byte[] raw) {
+	public static Geometry translate(byte[] raw) {
 		SqlServerGeometry sqlServerGeom = SqlServerGeometry.deserialize( raw );
-		SqlServerToGeometryTranslator<? extends Geometry> decoder = decoderFor( sqlServerGeom );
-		return decoder.translate( sqlServerGeom );
+		SqlServerToGeometryTranslator<? extends Geometry> translator = getTranslator( sqlServerGeom );
+		return translator.translate( sqlServerGeom );
 	}
 
 	/**
-	 * Returns the decoder capable of decoding an object of the specified OpenGisType
+	 * Returns the <code>Translator</code> capable of translating an object of the specified OpenGisType
+	 * to JTS <code>Geometry</code>.
 	 *
 	 * @param type OpenGisType for which a decoder is returned
 	 *
 	 * @return
 	 */
-	public static SqlServerToGeometryTranslator<? extends Geometry> decoderFor(OpenGisType type) {
-		for ( SqlServerToGeometryTranslator<? extends Geometry> decoder : DECODERS ) {
-			if ( decoder.accepts( type ) ) {
-				return decoder;
+	public static Translator<SqlServerGeometry, ? extends Geometry> getTranslator(OpenGisType type) {
+		for ( SqlServerToGeometryTranslator<? extends Geometry> translator : TRANSLATORS ) {
+			if ( translator.accepts( type ) ) {
+				return translator;
 			}
 		}
-		throw new IllegalArgumentException( "No decoder for type " + type );
+		throw new IllegalArgumentException( "No translator to JTS for type " + type );
 	}
 
 }

@@ -54,7 +54,7 @@ class SqlServerToMultiPointTranslator extends SqlServerToGeometryCollectionTrans
 	}
 
 	@Override
-	public Class<MultiPoint> getOutputType() {
+	public Class<MultiPoint> getTranslatedType() {
 		return MultiPoint.class;
 	}
 }

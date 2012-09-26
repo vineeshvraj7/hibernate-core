@@ -53,7 +53,7 @@ class SqlServerToMultiLineStringTranslator extends SqlServerToGeometryCollection
 	}
 
 	@Override
-	public Class<MultiLineString> getOutputType() {
+	public Class<MultiLineString> getTranslatedType() {
 		return MultiLineString.class;
 	}
 }

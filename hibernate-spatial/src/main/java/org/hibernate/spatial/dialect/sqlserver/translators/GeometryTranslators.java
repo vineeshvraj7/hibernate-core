@@ -29,6 +29,8 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPolygon;
 
+import org.hibernate.spatial.dialect.Translator;
+
 /**
  * Serializes a JTS <code>Geometry</code> to a byte-array.
  *
@@ -51,17 +53,17 @@ public class GeometryTranslators {
 
 	}
 
-	public static GeometryToSqlServerTranslator getTranslatorFor(Geometry geom) {
+	static Translator<Geometry, SqlServerGeometry> getTranslator(Geometry geom) {
 		for ( GeometryToSqlServerTranslator translator : TRANSLATORS ) {
 			if ( translator.accepts( geom ) ) {
 				return translator;
 			}
 		}
-		throw new IllegalArgumentException( "No encoder for type " + geom.getGeometryType() );
+		throw new IllegalArgumentException( "No Translator for type " + geom.getGeometryType() );
 	}
 
 	public static <T extends Geometry> byte[] translate(T geom) {
-		GeometryToSqlServerTranslator translator = getTranslatorFor( geom );
+		Translator<Geometry, SqlServerGeometry> translator = getTranslator( geom );
 		SqlServerGeometry sqlServerGeometry = translator.translate( geom );
 		return SqlServerGeometry.serialize( sqlServerGeometry );
 	}

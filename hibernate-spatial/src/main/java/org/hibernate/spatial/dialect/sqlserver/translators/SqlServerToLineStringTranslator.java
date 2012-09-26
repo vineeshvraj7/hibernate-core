@@ -61,7 +61,7 @@ class SqlServerToLineStringTranslator extends SqlServerToGeometryTranslator<Line
 	}
 
 	@Override
-	public Class<LineString> getOutputType() {
+	public Class<LineString> getTranslatedType() {
 		return LineString.class;
 	}
 

@@ -141,7 +141,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 
 	@Override
 	protected Geometry decode(Object o) {
-		return SqlServerTranslators.decode( (byte[]) o );
+		return SqlServerTranslators.translate( (byte[]) o );
 	}
 
 	@Override

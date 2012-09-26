@@ -58,7 +58,7 @@ abstract class GeometryToSqlServerTranslator implements Translator<Geometry, Sql
 
 
 	@Override
-	public Class<SqlServerGeometry> getOutputType() {
+	public Class<SqlServerGeometry> getTranslatedType() {
 		return SqlServerGeometry.class;
 	}
 
