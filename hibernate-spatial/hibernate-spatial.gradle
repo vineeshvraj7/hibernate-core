@@ -31,7 +31,7 @@ dependencies {
     compile([group: 'postgresql', name: 'postgresql', version: '8.4-701.jdbc4'])
 
 
-    compile([group: 'org.geolatte', name: 'geolatte-geom', version: '0.11-SNAPSHOT'])
+    compile([group: 'org.geolatte', name: 'geolatte-geom', version: '0.12-SNAPSHOT'])
 
 
     compile(libraries.dom4j) {
