@@ -250,7 +250,7 @@ public class MySQLExpectationsFactory extends AbstractExpectationsFactory {
 			return null;
 		}
 		ByteBuffer buffer = ByteBuffer.from( (byte[])bytes );
-		WkbDecoder decoder = Wkb.newWkbDecoder( Wkb.Dialect.MYSQL_WKB );
+		WkbDecoder decoder = Wkb.newDecoder( Wkb.Dialect.MYSQL_WKB );
 		return JTS.to( decoder.decode( buffer ) );
 	}
 }
