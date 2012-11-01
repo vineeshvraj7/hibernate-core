@@ -60,7 +60,7 @@ public class GeoDbWkb {
 
 
 	public static byte[] to(Geometry geometry) {
-		WkbEncoder encoder = Wkb.newWkbEncoder( Wkb.Dialect.POSTGIS_EWKB_1 );
+		WkbEncoder encoder = Wkb.newEncoder( Wkb.Dialect.POSTGIS_EWKB_1 );
 		ByteBuffer buffer = encoder.encode( geometry, ByteOrder.NDR );
 		return ( buffer == null ? null : buffer.toByteArray() );
 	}
@@ -70,7 +70,7 @@ public class GeoDbWkb {
 			return null;
 		}
 		try {
-			WkbDecoder decoder = Wkb.newWkbDecoder( Wkb.Dialect.POSTGIS_EWKB_1 );
+			WkbDecoder decoder = Wkb.newDecoder( Wkb.Dialect.POSTGIS_EWKB_1 );
 			if ( object instanceof Blob ) {
 				return decoder.decode( toByteBuffer( (Blob) object ) );
 			}
@@ -113,7 +113,6 @@ public class GeoDbWkb {
 			int n = 0;
 			while ( ( n = in.read( buf ) ) >= 0 ) {
 				baos.write( buf, 0, n );
-
 			}
 		}
 		catch ( Exception e ) {
@@ -129,7 +128,6 @@ public class GeoDbWkb {
 				LOG.warn( "Could not close binary stream." );
 			}
 		}
-
 		return ByteBuffer.from( baos.toByteArray() );
 	}
 

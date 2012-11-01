@@ -72,7 +72,7 @@ public class MySQLGeometryTypeDescriptor extends GeometrySqlTypeDescriptor {
 			@Override
 			protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options)
 					throws SQLException {
-				WkbEncoder encoder = Wkb.newWkbEncoder( Wkb.Dialect.MYSQL_WKB );
+				WkbEncoder encoder = Wkb.newEncoder( Wkb.Dialect.MYSQL_WKB );
 				Geometry geometry = getJavaDescriptor().unwrap( value, Geometry.class, options );
 				ByteBuffer buffer = encoder.encode( geometry, ByteOrder.NDR );
 				byte[] bytes = ( buffer == null ? null : buffer.toByteArray() );
@@ -108,7 +108,7 @@ public class MySQLGeometryTypeDescriptor extends GeometrySqlTypeDescriptor {
 			return null;
 		}
 		ByteBuffer buffer = ByteBuffer.from( bytes );
-		WkbDecoder decoder = Wkb.newWkbDecoder( Wkb.Dialect.MYSQL_WKB );
+		WkbDecoder decoder = Wkb.newDecoder( Wkb.Dialect.MYSQL_WKB );
 		return decoder.decode( buffer );
 	}
 
