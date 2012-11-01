@@ -21,20 +21,30 @@
 
 package org.hibernate.spatial.testing;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.BasicDataSource;
 import org.geolatte.geom.Geometry;
 import org.geolatte.geom.codec.Wkt;
 import org.geolatte.geom.codec.WktDecodeException;
 import org.geolatte.geom.codec.WktDecoder;
+
 import org.hibernate.spatial.Log;
 import org.hibernate.spatial.LogFactory;
-
-import javax.sql.DataSource;
-import java.io.*;
-import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * <p>Unit testsuite-suite support class.</p>
@@ -347,7 +357,7 @@ public class DataSourceUtils {
 	 */
 	public Map<Integer, Geometry> expectedGeoms(String type, TestData testData) {
 		Map<Integer, Geometry> result = new HashMap<Integer, Geometry>();
-		WktDecoder<org.geolatte.geom.Geometry> decoder = Wkt.newWktDecoder();
+		WktDecoder decoder = Wkt.newDecoder();
 		for ( TestDataElement testDataElement : testData ) {
 			if ( testDataElement.type.equalsIgnoreCase( type ) ) {
 				try {

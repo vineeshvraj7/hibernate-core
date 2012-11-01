@@ -73,7 +73,7 @@ public class PGGeometryTypeDescriptor extends GeometrySqlTypeDescriptor {
 			@Override
 			protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options)
 					throws SQLException {
-				WkbEncoder encoder = Wkb.newWkbEncoder( Wkb.Dialect.POSTGIS_EWKB_1 );
+				WkbEncoder encoder = Wkb.newEncoder( Wkb.Dialect.POSTGIS_EWKB_1 );
 				Geometry geometry = getJavaDescriptor().unwrap( value, Geometry.class, options );
 				byte[] bytes = encoder.encode( geometry, ByteOrder.NDR ).toByteArray();
 				st.setBytes( index, bytes );
@@ -111,7 +111,7 @@ public class PGGeometryTypeDescriptor extends GeometrySqlTypeDescriptor {
 		ByteBuffer buffer = null;
 		if ( object instanceof PGobject ) {
 			buffer = ByteBuffer.from( ( (PGobject) object ).getValue() );
-			WkbDecoder decoder = Wkb.newWkbDecoder( Wkb.Dialect.POSTGIS_EWKB_1 );
+			WkbDecoder decoder = Wkb.newDecoder( Wkb.Dialect.POSTGIS_EWKB_1 );
 			return decoder.decode( buffer );
 		}
 		throw new IllegalStateException( "Received object of type " + object.getClass().getCanonicalName() );
