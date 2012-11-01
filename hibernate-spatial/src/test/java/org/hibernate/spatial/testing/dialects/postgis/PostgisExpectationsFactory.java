@@ -40,8 +40,6 @@ import org.hibernate.spatial.testing.NativeSQLStatement;
  */
 public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 
-	private final WkbDecoder decoder = Wkb.newWkbDecoder( Wkb.Dialect.POSTGIS_EWKB_1 );
-
 	public PostgisExpectationsFactory(DataSourceUtils utils) {
 		super( utils );
 	}
@@ -260,7 +258,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 		} else {
 			throw new IllegalStateException( "Received object of type " + object.getClass().getCanonicalName() );
 		}
-		WkbDecoder decoder = Wkb.newWkbDecoder( Wkb.Dialect.POSTGIS_EWKB_1 );
+		WkbDecoder decoder = Wkb.newDecoder( Wkb.Dialect.POSTGIS_EWKB_1 );
 		return JTS.to(decoder.decode( buffer));
 	}
 
