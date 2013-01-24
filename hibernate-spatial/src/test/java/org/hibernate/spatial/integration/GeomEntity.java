@@ -74,10 +74,9 @@ public class GeomEntity {
 
 	public static GeomEntity createFrom(TestDataElement element) throws ParseException {
 		WktDecoder decoder = Wkt.newDecoder( Wkt.Dialect.POSTGIS_EWKT_1 );
-		Geometry geom = JTS.to( decoder.decode( element.wkt ) );
+		Geometry geom = JTS.to( decoder.decode( element.wkt) );
 		GeomEntity result = new GeomEntity();
 		result.setId( element.id );
-		geom.setSRID( element.srid );
 		result.setGeom( geom );
 		result.setType( element.type );
 		return result;
