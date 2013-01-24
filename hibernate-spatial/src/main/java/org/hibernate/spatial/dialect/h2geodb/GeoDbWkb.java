@@ -95,12 +95,12 @@ public class GeoDbWkb {
 	}
 
 	private static Geometry toPolygon(Envelope env) {
-		PointSequence ps = PointSequenceBuilders.fixedSized( 4 , DimensionalFlag.XY)
-				.add(env.getMinX(), env.getMinY())
-				.add(env.getMinX(), env.getMaxY())
-				.add(env.getMaxX(), env.getMaxY())
-				.add(env.getMinX(), env.getMinY()).toPointSequence();
-		return new Polygon( ps, CrsId.UNDEFINED );
+		PointSequence ps = PointSequenceBuilders.fixedSized( 4, DimensionalFlag.d2D, CrsId.UNDEFINED )
+				.add( env.getMinX(), env.getMinY() )
+				.add( env.getMinX(), env.getMaxY() )
+				.add( env.getMaxX(), env.getMaxY() )
+				.add( env.getMinX(), env.getMinY() ).toPointSequence();
+		return new Polygon( ps );
 	}
 
 	private static ByteBuffer toByteBuffer(Blob blob) {

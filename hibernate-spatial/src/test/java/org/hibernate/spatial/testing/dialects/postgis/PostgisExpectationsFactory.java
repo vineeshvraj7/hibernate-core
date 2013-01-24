@@ -29,6 +29,8 @@ import org.geolatte.geom.codec.WkbDecoder;
 import org.geolatte.geom.jts.JTS;
 import org.postgresql.util.PGobject;
 
+import org.hibernate.spatial.Log;
+import org.hibernate.spatial.LogFactory;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
 import org.hibernate.spatial.testing.DataSourceUtils;
 import org.hibernate.spatial.testing.NativeSQLStatement;
@@ -39,6 +41,9 @@ import org.hibernate.spatial.testing.NativeSQLStatement;
  * @author Karel Maesen, Geovise BVBA
  */
 public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
+
+	private static final Log LOG = LogFactory.make();
+
 
 	public PostgisExpectationsFactory(DataSourceUtils utils) {
 		super( utils );
