@@ -361,9 +361,7 @@ public class DataSourceUtils {
 		for ( TestDataElement testDataElement : testData ) {
 			if ( testDataElement.type.equalsIgnoreCase( type ) ) {
 				try {
-                    //to ensure expected geometries have the correct SRID, we prepend to the WKT string
-                    String wkt = "SRID=" + testDataElement.srid + ";"+testDataElement.wkt;
-					result.put( testDataElement.id, decoder.decode( wkt ) );
+					result.put( testDataElement.id, decoder.decode( testDataElement.wkt ) );
 				}
 				catch ( WktDecodeException e ) {
 					System.out
