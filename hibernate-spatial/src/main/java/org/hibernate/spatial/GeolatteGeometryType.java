@@ -9,8 +9,6 @@ import org.hibernate.type.AbstractSingleColumnStandardBasicType;
  */
 public class GeolatteGeometryType extends AbstractSingleColumnStandardBasicType<Geometry> {
 
-	public static final GeolatteGeometryType INSTANCE = new GeolatteGeometryType();
-
 	@Override
 	public String[] getRegistrationKeys() {
 		return new String[] {
@@ -26,8 +24,8 @@ public class GeolatteGeometryType extends AbstractSingleColumnStandardBasicType<
 		};
 	}
 
-	public GeolatteGeometryType() {
-		super( GeometrySqlTypeDescriptor.INSTANCE, GeolatteGeometryJavaTypeDescriptor.INSTANCE );
+	public GeolatteGeometryType(GeometrySqlTypeDescriptor geometrySqlTypeDescriptor) {
+		super( geometrySqlTypeDescriptor, GeolatteGeometryJavaTypeDescriptor.INSTANCE );
 	}
 
 	@Override

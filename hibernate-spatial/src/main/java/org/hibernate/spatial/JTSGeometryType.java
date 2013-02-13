@@ -31,7 +31,7 @@ import org.hibernate.type.AbstractSingleColumnStandardBasicType;
  */
 public class JTSGeometryType extends AbstractSingleColumnStandardBasicType<Geometry> {
 
-	public static final JTSGeometryType INSTANCE = new JTSGeometryType();
+	final public static JTSGeometryType INSTANCE = null;
 
 	@Override
 	public String[] getRegistrationKeys() {
@@ -48,8 +48,8 @@ public class JTSGeometryType extends AbstractSingleColumnStandardBasicType<Geome
 		};
 	}
 
-	public JTSGeometryType() {
-		super( GeometrySqlTypeDescriptor.INSTANCE, JTSGeometryJavaTypeDescriptor.INSTANCE );
+	public JTSGeometryType(GeometrySqlTypeDescriptor geometrySqlTypeDescriptor) {
+		super( geometrySqlTypeDescriptor, JTSGeometryJavaTypeDescriptor.INSTANCE );
 	}
 
 	@Override

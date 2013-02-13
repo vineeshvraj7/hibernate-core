@@ -21,9 +21,8 @@
 
 package org.hibernate.spatial.testing.dialects.sqlserver;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import org.geolatte.geom.jts.JTS;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.Point;
 
 import org.hibernate.spatial.dialect.sqlserver.convertors.Decoders;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
@@ -59,7 +58,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeConvexHullStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STUnion(geometry::STGeomFromText(?, 4326)).STConvexHull() from GeomTest t where t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -67,7 +66,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeIntersectionStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STIntersection(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -75,7 +74,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeDifferenceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STDifference(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -83,7 +82,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeSymDifferenceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STSymDifference(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -91,7 +90,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeGeomUnionStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STUnion(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -141,15 +140,15 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	}
 
 	@Override
-	protected Geometry decode(Object o) {
-		return JTS.to( Decoders.decode( (byte[]) o ) );
+	protected Geometry decode(Object object) {
+		return Decoders.decode( (byte[]) object );
 	}
 
 	@Override
 	protected NativeSQLStatement createNativeWithinStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STWithin(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STWithin(geometry::STGeomFromText(?, 4326)) = 'true' and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -157,7 +156,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeEqualsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STEquals(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STEquals(geometry::STGeomFromText(?, 4326)) = 'true' and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -165,7 +164,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeCrossesStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STCrosses(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STCrosses(geometry::STGeomFromText(?, 4326)) = 'true' and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -173,7 +172,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeContainsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STContains(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STContains(geometry::STGeomFromText(?, 4326)) = 'true' and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -181,7 +180,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeDisjointStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STDisjoint(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STDisjoint(geometry::STGeomFromText(?, 4326)) = 'true' and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -199,7 +198,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeIntersectsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STIntersects(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STIntersects(geometry::STGeomFromText(?, 4326)) = 'true' and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -207,7 +206,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeFilterStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.Filter(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.Filter(geometry::STGeomFromText(?, 4326)) = 1 and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -215,7 +214,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeTouchesStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STTouches(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STTouches(geometry::STGeomFromText(?, 4326)) = 'true' and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -223,14 +222,14 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeOverlapsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STOverlaps(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STOverlaps(geometry::STGeomFromText(?, 4326)) = 'true' and t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
 	@Override
 	protected NativeSQLStatement createNativeRelateStatement(Geometry geom, String matrix) {
 		String sql = "select t.id, t.geom.STRelate(geometry::STGeomFromText(?, 4326), '" + matrix + "' ) from GeomTest t where t.geom.STRelate(geometry::STGeomFromText(?, 4326), '" + matrix + "') = 'true' and t.geom.STSrid = 4326";
-		return createNativeSQLStatementAllWKTParams( sql, geom.toText() );
+		return createNativeSQLStatementAllWKTParams( sql, geom.asText() );
 	}
 
 	@Override
@@ -242,7 +241,7 @@ public class SqlServerExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeDistanceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom.STDistance(geometry::STGeomFromText(?, 4326)) from GeomTest t where t.geom.STSrid = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 

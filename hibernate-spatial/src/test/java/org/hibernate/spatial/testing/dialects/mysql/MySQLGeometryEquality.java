@@ -21,8 +21,7 @@
 
 package org.hibernate.spatial.testing.dialects.mysql;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
+import org.geolatte.geom.Geometry;
 
 import org.hibernate.spatial.testing.GeometryEquality;
 
@@ -49,13 +48,6 @@ public class MySQLGeometryEquality extends GeometryEquality {
 		if ( geom1.getNumPoints() != geom2.getNumPoints() ) {
 			return false;
 		}
-		for ( int i = 0; i < geom1.getNumPoints(); i++ ) {
-			Coordinate cn1 = geom1.getCoordinates()[i];
-			Coordinate cn2 = geom2.getCoordinates()[i];
-			if ( !cn1.equals2D( cn2 ) ) {
-				return false;
-			}
-		}
-		return true;
+		throw new UnsupportedOperationException();
 	}
 }

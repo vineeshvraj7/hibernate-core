@@ -29,11 +29,10 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.Point;
+import org.geolatte.geom.Polygon;
+import org.geolatte.geom.codec.Wkt;
 
 import org.hibernate.spatial.Log;
 import org.hibernate.spatial.LogFactory;
@@ -49,22 +48,18 @@ import org.hibernate.spatial.LogFactory;
  */
 public abstract class AbstractExpectationsFactory {
 
-	private static final Log LOG = LogFactory.make();
-
-	public final static String TEST_POLYGON_WKT = "POLYGON((0 0, 50 0, 100 100, 0 100, 0 0))";
-	public final static String TEST_POINT_WKT = "POINT(0 0)";
-
+	public final static String TEST_POLYGON_WKT = "SRID=4326;POLYGON((0 0, 50 0, 100 100, 0 100, 0 0))";
+	public final static String TEST_POINT_WKT = "SRID=4326;POINT(0 0)";
 	public final static int INTEGER = 1;
 	public final static int DOUBLE = 2;
 	public final static int GEOMETRY = 3;
 	public final static int STRING = 4;
 	public final static int BOOLEAN = 5;
 	public final static int OBJECT = -1;
-
+	private static final Log LOG = LogFactory.make();
 	private final static int TEST_SRID = 4326;
-
-	private final DataSourceUtils dataSourceUtils;
 	private static final int MAX_BYTE_LEN = 1024;
+	private final DataSourceUtils dataSourceUtils;
 
 	public AbstractExpectationsFactory(DataSourceUtils dataSourceUtils) {
 		this.dataSourceUtils = dataSourceUtils;
@@ -82,7 +77,6 @@ public abstract class AbstractExpectationsFactory {
 	public int getTestSrid() {
 		return TEST_SRID;
 	}
-
 
 	/**
 	 * Returns the expected dimensions of all testsuite-suite geometries.
@@ -106,7 +100,6 @@ public abstract class AbstractExpectationsFactory {
 		return retrieveExpected( createNativeAsTextStatement(), STRING );
 
 	}
-
 
 	/**
 	 * Returns the expected WKB representations of all testsuite-suite geometries
@@ -173,7 +166,6 @@ public abstract class AbstractExpectationsFactory {
 	public Map<Integer, Boolean> getIsNotEmpty() throws SQLException {
 		return retrieveExpected( createNativeIsNotEmptyStatement(), BOOLEAN );
 	}
-
 
 	/**
 	 * Returns the expected boundaries of all testsuite-suite geometries
@@ -317,7 +309,6 @@ public abstract class AbstractExpectationsFactory {
 	public Map<Integer, Boolean> havingSRID(int srid) throws SQLException {
 		return retrieveExpected( createNativeHavingSRIDStatement( srid ), BOOLEAN );
 	}
-
 
 	/**
 	 * Returns the expected results of the relate operator
@@ -620,7 +611,6 @@ public abstract class AbstractExpectationsFactory {
 	 */
 	protected abstract NativeSQLStatement createNativeIsEmptyStatement();
 
-
 	/**
 	 * Returns a statement corresponding to the HQL statement:
 	 * "select id,not isempty(geom) from GeomEntity".
@@ -711,7 +701,6 @@ public abstract class AbstractExpectationsFactory {
 	 */
 	protected abstract NativeSQLStatement createNativeDisjointStatement(Geometry geom);
 
-
 	/**
 	 * Returns a statement corresponding to the HQL statement
 	 * "SELECT id, transform(geom, :epsg) from GeomEntity where srid(geom) = 4326"
@@ -746,11 +735,11 @@ public abstract class AbstractExpectationsFactory {
 	/**
 	 * Decodes a native database object to a JTS <code>Geometry</code> instance
 	 *
-	 * @param o native database object
+	 * @param object native database object
 	 *
 	 * @return decoded geometry
 	 */
-	protected abstract Geometry decode(Object o);
+	protected abstract Geometry decode(Object object);
 
 	/**
 	 * Return a testsuite-suite polygon (filter, ...)
@@ -758,15 +747,8 @@ public abstract class AbstractExpectationsFactory {
 	 * @return a testsuite-suite polygon
 	 */
 	public Polygon getTestPolygon() {
-		WKTReader reader = new WKTReader();
-		try {
-			Polygon polygon = (Polygon) reader.read( TEST_POLYGON_WKT );
-			polygon.setSRID( getTestSrid() );
-			return polygon;
-		}
-		catch ( ParseException e ) {
-			throw new RuntimeException( e );
-		}
+		Polygon polygon = (Polygon) Wkt.fromWkt( TEST_POLYGON_WKT );
+		return polygon;
 	}
 
 	/**
@@ -775,15 +757,8 @@ public abstract class AbstractExpectationsFactory {
 	 * @return a testsuite-suite point
 	 */
 	public Point getTestPoint() {
-		WKTReader reader = new WKTReader();
-		try {
-			Point point = (Point) reader.read( TEST_POINT_WKT );
-			point.setSRID( getTestSrid() );
-			return point;
-		}
-		catch ( ParseException e ) {
-			throw new RuntimeException( e );
-		}
+		Point point = (Point) Wkt.fromWkt( TEST_POINT_WKT );
+		return point;
 	}
 
 	protected <T> Map<Integer, T> retrieveExpected(NativeSQLStatement nativeSQLStatement, int type)
@@ -872,7 +847,6 @@ public abstract class AbstractExpectationsFactory {
 			}
 		};
 	}
-
 
 	protected int numPlaceHoldersInSQL(String sql) {
 		return sql.replaceAll( "[^?]", "" ).length();

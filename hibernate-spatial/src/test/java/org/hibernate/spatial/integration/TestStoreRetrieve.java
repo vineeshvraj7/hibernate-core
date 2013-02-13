@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
+import org.geolatte.geom.Geometry;
 import org.junit.Test;
 
 import org.hibernate.Criteria;
@@ -105,8 +105,8 @@ public class TestStoreRetrieve extends SpatialFunctionalTestCase {
 	}
 
 	private String createFailureMessage(int id, Geometry storedGeometry, Geometry retrievedGeometry) {
-		String expectedText = ( storedGeometry != null ? storedGeometry.toText() : "NULL" );
-		String retrievedText = ( retrievedGeometry != null ? retrievedGeometry.toText() : "NULL" );
+		String expectedText = ( storedGeometry != null ? storedGeometry.asText() : "NULL" );
+		String retrievedText = ( retrievedGeometry != null ? retrievedGeometry.asText() : "NULL" );
 		return String.format(
 				"Equality testsuite-suite failed for %d.\nExpected: %s\nReceived:%s",
 				id,

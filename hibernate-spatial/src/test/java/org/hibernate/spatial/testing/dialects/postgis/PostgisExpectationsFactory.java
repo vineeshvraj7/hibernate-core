@@ -21,12 +21,11 @@
 
 package org.hibernate.spatial.testing.dialects.postgis;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 import org.geolatte.geom.ByteBuffer;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.Point;
 import org.geolatte.geom.codec.Wkb;
 import org.geolatte.geom.codec.WkbDecoder;
-import org.geolatte.geom.jts.JTS;
 import org.postgresql.util.PGobject;
 
 import org.hibernate.spatial.Log;
@@ -53,7 +52,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeTouchesStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_touches(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where st_touches(t.geom, ST_geomFromText(?, 4326)) = 'true' and st_srid(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -61,27 +60,27 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeOverlapsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_overlaps(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where st_overlaps(t.geom, ST_GeomFromText(?, 4326)) = 'true' and ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
 	@Override
 	protected NativeSQLStatement createNativeRelateStatement(Geometry geom, String matrix) {
 		String sql = "select t.id, st_relate(t.geom, ST_GeomFromText(?, 4326), '" + matrix + "' ) from GeomTest t where st_relate(t.geom, ST_GeomFromText(?, 4326), '" + matrix + "') = 'true' and ST_SRID(t.geom) = 4326";
-		return createNativeSQLStatementAllWKTParams( sql, geom.toText() );
+		return createNativeSQLStatementAllWKTParams( sql, geom.asText() );
 	}
 
 	@Override
 	protected NativeSQLStatement createNativeDwithinStatement(Point geom, double distance) {
 		String sql = "select t.id, st_dwithin(t.geom, ST_GeomFromText(?, 4326), " + distance + " ) from GeomTest t where st_dwithin(t.geom, ST_GeomFromText(?, 4326), " + distance + ") = 'true' and ST_SRID(t.geom) = 4326";
-		return createNativeSQLStatementAllWKTParams( sql, geom.toText() );
+		return createNativeSQLStatementAllWKTParams( sql, geom.asText() );
 	}
 
 	@Override
 	protected NativeSQLStatement createNativeIntersectsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_intersects(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where st_intersects(t.geom, ST_GeomFromText(?, 4326)) = 'true' and ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -89,7 +88,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeFilterStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, t.geom && ST_GeomFromText(?, 4326) from GeomTest t where st_intersects(t.geom, ST_GeomFromText(?, 4326)) = 'true' and ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -97,7 +96,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeDistanceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_distance(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -118,7 +117,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeConvexHullStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_convexhull(st_union(t.geom, ST_GeomFromText(?, 4326))) from GeomTest t where ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -126,7 +125,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeIntersectionStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_intersection(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -134,7 +133,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeDifferenceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_difference(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -142,7 +141,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeSymDifferenceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_symdifference(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -150,7 +149,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeGeomUnionStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_union(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -215,7 +214,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeWithinStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_within(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where st_within(t.geom, ST_GeomFromText(?, 4326)) = 'true' and ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -223,7 +222,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeEqualsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_equals(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where st_equals(t.geom, ST_GeomFromText(?, 4326)) = 'true' and ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -231,7 +230,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeCrossesStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_crosses(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where st_crosses(t.geom, ST_GeomFromText(?, 4326)) = 'true' and ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -239,7 +238,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeContainsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_contains(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where st_contains(t.geom, ST_GeomFromText(?, 4326)) = 'true' and ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -247,7 +246,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 	protected NativeSQLStatement createNativeDisjointStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, st_disjoint(t.geom, ST_GeomFromText(?, 4326)) from GeomTest t where st_disjoint(t.geom, ST_GeomFromText(?, 4326)) = 'true' and ST_SRID(t.geom) = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -264,7 +263,7 @@ public class PostgisExpectationsFactory extends AbstractExpectationsFactory {
 			throw new IllegalStateException( "Received object of type " + object.getClass().getCanonicalName() );
 		}
 		WkbDecoder decoder = Wkb.newDecoder( Wkb.Dialect.POSTGIS_EWKB_1 );
-		return JTS.to(decoder.decode( buffer));
+		return decoder.decode( buffer );
 	}
 
 }

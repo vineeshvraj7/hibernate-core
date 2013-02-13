@@ -22,8 +22,9 @@
 package org.hibernate.spatial.testing;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.GeometryCollection;
+import org.geolatte.geom.GeometryPointEquality;
 
 import org.hibernate.spatial.jts.mgeom.MCoordinate;
 
@@ -97,22 +98,11 @@ public class GeometryEquality {
 		if ( !geom1.getGeometryType().equals( geom2.getGeometryType() ) ) {
 			return false;
 		}
-		if ( geom1.getNumGeometries() != geom2.getNumGeometries() ) {
-			return false;
-		}
 		if ( geom1.getNumPoints() != geom2.getNumPoints() ) {
 			return false;
 		}
-		Coordinate[] coordinates1 = geom1.getCoordinates();
-		Coordinate[] coordinates2 = geom2.getCoordinates();
-		for ( int i = 0; i < coordinates1.length; i++ ) {
-			Coordinate c1 = coordinates1[i];
-			Coordinate c2 = coordinates2[i];
-			if ( !testCoordinateEquality( c1, c2 ) ) {
-				return false;
-			}
-		}
-		return true;
+		GeometryPointEquality equality = new GeometryPointEquality();
+		return equality.equals( geom1, geom2 );
 	}
 
 	private boolean testCoordinateEquality(Coordinate c1, Coordinate c2) {

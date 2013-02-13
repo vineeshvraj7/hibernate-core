@@ -1,28 +1,30 @@
 /*
- * This file is part of Hibernate Spatial, an extension to the
- *  hibernate ORM solution for spatial (geographic) data.
- *
- *  Copyright © 2007-2012 Geovise BVBA
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+* This file is part of Hibernate Spatial, an extension to the
+*  hibernate ORM solution for spatial (geographic) data.
+*
+*  Copyright © 2007-2012 Geovise BVBA
+*
+*  This library is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU Lesser General Public
+*  License as published by the Free Software Foundation; either
+*  version 2.1 of the License, or (at your option) any later version.
+*
+*  This library is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*  Lesser General Public License for more details.
+*
+*  You should have received a copy of the GNU Lesser General Public
+*  License along with this library; if not, write to the Free Software
+*  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 package org.hibernate.spatial.testing.dialects.oracle;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
+
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.Point;
+import org.geolatte.geom.jts.JTS;
 
 import org.hibernate.spatial.JTSGeometryJavaTypeDescriptor;
 import org.hibernate.spatial.dialect.oracle.SDOGeometryValueExtractor;
@@ -31,10 +33,10 @@ import org.hibernate.spatial.testing.DataSourceUtils;
 import org.hibernate.spatial.testing.NativeSQLStatement;
 
 /**
- * Expectations factory for Oracle 10g (SDOGeometry).
- *
- * @Author Karel Maesen, Geovise BVBA
- */
+* Expectations factory for Oracle 10g (SDOGeometry).
+*
+* @Author Karel Maesen, Geovise BVBA
+*/
 public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory {
 
 	private final SDOGeometryValueExtractor decoder = new SDOGeometryValueExtractor( JTSGeometryJavaTypeDescriptor.INSTANCE );
@@ -47,7 +49,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeTouchesStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Touch(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Touch(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) = 1 and t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -55,7 +57,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeOverlapsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Overlap(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Overlap(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) = 1 and t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -63,7 +65,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeRelateStatement(Geometry geom, String matrix) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Relate(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326), '" + matrix + "') from GEOMTEST T where MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Relate(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326), '" + matrix + "') = 1 and t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -76,7 +78,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeIntersectsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Intersects(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Intersects(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) = 1 and t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -84,7 +86,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeFilterStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, 1 from GEOMTEST t where SDO_FILTER(t.GEOM, MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326).GEOM)  = 'TRUE' ",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -92,7 +94,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeDistanceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Distance(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -115,7 +117,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeConvexHullStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Union(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)).ST_ConvexHull().GEOM from GEOMTEST T where t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -123,7 +125,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeIntersectionStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Intersection(MDSYS.ST_GEOMETRY.FROM_WKT(?,4326)).GEOM FROM GEOMTEST t where t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -131,7 +133,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeDifferenceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Difference(MDSYS.ST_GEOMETRY.FROM_WKT(?,4326)).GEOM FROM GEOMTEST t where t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -139,7 +141,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeSymDifferenceStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_SymmetricDifference(MDSYS.ST_GEOMETRY.FROM_WKT(?,4326)).GEOM FROM GEOMTEST t where t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -147,7 +149,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeGeomUnionStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Union(MDSYS.ST_GEOMETRY.FROM_WKT(?,4326)).GEOM FROM GEOMTEST t where t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -213,7 +215,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeWithinStatement(Geometry testPolygon) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, mdsys.OGC_WITHIN( MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM), MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where mdsys.OGC_WITHIN( MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM), MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) = 1 and t.GEOM.SDO_SRID = 4326",
-				testPolygon.toText()
+				testPolygon.asText()
 		);
 	}
 
@@ -221,7 +223,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeEqualsStatement(Geometry testPolygon) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Equals(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Equals(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) = 1 and t.GEOM.SDO_SRID = 4326",
-				testPolygon.toText()
+				testPolygon.asText()
 		);
 	}
 
@@ -229,7 +231,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeCrossesStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Cross(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Cross(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) = 1 and t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -237,7 +239,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeContainsStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Contains(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Contains(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) = 1 and t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -245,7 +247,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	protected NativeSQLStatement createNativeDisjointStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
 				"select t.id, MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Disjoint(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) from GEOMTEST T where MDSYS.ST_GEOMETRY.FROM_SDO_GEOM(t.GEOM).ST_Disjoint(MDSYS.ST_GEOMETRY.FROM_WKT(?, 4326)) = 1 and t.GEOM.SDO_SRID = 4326",
-				geom.toText()
+				geom.asText()
 		);
 	}
 
@@ -262,7 +264,7 @@ public class SDOGeometryExpectationsFactory extends AbstractExpectationsFactory 
 	}
 
 	@Override
-	protected Geometry decode(Object o) {
-		return decoder.toJTS( o );
+	protected org.geolatte.geom.Geometry decode(Object object) {
+		return JTS.from(decoder.toJTS( object ));
 	}
 }

@@ -24,8 +24,6 @@ package org.hibernate.spatial.integration;
 import org.hibernate.metamodel.spi.TypeContributions;
 import org.hibernate.metamodel.spi.TypeContributor;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.spatial.GeolatteGeometryType;
-import org.hibernate.spatial.JTSGeometryType;
 import org.hibernate.spatial.Log;
 import org.hibernate.spatial.LogFactory;
 
@@ -33,15 +31,17 @@ import org.hibernate.spatial.LogFactory;
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 7/27/11
  */
+@Deprecated  // TODO REMOVE AFTER SpatialDialect refactoring
 public class SpatialTypeContributor implements TypeContributor {
 
 	private static final Log LOG = LogFactory.make();
 
 	@Override
 	public void contribute(TypeContributions typeContributions, ServiceRegistry serviceRegistry) {
-		LOG.info( "Registering JTSGeometryType" );
-		typeContributions.contributeType( JTSGeometryType.INSTANCE );
-		LOG.info( "Registering GeolatteGeometryType" );
-		typeContributions.contributeType( GeolatteGeometryType.INSTANCE );
+//		LOG.info( "Registering JTSGeometryType" );
+//		typeContributions.contributeType( JTSGeometryType.INSTANCE );
+//		LOG.info( "Registering GeolatteGeometryType" );
+//		typeContributions.contributeType( GeolatteGeometryType.INSTANCE );
 	}
+
 }

@@ -26,7 +26,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.geolatte.geom.Geometry;
 
 import org.hibernate.Query;
 import org.hibernate.Session;

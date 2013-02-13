@@ -25,7 +25,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.geolatte.geom.Geometry;
 import org.junit.Test;
 
 import org.hibernate.Query;
