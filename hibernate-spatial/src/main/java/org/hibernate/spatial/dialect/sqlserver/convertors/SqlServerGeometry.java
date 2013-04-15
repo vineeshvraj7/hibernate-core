@@ -24,15 +24,12 @@ package org.hibernate.spatial.dialect.sqlserver.convertors;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import org.geolatte.geom.DimensionalFlag;
 import org.geolatte.geom.PointCollection;
 import org.geolatte.geom.PointSequence;
 import org.geolatte.geom.PointSequenceBuilder;
 import org.geolatte.geom.PointSequenceBuilders;
 import org.geolatte.geom.crs.CrsId;
-
-import org.hibernate.spatial.jts.mgeom.MCoordinate;
 
 /**
  * A <code>SqlServerGeometry</code> represents the native SQL Server database object.
@@ -202,16 +199,6 @@ public class SqlServerGeometry {
 		}
 		return psBuilder.toPointSequence();
 	}
-
-	private Coordinate[] createCoordinateArray(int size) {
-		if ( hasMValues() ) {
-			return new MCoordinate[size];
-		}
-		else {
-			return new Coordinate[size];
-		}
-	}
-
 
 	private Figure getFigure(int index) {
 		return figures[index];
