@@ -93,9 +93,11 @@ public class SDOGeometryValueExtractor<X> extends BasicExtractor<X> {
 	}
 
 	/**
+	 * Converts an oracle to a JTS Geometry
 	 *
-	 * @param struct
-	 * @return
+	 * @param struct The Oracle STRUCT representation of an SDO_GEOMETRY
+	 *
+	 * @return The JTS Geometry value
 	 */
 	public Geometry toJTS(Object struct) {
 		if ( struct == null ) {
@@ -173,10 +175,9 @@ public class SDOGeometryValueExtractor<X> extends BasicExtractor<X> {
 		return getGeometryFactory().createPoint( cs );
 	}
 
-	private MultiPoint convertSDOMultiPoint(int dim, int lrsDim,
-											SDOGeometry SDOGeom) {
-		final Double[] ordinates = SDOGeom.getOrdinates().getOrdinateArray();
-		final CoordinateSequence cs = convertOrdinateArray( ordinates, SDOGeom );
+	private MultiPoint convertSDOMultiPoint(int dim, int lrsDim, SDOGeometry sdoGeom) {
+		final Double[] ordinates = sdoGeom.getOrdinates().getOrdinateArray();
+		final CoordinateSequence cs = convertOrdinateArray( ordinates, sdoGeom );
 		final MultiPoint multipoint = getGeometryFactory().createMultiPoint( cs );
 		return multipoint;
 	}
@@ -439,8 +440,10 @@ public class SDOGeometryValueExtractor<X> extends BasicExtractor<X> {
 				}
 				else {
 					coordinates[i] = new Coordinate(
-							oordinates[i * dim], // X
-							oordinates[i * dim + 1], // Y
+							//X
+							oordinates[i * dim],
+							//Y
+							oordinates[i * dim + 1],
 							oordinates[i * dim + zDim]
 					); // Z
 				}

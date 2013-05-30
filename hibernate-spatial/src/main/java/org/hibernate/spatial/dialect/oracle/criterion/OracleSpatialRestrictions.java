@@ -114,22 +114,21 @@ public class OracleSpatialRestrictions {
 	}
 
 	/**
+	 * Apply the "SDO_NN" constraint to the specified property, using the specified {@code SDOParameterMap}
 	 *
-	 * @param propertyName
-	 * @param geom
-	 * @param param
-	 * @return
+	 * @param propertyName The name of the property
+	 * @param geom The search geometry to use in the constraint
+	 * @param param The parameters for the constraint function
+	 *
+	 * @return The Criterion
 	 */
 	@SuppressWarnings("serial")
 	public static Criterion SDONN(String propertyName, Geometry geom, SDOParameterMap param) {
 		return new OracleSpatialCriterion( propertyName, geom, param ) {
 			@Override
-			public String toSqlString(Criteria criteria,
-									  CriteriaQuery criteriaQuery) throws HibernateException {
-				String[] columns = criteriaQuery.getColumnsUsingProjection(
-						criteria, this.propertyName
-				);
-				StringBuilder sql = new StringBuilder( "SDO_NN(" );
+			public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
+				final String[] columns = criteriaQuery.getColumnsUsingProjection( criteria, this.propertyName );
+				final StringBuilder sql = new StringBuilder( "SDO_NN(" );
 				sql.append( columns[0] ).append( "," ).append( "?" );
 				if ( param != null && !param.isEmpty() ) {
 					sql.append( "," ).append( param.toQuotedString() );
@@ -140,16 +139,22 @@ public class OracleSpatialRestrictions {
 		};
 	}
 
+	/**
+	 * Apply the "SDO_RELATE" constraint to the specified property, using the specified {@code SDOParameterMap}
+	 *
+	 * @param propertyName The name of the property
+	 * @param geom The search geometry to use in the constraint
+	 * @param param The parameters for the constraint function
+	 *
+	 * @return The Criterion
+	 */
 	@SuppressWarnings("serial")
 	public static Criterion SDORelate(String propertyName, Geometry geom, SDOParameterMap param) {
 		return new OracleSpatialCriterion( propertyName, geom, param ) {
 			@Override
-			public String toSqlString(Criteria criteria,
-									  CriteriaQuery criteriaQuery) throws HibernateException {
-				String[] columns = criteriaQuery.getColumnsUsingProjection(
-						criteria, this.propertyName
-				);
-				StringBuilder sql = new StringBuilder( "SDO_RELATE(" );
+			public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
+				final String[] columns = criteriaQuery.getColumnsUsingProjection( criteria, this.propertyName );
+				final StringBuilder sql = new StringBuilder( "SDO_RELATE(" );
 				sql.append( columns[0] ).append( "," ).append( "?" );
 				if ( param != null && !param.isEmpty() ) {
 					sql.append( "," ).append( param.toQuotedString() );
@@ -160,26 +165,43 @@ public class OracleSpatialRestrictions {
 		};
 	}
 
+	/**
+	 * Apply the "SDO_RELATE" constraint to the specified property, using the specified parameters.
+	 *
+	 * @param propertyName The name of the property
+	 * @param geom The search geometry to use in the constraint
+	 * @param mask The mask parameter
+	 * @param minResolution The min_resolution parameter
+	 * @param maxResolution The max_resolution parameter
+	 *
+	 * @return The Criterion
+	 */
 	@SuppressWarnings("serial")
 	public static Criterion SDORelate(String propertyName, Geometry geom, RelationshipMask[] mask, Double minResolution, Double maxResolution) {
-		SDOParameterMap param = new SDOParameterMap();
+		final SDOParameterMap param = new SDOParameterMap();
 		param.setMask( RelationshipMask.booleanCombination( mask ) );
 		param.setMinResolution( minResolution );
 		param.setMaxResolution( maxResolution );
 		return SDORelate( propertyName, geom, param );
 	}
 
+	/**
+	 * Apply the "SDO_WITHIN_DISTANCE" constraint to the specified property, using the specified {@code SDOParameterMap}.
+	 *
+	 * @param propertyName The name of the property
+	 * @param geom The search geometry to use in the constraint
+	 * @param param The parameters for the constraint function
+	 *
+	 * @return The Criterion
+	 */
 	@SuppressWarnings("serial")
 	public static Criterion SDOWithinDistance(String propertyName, Geometry geom, SDOParameterMap param) {
 		return new OracleSpatialCriterion( propertyName, geom, param ) {
 
 			@Override
-			public String toSqlString(Criteria criteria,
-									  CriteriaQuery criteriaQuery) throws HibernateException {
-				String[] columns = criteriaQuery.getColumnsUsingProjection(
-						criteria, this.propertyName
-				);
-				StringBuilder sql = new StringBuilder( "SDO_WITHIN_DISTANCE(" );
+			public String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
+				final String[] columns = criteriaQuery.getColumnsUsingProjection( criteria, this.propertyName );
+				final StringBuilder sql = new StringBuilder( "SDO_WITHIN_DISTANCE(" );
 				sql.append( columns[0] ).append( "," ).append( "?" );
 				if ( param != null && !param.isEmpty() ) {
 					sql.append( "," ).append( param.toQuotedString() );
@@ -190,6 +212,16 @@ public class OracleSpatialRestrictions {
 		};
 	}
 
+	/**
+	 * Apply the "SDO_WITHIN_DISTANCE" constraint to the specified property, using the specified {@code SDOParameterMap}.
+	 *
+	 * @param propertyName The name of the property
+	 * @param geom The search geometry to use in the constraint
+	 * @param distance The distance parameter for the constraint function
+	 * @param param The parameters for the constraint function
+	 *
+	 * @return The Criterion
+	 */
 	public static Criterion SDOWithinDistance(String propertyName, Geometry geom, Double distance, SDOParameterMap param) {
 		if ( param == null ) {
 			param = new SDOParameterMap();
@@ -204,8 +236,7 @@ abstract class OracleSpatialCriterion implements Criterion {
 	protected Geometry value;
 	protected SDOParameterMap param;
 
-	public OracleSpatialCriterion(String propertyName, Geometry value,
-								  SDOParameterMap param) {
+	public OracleSpatialCriterion(String propertyName, Geometry value, SDOParameterMap param) {
 		this.propertyName = propertyName;
 		this.value = value;
 		this.param = param;
@@ -218,17 +249,12 @@ abstract class OracleSpatialCriterion implements Criterion {
 		  *      org.hibernate.criterion.CriteriaQuery)
 		  */
 
-	public TypedValue[] getTypedValues(Criteria criteria,
-									   CriteriaQuery criteriaQuery) throws HibernateException {
+	public TypedValue[] getTypedValues(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
 		return new TypedValue[] {
-				criteriaQuery.getTypedValue(
-						criteria,
-						propertyName, value
-				)
+				criteriaQuery.getTypedValue( criteria, propertyName, value )
 		};
 	}
 
-	abstract public String toSqlString(Criteria criteria,
-									   CriteriaQuery criteriaQuery) throws HibernateException;
+	public abstract String toSqlString(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException;
 
 }

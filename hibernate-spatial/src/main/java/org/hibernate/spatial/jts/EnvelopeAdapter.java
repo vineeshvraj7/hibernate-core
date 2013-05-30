@@ -32,7 +32,7 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public class EnvelopeAdapter {
 
-	static private GeometryFactory geomFactory = new GeometryFactory();
+	private static GeometryFactory geomFactory = new GeometryFactory();
 
 	private EnvelopeAdapter() {
 	}
@@ -51,7 +51,7 @@ public class EnvelopeAdapter {
 		coords[2] = new Coordinate( env.getMaxX(), env.getMaxY() );
 		coords[3] = new Coordinate( env.getMaxX(), env.getMinY() );
 		coords[4] = new Coordinate( env.getMinX(), env.getMinY() );
-		LinearRing shell = geomFactory.createLinearRing( coords );
+		final LinearRing shell = geomFactory.createLinearRing( coords );
 
 		final Polygon pg = geomFactory.createPolygon( shell, null );
 		pg.setSRID( srid );
