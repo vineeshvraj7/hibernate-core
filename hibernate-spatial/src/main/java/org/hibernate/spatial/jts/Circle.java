@@ -352,7 +352,7 @@ public class Circle {
 		}
 		else {
 			// otherwise, split
-			Arc[] splits = arc.split();
+			final Arc[] splits = arc.split();
 			linearizeInternal( coordinates, splits[0], tolerence );
 			linearizeInternal( coordinates, splits[1], tolerence );
 		}

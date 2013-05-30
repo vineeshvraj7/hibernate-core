@@ -293,7 +293,7 @@ public class PostgisDialect extends PostgreSQL82Dialect implements SpatialDialec
 	public String getSpatialAggregateSQL(String columnName, int aggregation) {
 		switch ( aggregation ) {
 			case SpatialAggregate.EXTENT:
-				StringBuilder stbuf = new StringBuilder();
+				final StringBuilder stbuf = new StringBuilder();
 				stbuf.append( "extent(" ).append( columnName ).append( ")" );
 				return stbuf.toString();
 			default:
