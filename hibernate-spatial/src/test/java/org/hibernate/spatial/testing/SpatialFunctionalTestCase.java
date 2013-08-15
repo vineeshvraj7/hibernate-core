@@ -110,8 +110,8 @@ public abstract class SpatialFunctionalTestCase extends BaseCoreFunctionalTestCa
 	 *
 	 * @return
 	 */
-	protected void afterConstructAndConfigureMetadata(MetadataImplementor metadataImplementor) {
-		super.constructConfiguration();
+	public void afterMetadataBuilt(MetadataImplementor metadataImplementor) {
+		super.afterMetadataBuilt( metadataImplementor );
 		initializeSpatialTestSupport( metadataImplementor );
 	}
 
@@ -133,7 +133,7 @@ public abstract class SpatialFunctionalTestCase extends BaseCoreFunctionalTestCa
 	 * <p/>
 	 * Mostly used to register spatial metadata in databases such as Oracle Spatial.
 	 */
-	protected void afterSessionFactoryBuilt() {
+	public void afterSessionFactoryBuilt() {
 		dataSourceUtils.afterCreateSchema();
 	}
 
