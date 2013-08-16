@@ -36,10 +36,11 @@ import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
  */
 public class SDOGeometryTypeDescriptor implements SqlTypeDescriptor {
 
-	/**
-	 * An instance of this class
-	 */
-	public static final SDOGeometryTypeDescriptor INSTANCE = new SDOGeometryTypeDescriptor();
+	final private SDOGeometryValueBinder valueBinder;
+
+	public SDOGeometryTypeDescriptor(OracleJDBCTypeFactory typeFactory) {
+		this.valueBinder = new SDOGeometryValueBinder(typeFactory);
+	}
 
 	@Override
 	public int getSqlType() {
@@ -53,12 +54,12 @@ public class SDOGeometryTypeDescriptor implements SqlTypeDescriptor {
 
 	@Override
 	public <X> ValueBinder<X> getBinder(final JavaTypeDescriptor<X> javaTypeDescriptor) {
-		return new SDOGeometryValueBinder<X>( javaTypeDescriptor );
+		return (ValueBinder<X>) valueBinder;
 	}
 
 	@Override
 	public <X> ValueExtractor<X> getExtractor(final JavaTypeDescriptor<X> javaTypeDescriptor) {
-		return (ValueExtractor<X>) new SDOGeometryValueExtractor( javaTypeDescriptor );
+		return (ValueExtractor<X>) new SDOGeometryValueExtractor( javaTypeDescriptor, this );
 	}
 
 	public String getTypeName() {
