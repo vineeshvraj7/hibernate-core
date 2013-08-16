@@ -44,20 +44,25 @@ import org.hibernate.spatial.helper.FinderException;
  */
 public class OracleJDBCTypeFactory implements SQLTypeFactory {
 
-	private static Class<?> datumClass;
-	private static Class<?> numberClass;
-	private static Class<?> arrayClass;
-	private static Class<?> structClass;
-	private static Class<?> arrayDescriptorClass;
-	private static Class<?> structDescriptorClass;
-	private static Method structDescriptorCreator;
-	private static Method arrayDescriptorCreator;
-	private static Constructor<?> numberConstructor;
-	private static Constructor<?> arrayConstructor;
-	private static Constructor<?> structConstructor;
+	final private Class<?> datumClass;
+	final private Class<?> numberClass;
+	final private Class<?> arrayClass;
+	final private Class<?> structClass;
+	final private Class<?> arrayDescriptorClass;
+	final private Class<?> structDescriptorClass;
+	final private Method structDescriptorCreator;
+	final private Method arrayDescriptorCreator;
+	final private Constructor<?> numberConstructor;
+	final private Constructor<?> arrayConstructor;
+	final private Constructor<?> structConstructor;
+	final private ConnectionFinder connectionFinder;
 
-	static {
-		Object[] obj = findDescriptorCreator( "oracle.sql.StructDescriptor" );
+	public OracleJDBCTypeFactory(ConnectionFinder connectionFinder) {
+		if ( connectionFinder == null ) {
+			throw new HibernateException( "ConnectionFinder cannot be null" );
+		}
+		this.connectionFinder = connectionFinder;
+		Object[] obj = findDescriptorCreator("oracle.sql.StructDescriptor");
 		structDescriptorClass = (Class<?>) obj[0];
 		structDescriptorCreator = (Method) obj[1];
 		obj = findDescriptorCreator( "oracle.sql.ArrayDescriptor" );
@@ -73,9 +78,9 @@ public class OracleJDBCTypeFactory implements SQLTypeFactory {
 		structConstructor = findConstructor( structClass, structDescriptorClass, Connection.class, Object[].class );
 	}
 
-	private static ConnectionFinder connectionFinder = new DefaultConnectionFinder();
 
-	private static Constructor<?> findConstructor(Class clazz, Class<?>... arguments) {
+
+	private Constructor<?> findConstructor(Class clazz, Class<?>... arguments) {
 		try {
 			return clazz.getConstructor( arguments );
 		}
@@ -84,7 +89,7 @@ public class OracleJDBCTypeFactory implements SQLTypeFactory {
 		}
 	}
 
-	private static Class<?> findClass(String name) {
+	private Class<?> findClass(String name) {
 		try {
 			return ReflectHelper.classForName( name );
 		}
@@ -93,7 +98,7 @@ public class OracleJDBCTypeFactory implements SQLTypeFactory {
 		}
 	}
 
-	private static Object[] findDescriptorCreator(String className) {
+	private Object[] findDescriptorCreator(String className) {
 		try {
 			final Class clazz = ReflectHelper.classForName( className );
 			final Method m = clazz.getMethod( "createDescriptor", String.class, Connection.class );
@@ -107,15 +112,6 @@ public class OracleJDBCTypeFactory implements SQLTypeFactory {
 		}
 	}
 
-	static ConnectionFinder getConnectionFinder() {
-		return connectionFinder;
-	}
-
-	static void setConnectionFinder(ConnectionFinder finder) {
-		connectionFinder = finder;
-	}
-
-	@Override
 	public Struct createStruct(SDOGeometry geom, Connection conn) throws SQLException {
 		Connection oracleConnection = null;
 		try {

@@ -24,6 +24,7 @@ package org.hibernate.spatial.dialect.oracle;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -37,13 +38,9 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import org.hibernate.HibernateException;
-import org.hibernate.spatial.Log;
-import org.hibernate.spatial.LogFactory;
 import org.hibernate.spatial.helper.FinderException;
-import org.hibernate.type.descriptor.JdbcTypeNameMapper;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.WrapperOptions;
-import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
@@ -51,57 +48,34 @@ import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
  */
 class SDOGeometryValueBinder<J> implements ValueBinder<J> {
 
-	private static final Log LOG = LogFactory.make();
-	private static final String BIND_MSG_TEMPLATE = "binding parameter [%s] as [%s] - %s";
-	private static final String NULL_BIND_MSG_TEMPLATE = "binding parameter [%s] as [%s] - <null>";
-	private final JavaTypeDescriptor<J> javaDescriptor;
 
+	final private OracleJDBCTypeFactory typeFactory;
 
-	public SDOGeometryValueBinder(JavaTypeDescriptor<J> javaDescriptor) {
-		this.javaDescriptor = javaDescriptor;
+	public SDOGeometryValueBinder(OracleJDBCTypeFactory typeFactory) {
+		this.typeFactory = typeFactory;
 	}
 
-	public final void bind(PreparedStatement st, J value, int index, WrapperOptions options) throws SQLException {
-		if ( value == null ) {
-			if ( LOG.isTraceEnabled() ) {
-				LOG.trace(
-						String.format(
-								NULL_BIND_MSG_TEMPLATE,
-								index,
-								JdbcTypeNameMapper.getTypeName( SDOGeometryTypeDescriptor.INSTANCE.getSqlType() )
-						)
-				);
-			}
-			st.setNull(
-					index,
-					SDOGeometryTypeDescriptor.INSTANCE.getSqlType(),
-					SDOGeometryTypeDescriptor.INSTANCE.getTypeName()
-			);
-		}
-		else {
-			if ( LOG.isTraceEnabled() ) {
-				LOG.trace(
-						String.format(
-								BIND_MSG_TEMPLATE,
-								index,
-								JdbcTypeNameMapper.getTypeName( SDOGeometryTypeDescriptor.INSTANCE.getSqlType() ),
-								javaDescriptor.extractLoggableRepresentation( value )
-						)
-				);
-			}
-			final Geometry jtsGeom = javaDescriptor.unwrap( value, Geometry.class, options );
-			final Object dbGeom = toNative( jtsGeom, st.getConnection() );
-			st.setObject( index, dbGeom );
+	@Override
+	public void bind(PreparedStatement st, J value, int index, WrapperOptions options) throws SQLException {
+		if (value == null) {
+			st.setNull(index, Types.STRUCT, SDOGeometry.getTypeName());
+		} else {
+			Geometry jtsGeom = (Geometry) value;
+			Object dbGeom = toNative(jtsGeom, st.getConnection());
+			st.setObject(index, dbGeom);
 		}
 	}
 
-	protected Object toNative(Geometry jtsGeom, Connection connection) {
-		final SDOGeometry geom = convertJTSGeometry( jtsGeom );
-		if ( geom != null ) {
+	public Object store(SDOGeometry geom, Connection conn) throws SQLException, FinderException {
+		return typeFactory.createStruct(geom, conn);
+	}
+
+	private Object toNative(Geometry jtsGeom, Connection connection) {
+		SDOGeometry geom = convertJTSGeometry(jtsGeom);
+		if (geom != null) {
 			try {
-				return SDOGeometry.store( geom, connection );
-			}
-			catch ( SQLException e ) {
+				return store( geom, connection );
+			} catch (SQLException e) {
 				throw new HibernateException(
 						"Problem during conversion from JTS to SDOGeometry", e
 				);
@@ -111,8 +85,7 @@ class SDOGeometryValueBinder<J> implements ValueBinder<J> {
 						"OracleConnection could not be retrieved for creating SDOGeometry STRUCT", e
 				);
 			}
-		}
-		else {
+		} else {
 			throw new UnsupportedOperationException(
 					"Conversion of "
 							+ jtsGeom.getClass().getSimpleName()
