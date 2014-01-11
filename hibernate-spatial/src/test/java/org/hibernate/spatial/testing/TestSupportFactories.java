@@ -75,11 +75,11 @@ public class TestSupportFactories {
 			return SQLServerTestSupport.class;
 		}
 		if ( "org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect".equals( canonicalName ) ||
-				"org.hibernate.spatial.dialect.mysql.MySQLSpatialInnoDBDialect".equals( canonicalName ) ||
-				"org.hibernate.spatial.dialect.mysql.MySQLSpatial5InnoDBDialect".equals( canonicalName ) ) {
+				"org.hibernate.spatial.dialect.mysql.MySQL5InnoDBSpatialDialect".equals( canonicalName ) ) {
 			return MySQLTestSupport.class;
 		}
-		if ( "org.hibernate.spatial.dialect.mysql.MySQLSpatial56Dialect".equals( canonicalName ) ) {
+		if ( "org.hibernate.spatial.dialect.mysql.MySQLSpatial56Dialect".equals( canonicalName ) ||
+				"org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect".equals( canonicalName ) ) {
 			return MySQL56TestSupport.class;
 		}
 		if ( "org.hibernate.spatial.dialect.oracle.OracleSpatial10gDialect".equals( canonicalName ) ) {

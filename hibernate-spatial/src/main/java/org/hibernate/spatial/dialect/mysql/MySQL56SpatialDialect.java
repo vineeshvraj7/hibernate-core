@@ -25,13 +25,13 @@ import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
  *
  * @author Karel Maesen
  */
-public class MySQLSpatial56Dialect extends MySQL5Dialect implements SpatialDialect {
+public class MySQL56SpatialDialect extends MySQL5Dialect implements SpatialDialect {
 
 
 	private MySQLSpatialDialect dialectDelegate = new MySQLSpatialDialect();
 
 
-	public MySQLSpatial56Dialect() {
+	public MySQL56SpatialDialect() {
 		super();
 		registerColumnType(
 				MySQLGeometryTypeDescriptor.INSTANCE.getSqlType(),
