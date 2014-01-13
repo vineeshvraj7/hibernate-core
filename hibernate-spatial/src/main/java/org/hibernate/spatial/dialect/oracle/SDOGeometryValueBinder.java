@@ -41,6 +41,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.spatial.helper.FinderException;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.WrapperOptions;
+import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
+import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 
 /**
  * @author Karel Maesen, Geovise BVBA
@@ -50,19 +52,24 @@ class SDOGeometryValueBinder<J> implements ValueBinder<J> {
 
 
 	final private OracleJDBCTypeFactory typeFactory;
+	final private JavaTypeDescriptor<J> javaTypeDescriptor;
 
-	public SDOGeometryValueBinder(OracleJDBCTypeFactory typeFactory) {
+	public SDOGeometryValueBinder(JavaTypeDescriptor<J> javaTypeDescriptor, SqlTypeDescriptor sqlTypeDescriptor, OracleJDBCTypeFactory typeFactory) {
+		this.javaTypeDescriptor = javaTypeDescriptor;
 		this.typeFactory = typeFactory;
 	}
 
+
+
 	@Override
 	public void bind(PreparedStatement st, J value, int index, WrapperOptions options) throws SQLException {
-		if (value == null) {
-			st.setNull(index, Types.STRUCT, SDOGeometry.getTypeName());
-		} else {
-			Geometry jtsGeom = (Geometry) value;
-			Object dbGeom = toNative(jtsGeom, st.getConnection());
-			st.setObject(index, dbGeom);
+		if ( value == null ) {
+			st.setNull( index, Types.STRUCT, SDOGeometry.getTypeName() );
+		}
+		else {
+			final Geometry jtsGeom = javaTypeDescriptor.unwrap( value, Geometry.class, options );
+			final Object dbGeom = toNative( jtsGeom, st.getConnection() );
+			st.setObject( index, dbGeom );
 		}
 	}
 
