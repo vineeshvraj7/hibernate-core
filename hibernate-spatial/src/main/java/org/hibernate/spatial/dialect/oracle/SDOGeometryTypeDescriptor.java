@@ -36,8 +36,13 @@ import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
  */
 public class SDOGeometryTypeDescriptor implements SqlTypeDescriptor {
 
-	final private OracleJDBCTypeFactory typeFactory;
+	private final OracleJDBCTypeFactory typeFactory;
 
+	/**
+	 * Constructs a {@code SqlTypeDescriptor} for the Oracle SDOGeometry type.
+	 *
+	 * @param typeFactory the type factory to use.
+	 */
 	public SDOGeometryTypeDescriptor(OracleJDBCTypeFactory typeFactory) {
 		this.typeFactory = typeFactory;
 	}
@@ -62,6 +67,10 @@ public class SDOGeometryTypeDescriptor implements SqlTypeDescriptor {
 		return (ValueExtractor<X>) new SDOGeometryValueExtractor( javaTypeDescriptor, this );
 	}
 
+	/**
+	 * Returns the Oracle type name for SDOGeometry.
+	 * @return the Oracle type name
+	 */
 	public String getTypeName() {
 		return "MDSYS.SDO_GEOMETRY";
 	}

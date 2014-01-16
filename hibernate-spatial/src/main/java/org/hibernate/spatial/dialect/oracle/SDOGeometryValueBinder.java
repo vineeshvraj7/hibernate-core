@@ -51,15 +51,13 @@ import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 class SDOGeometryValueBinder<J> implements ValueBinder<J> {
 
 
-	final private OracleJDBCTypeFactory typeFactory;
-	final private JavaTypeDescriptor<J> javaTypeDescriptor;
+	private final OracleJDBCTypeFactory typeFactory;
+	private final JavaTypeDescriptor<J> javaTypeDescriptor;
 
 	public SDOGeometryValueBinder(JavaTypeDescriptor<J> javaTypeDescriptor, SqlTypeDescriptor sqlTypeDescriptor, OracleJDBCTypeFactory typeFactory) {
 		this.javaTypeDescriptor = javaTypeDescriptor;
 		this.typeFactory = typeFactory;
 	}
-
-
 
 	@Override
 	public void bind(PreparedStatement st, J value, int index, WrapperOptions options) throws SQLException {
@@ -74,15 +72,16 @@ class SDOGeometryValueBinder<J> implements ValueBinder<J> {
 	}
 
 	public Object store(SDOGeometry geom, Connection conn) throws SQLException, FinderException {
-		return typeFactory.createStruct(geom, conn);
+		return typeFactory.createStruct( geom, conn );
 	}
 
 	private Object toNative(Geometry jtsGeom, Connection connection) {
-		SDOGeometry geom = convertJTSGeometry(jtsGeom);
-		if (geom != null) {
+		final SDOGeometry geom = convertJTSGeometry( jtsGeom );
+		if ( geom != null ) {
 			try {
 				return store( geom, connection );
-			} catch (SQLException e) {
+			}
+			catch ( SQLException e ) {
 				throw new HibernateException(
 						"Problem during conversion from JTS to SDOGeometry", e
 				);
@@ -92,7 +91,8 @@ class SDOGeometryValueBinder<J> implements ValueBinder<J> {
 						"OracleConnection could not be retrieved for creating SDOGeometry STRUCT", e
 				);
 			}
-		} else {
+		}
+		else {
 			throw new UnsupportedOperationException(
 					"Conversion of "
 							+ jtsGeom.getClass().getSimpleName()

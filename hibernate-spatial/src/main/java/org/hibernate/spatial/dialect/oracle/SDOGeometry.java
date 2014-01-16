@@ -27,8 +27,6 @@ import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.spatial.helper.FinderException;
-
 /**
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: Jun 30, 2010
@@ -142,6 +140,28 @@ class SDOGeometry {
 		}
 	}
 
+	public static SDOGeometry load(Struct struct) {
+
+		Object[] data;
+		try {
+			data = struct.getAttributes();
+		}
+		catch ( SQLException e ) {
+			throw new RuntimeException( e );
+		}
+
+		final SDOGeometry geom = new SDOGeometry();
+		geom.setGType( SDOGType.parse( data[0] ) );
+		geom.setSRID( data[1] );
+		if ( data[2] != null ) {
+			geom.setPoint( new SDOPoint( (Struct) data[2] ) );
+		}
+		geom.setInfo( new ElemInfo( (Array) data[3] ) );
+		geom.setOrdinates( new Ordinates( (Array) data[4] ) );
+
+		return geom;
+	}
+
 	public ElemInfo getInfo() {
 		return info;
 	}
@@ -178,25 +198,8 @@ class SDOGeometry {
 		return srid;
 	}
 
-	public static SDOGeometry load(Struct struct) {
-
-		Object[] data;
-		try {
-			data = struct.getAttributes();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-
-		SDOGeometry geom = new SDOGeometry();
-		geom.setGType(SDOGType.parse(data[0]));
-		geom.setSRID(data[1]);
-		if (data[2] != null) {
-			geom.setPoint(new SDOPoint((Struct) data[2]));
-		}
-		geom.setInfo(new ElemInfo((Array) data[3]));
-		geom.setOrdinates(new Ordinates((Array) data[4]));
-
-		return geom;
+	public void setSRID(int srid) {
+		this.srid = srid;
 	}
 
 	private void setSRID(Object datum) {
@@ -205,15 +208,11 @@ class SDOGeometry {
 			return;
 		}
 		try {
-			this.srid = new Integer( ( (Number) datum ).intValue() );
+			this.srid = ( (Number) datum ).intValue();
 		}
 		catch ( Exception e ) {
 			throw new RuntimeException( e );
 		}
-	}
-
-	public void setSRID(int srid) {
-		this.srid = srid;
 	}
 
 	public boolean isLRSGeometry() {
