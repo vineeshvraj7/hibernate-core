@@ -20,8 +20,12 @@ import org.hibernate.spatial.dialect.oracle.OracleSpatial10gDialect;
  */
 public class SpatialDialectFactory extends DialectFactoryImpl {
 
-	final private HibernateSpatialConfiguration configuration;
+	private final HibernateSpatialConfiguration configuration;
 
+	/**
+	 * Constructs an instance with the specified configuration
+	 * @param configuration the {@HibernateSpatialConfiguration} to use.
+	 */
 	public SpatialDialectFactory(HibernateSpatialConfiguration configuration) {
 		super();
 		this.configuration = configuration;
@@ -29,10 +33,11 @@ public class SpatialDialectFactory extends DialectFactoryImpl {
 
 	@Override
 	public Dialect buildDialect(Map configValues, Connection connection) throws HibernateException {
-		Dialect dialect = super.buildDialect( configValues, connection );
+		final Dialect dialect = super.buildDialect( configValues, connection );
 		if (dialect instanceof OracleSpatial10gDialect) {
 			return new OracleSpatial10gDialect( configuration );
-		} else {
+		}
+		else {
 			return dialect;
 		}
 	}

@@ -72,7 +72,7 @@ public class DWithinExpression implements Criterion {
 
 	@Override
 	public TypedValue[] getTypedValues(Criteria criteria, CriteriaQuery criteriaQuery) throws HibernateException {
-		SpatialDialect spatialDialect = ExpressionUtil.getSpatialDialect( criteriaQuery, SpatialFunction.dwithin );
+		final SpatialDialect spatialDialect = ExpressionUtil.getSpatialDialect( criteriaQuery, SpatialFunction.dwithin );
 		TypedValue typedDistanceValue = new TypedValue( StandardBasicTypes.DOUBLE, distance );
 		if ( spatialDialect instanceof OracleSpatial10gDialect ) {
 			typedDistanceValue = new TypedValue( StandardBasicTypes.STRING, "distance=" + distance );

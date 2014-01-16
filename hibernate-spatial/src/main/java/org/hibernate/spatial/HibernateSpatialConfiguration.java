@@ -11,9 +11,9 @@ import org.hibernate.spatial.dialect.oracle.ConnectionFinder;
  */
 public class HibernateSpatialConfiguration {
 
-	final private static Log LOG = LogFactory.make();
+	private static final Log LOG = LogFactory.make();
 	private Boolean isOgcStrict = Boolean.TRUE;
-	private ConnectionFinder connectionFinder = null;
+	private ConnectionFinder connectionFinder;
 
 	/**
 	 * Holds the configuration for Hibernate Spatial dialects.
@@ -21,6 +21,12 @@ public class HibernateSpatialConfiguration {
 	public HibernateSpatialConfiguration() {
 	}
 
+	/**
+	 * Creates a Configuration for Hibernate spatial
+	 *
+	 * @param ogcStrict true for OGC Strict mode
+	 * @param connectionFinder the fully-qualified Class name for the {@code ConnectionFinder}
+	 */
 	public HibernateSpatialConfiguration(Boolean ogcStrict, ConnectionFinder connectionFinder) {
 		if ( ogcStrict != null ) {
 			this.isOgcStrict = ogcStrict;
@@ -45,6 +51,9 @@ public class HibernateSpatialConfiguration {
 		return connectionFinder;
 	}
 
+	/**
+	 * Collects the property names for Hibernate Spatial configuration properties.
+	 */
 	public static class AvailableSettings {
 		/**
 		 * Determines whether or nog to use the OracleSpatial10gDialect in OGC_STRICT mode or not (values: true or false)

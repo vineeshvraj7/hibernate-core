@@ -14,6 +14,8 @@ import org.hibernate.spatial.HibernateSpatialConfiguration;
 import org.hibernate.spatial.dialect.oracle.ConnectionFinder;
 
 /**
+ * The {@code ServiceInitiator} for Hibernate Spatial.
+ *
  * @author Karel Maesen, Geovise BVBA
  *         creation-date: 8/23/13
  */
@@ -26,15 +28,13 @@ public class SpatialInitiator implements StandardServiceInitiator {
 
 	@Override
 	public Service initiateService(Map configurationValues, ServiceRegistryImplementor registry) {
-		HibernateSpatialConfiguration configuration = configure( registry );
+		final HibernateSpatialConfiguration configuration = configure( registry );
 		return new SpatialDialectFactory( configuration );
 	}
 
-
-
 	private HibernateSpatialConfiguration configure(ServiceRegistry serviceRegistry) {
-		ConfigurationService configService = serviceRegistry.getService( ConfigurationService.class );
-		ClassLoaderService classLoaderService = serviceRegistry.getService( ClassLoaderService.class );
+		final ConfigurationService configService = serviceRegistry.getService( ConfigurationService.class );
+		final ClassLoaderService classLoaderService = serviceRegistry.getService( ClassLoaderService.class );
 		return new HibernateSpatialConfiguration(
 				readOgcStrict( configService ),
 				readConnectionFinder( configService, classLoaderService )
@@ -45,7 +45,7 @@ public class SpatialInitiator implements StandardServiceInitiator {
 	 * Reads the configured property (if present), otherwise returns null
 	 */
 	private Boolean readOgcStrict(ConfigurationService configService) {
-		String ogcStrictKey = HibernateSpatialConfiguration.AvailableSettings.OGC_STRICT;
+		final String ogcStrictKey = HibernateSpatialConfiguration.AvailableSettings.OGC_STRICT;
 		return configService.getSetting(
 				ogcStrictKey,
 				new ConfigurationService.Converter<Boolean>() {
@@ -61,8 +61,8 @@ public class SpatialInitiator implements StandardServiceInitiator {
 	 * Reads the configured property (if present), otherwise returns null
 	 */
 	private ConnectionFinder readConnectionFinder(ConfigurationService configService, ClassLoaderService classLoaderService) {
-		String cfKey = HibernateSpatialConfiguration.AvailableSettings.CONNECTION_FINDER;
-		String className =  configService.getSetting(
+		final String cfKey = HibernateSpatialConfiguration.AvailableSettings.CONNECTION_FINDER;
+		final String className = configService.getSetting(
 				cfKey,
 				new ConfigurationService.Converter<String>() {
 					@Override
@@ -75,17 +75,15 @@ public class SpatialInitiator implements StandardServiceInitiator {
 				}, null
 		);
 
-		if (className == null) {
+		if ( className == null ) {
 			return null;
 		}
 
 		try {
 			return (ConnectionFinder) classLoaderService.classForName( className ).newInstance();
-		} catch (Exception e) {
+		}
+		catch ( Exception e ) {
 			throw new HibernateException( " Could not instantiate ConnectionFinder: " + className, e );
 		}
-
-
 	}
-
 }

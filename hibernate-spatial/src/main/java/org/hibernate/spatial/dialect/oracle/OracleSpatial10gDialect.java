@@ -50,19 +50,26 @@ import org.hibernate.type.Type;
 public class OracleSpatial10gDialect extends Oracle10gDialect implements
 		SpatialDialect, Serializable {
 
-	private final boolean  isOgcStrict;
-
+	private final boolean isOgcStrict;
 	private final ConnectionFinder connectionFinder;
 
 
+	/**
+	 * Constructs the dialect with a default configuration
+	 */
 	public OracleSpatial10gDialect() {
-		this(new HibernateSpatialConfiguration());
+		this( new HibernateSpatialConfiguration() );
 	}
-		
+
+	/**
+	 * Constructs the dialect with the specified configuration
+	 *
+	 * @param config the {@code HibernateSpatialConfiguration} that configures this dialect.
+	 */
 	public OracleSpatial10gDialect(HibernateSpatialConfiguration config) {
 		super();
 		this.isOgcStrict = config.isOgcStrictMode();
-		ConnectionFinder finder = config.getConnectionFinder();
+		final ConnectionFinder finder = config.getConnectionFinder();
 		this.connectionFinder = finder == null ? new DefaultConnectionFinder() : finder;
 
 
@@ -161,7 +168,7 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 				serviceRegistry
 		);
 
-		SDOGeometryTypeDescriptor sdoGeometryTypeDescriptor = new SDOGeometryTypeDescriptor(
+		final SDOGeometryTypeDescriptor sdoGeometryTypeDescriptor = new SDOGeometryTypeDescriptor(
 				new OracleJDBCTypeFactory(
 						this.connectionFinder
 				)
@@ -208,7 +215,7 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 								+ ")"
 				);
 		}
-		StringBuffer buffer = new StringBuffer( "CASE SDO_RELATE(" ).append( arg1 )
+		final StringBuffer buffer = new StringBuffer( "CASE SDO_RELATE(" ).append( arg1 )
 				.append( "," )
 				.append( arg2 )
 				.append( ",'mask=" + mask + "') " );
@@ -297,17 +304,17 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 
 	@Override
 	public String getSpatialFilterExpression(String columnName) {
-		StringBuffer buffer = new StringBuffer("SDO_FILTER(");
-		buffer.append(columnName);
-		buffer.append(",?) = 'TRUE' ");
+		final StringBuffer buffer = new StringBuffer( "SDO_FILTER(" );
+		buffer.append( columnName );
+		buffer.append( ",?) = 'TRUE' " );
 		return buffer.toString();
 	}
 
 	@Override
 	public String getSpatialRelateSQL(String columnName, int spatialRelation) {
 		String sql = ( isOGCStrict() ?
-				getOGCSpatialRelateSQL(columnName,"?",spatialRelation) :
-				 getNativeSpatialRelateSQL( columnName, "?", spatialRelation ) ) + " = 1";
+				getOGCSpatialRelateSQL( columnName, "?", spatialRelation ) :
+				getNativeSpatialRelateSQL( columnName, "?", spatialRelation ) ) + " = 1";
 		sql += " and " + columnName + " is not null";
 		return sql;
 	}
@@ -414,24 +421,25 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 	 * Reports whether this dialect is in OGC_STRICT mode or not.
 	 *
 	 * This method is for testing purposes.
-	 * @return true if in OGC_STRICT mode, false otherwise
 	 *
+	 * @return true if in OGC_STRICT mode, false otherwise
 	 */
 	public boolean isOGCStrict() {
 		return isOgcStrict;
 	}
 
-
 	/**
 	 * Reports the ConnectionFinder used by this Dialect (or rather its associated TypeDescriptor).
 	 *
 	 * This method is mainly used for testing purposes.
+	 *
 	 * @return the ConnectionFinder in use
 	 */
-	public ConnectionFinder getConnectionFinder(){
+	public ConnectionFinder getConnectionFinder() {
 		return connectionFinder;
 	}
 
+	@Override
 	public boolean supportsFiltering() {
 		return true;
 	}
@@ -444,7 +452,7 @@ public class OracleSpatial10gDialect extends Oracle10gDialect implements
 	/**
 	 * Implementation of the OGC astext function for HQL.
 	 */
-	private class AsTextFunction extends StandardSQLFunction {
+	private static class AsTextFunction extends StandardSQLFunction {
 
 		private AsTextFunction() {
 			super( "astext", StandardBasicTypes.STRING );

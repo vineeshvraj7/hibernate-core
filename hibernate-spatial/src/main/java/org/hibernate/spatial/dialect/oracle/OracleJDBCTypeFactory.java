@@ -44,25 +44,30 @@ import org.hibernate.spatial.helper.FinderException;
  */
 public class OracleJDBCTypeFactory implements SQLTypeFactory {
 
-	final private Class<?> datumClass;
-	final private Class<?> numberClass;
-	final private Class<?> arrayClass;
-	final private Class<?> structClass;
-	final private Class<?> arrayDescriptorClass;
-	final private Class<?> structDescriptorClass;
-	final private Method structDescriptorCreator;
-	final private Method arrayDescriptorCreator;
-	final private Constructor<?> numberConstructor;
-	final private Constructor<?> arrayConstructor;
-	final private Constructor<?> structConstructor;
-	final private ConnectionFinder connectionFinder;
+	private final Class<?> datumClass;
+	private final Class<?> numberClass;
+	private final Class<?> arrayClass;
+	private final Class<?> structClass;
+	private final Class<?> arrayDescriptorClass;
+	private final Class<?> structDescriptorClass;
+	private final Method structDescriptorCreator;
+	private final Method arrayDescriptorCreator;
+	private final Constructor<?> numberConstructor;
+	private final Constructor<?> arrayConstructor;
+	private final Constructor<?> structConstructor;
+	private final ConnectionFinder connectionFinder;
 
+	/**
+	 * Constructs an instance.
+	 *
+	 * @param connectionFinder the {@code ConnectionFinder} the use for retrieving the {@code OracleConnection} instance.
+	 */
 	public OracleJDBCTypeFactory(ConnectionFinder connectionFinder) {
 		if ( connectionFinder == null ) {
 			throw new HibernateException( "ConnectionFinder cannot be null" );
 		}
 		this.connectionFinder = connectionFinder;
-		Object[] obj = findDescriptorCreator("oracle.sql.StructDescriptor");
+		Object[] obj = findDescriptorCreator( "oracle.sql.StructDescriptor" );
 		structDescriptorClass = (Class<?>) obj[0];
 		structDescriptorCreator = (Method) obj[1];
 		obj = findDescriptorCreator( "oracle.sql.ArrayDescriptor" );
@@ -77,8 +82,6 @@ public class OracleJDBCTypeFactory implements SQLTypeFactory {
 		arrayConstructor = findConstructor( arrayClass, arrayDescriptorClass, Connection.class, Object.class );
 		structConstructor = findConstructor( structClass, structDescriptorClass, Connection.class, Object[].class );
 	}
-
-
 
 	private Constructor<?> findConstructor(Class clazz, Class<?>... arguments) {
 		try {
@@ -112,6 +115,7 @@ public class OracleJDBCTypeFactory implements SQLTypeFactory {
 		}
 	}
 
+	@Override
 	public Struct createStruct(SDOGeometry geom, Connection conn) throws SQLException {
 		Connection oracleConnection = null;
 		try {

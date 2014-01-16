@@ -30,44 +30,46 @@ public class MySQL56SpatialDialect extends MySQL5Dialect implements SpatialDiale
 
 	private MySQLSpatialDialect dialectDelegate = new MySQLSpatialDialect();
 
-
+	/**
+	 * Constructs the dialect
+	 */
 	public MySQL56SpatialDialect() {
 		super();
 		registerColumnType(
 				MySQLGeometryTypeDescriptor.INSTANCE.getSqlType(),
 				"GEOMETRY"
 		);
-		MySQLSpatialFunctions functionsToRegister = overrideObjectShapeFunctions( new MySQLSpatialFunctions() );
+		final MySQLSpatialFunctions functionsToRegister = overrideObjectShapeFunctions( new MySQLSpatialFunctions() );
 		for ( Map.Entry<String, StandardSQLFunction> entry : functionsToRegister ) {
 			registerFunction( entry.getKey(), entry.getValue() );
 		}
 	}
 
-	private MySQLSpatialFunctions overrideObjectShapeFunctions( MySQLSpatialFunctions mysqlFunctions) {
-		mysqlFunctions.put("contains" , new StandardSQLFunction("ST_Contains", StandardBasicTypes.BOOLEAN));
-		mysqlFunctions.put("crosses" , new StandardSQLFunction("ST_Crosses",StandardBasicTypes.BOOLEAN));
-		mysqlFunctions.put("disjoint" , new StandardSQLFunction("ST_Disjoint",StandardBasicTypes.BOOLEAN));
-		mysqlFunctions.put("equals" , new StandardSQLFunction("ST_Equals",StandardBasicTypes.BOOLEAN));
-		mysqlFunctions.put("intersects" , new StandardSQLFunction("ST_Intersects",StandardBasicTypes.BOOLEAN));
-		mysqlFunctions.put("overlaps" , new StandardSQLFunction("ST_Overlaps",StandardBasicTypes.BOOLEAN));
-		mysqlFunctions.put("touches" , new StandardSQLFunction("ST_Touches",StandardBasicTypes.BOOLEAN));
-		mysqlFunctions.put("within" , new StandardSQLFunction("ST_Within",StandardBasicTypes.BOOLEAN));
+	private MySQLSpatialFunctions overrideObjectShapeFunctions(MySQLSpatialFunctions mysqlFunctions) {
+		mysqlFunctions.put( "contains", new StandardSQLFunction( "ST_Contains", StandardBasicTypes.BOOLEAN ) );
+		mysqlFunctions.put( "crosses", new StandardSQLFunction( "ST_Crosses", StandardBasicTypes.BOOLEAN ) );
+		mysqlFunctions.put( "disjoint", new StandardSQLFunction( "ST_Disjoint", StandardBasicTypes.BOOLEAN ) );
+		mysqlFunctions.put( "equals", new StandardSQLFunction( "ST_Equals", StandardBasicTypes.BOOLEAN ) );
+		mysqlFunctions.put( "intersects", new StandardSQLFunction( "ST_Intersects", StandardBasicTypes.BOOLEAN ) );
+		mysqlFunctions.put( "overlaps", new StandardSQLFunction( "ST_Overlaps", StandardBasicTypes.BOOLEAN ) );
+		mysqlFunctions.put( "touches", new StandardSQLFunction( "ST_Touches", StandardBasicTypes.BOOLEAN ) );
+		mysqlFunctions.put( "within", new StandardSQLFunction( "ST_Within", StandardBasicTypes.BOOLEAN ) );
 		return mysqlFunctions;
 	}
 
 	@Override
 	public SqlTypeDescriptor remapSqlTypeDescriptor(SqlTypeDescriptor sqlTypeDescriptor) {
-		return dialectDelegate.remapSqlTypeDescriptor(sqlTypeDescriptor);
+		return dialectDelegate.remapSqlTypeDescriptor( sqlTypeDescriptor );
 	}
 
 	@Override
 	public String getTypeName(int code, long length, int precision, int scale) throws HibernateException {
-		return dialectDelegate.getTypeName(code, length, precision, scale);
+		return dialectDelegate.getTypeName( code, length, precision, scale );
 	}
 
 	@Override
 	public String getSpatialRelateSQL(String columnName, int spatialRelation) {
-		switch (spatialRelation) {
+		switch ( spatialRelation ) {
 			case SpatialRelation.WITHIN:
 				return " ST_Within(" + columnName + ",?)";
 			case SpatialRelation.CONTAINS:
@@ -86,36 +88,44 @@ public class MySQL56SpatialDialect extends MySQL5Dialect implements SpatialDiale
 				return " ST_Equals(" + columnName + ", ?)";
 			default:
 				throw new IllegalArgumentException(
-						"Spatial relation is not known by this dialect");
+						"Spatial relation is not known by this dialect"
+				);
 		}
 	}
 
+	@Override
 	public String getSpatialFilterExpression(String columnName) {
-		return dialectDelegate.getSpatialFilterExpression(columnName);
+		return dialectDelegate.getSpatialFilterExpression( columnName );
 	}
 
+	@Override
 	public String getSpatialAggregateSQL(String columnName, int aggregation) {
-		return dialectDelegate.getSpatialAggregateSQL(columnName, aggregation);
+		return dialectDelegate.getSpatialAggregateSQL( columnName, aggregation );
 	}
 
+	@Override
 	public String getDWithinSQL(String columnName) {
-		return dialectDelegate.getDWithinSQL(columnName);
+		return dialectDelegate.getDWithinSQL( columnName );
 	}
 
+	@Override
 	public String getHavingSridSQL(String columnName) {
-		return dialectDelegate.getHavingSridSQL(columnName);
+		return dialectDelegate.getHavingSridSQL( columnName );
 	}
 
+	@Override
 	public String getIsEmptySQL(String columnName, boolean isEmpty) {
-		return dialectDelegate.getIsEmptySQL(columnName, isEmpty);
+		return dialectDelegate.getIsEmptySQL( columnName, isEmpty );
 	}
 
+	@Override
 	public boolean supportsFiltering() {
 		return dialectDelegate.supportsFiltering();
 	}
 
+	@Override
 	public boolean supports(SpatialFunction function) {
-		return dialectDelegate.supports(function);
+		return dialectDelegate.supports( function );
 	}
 
 }

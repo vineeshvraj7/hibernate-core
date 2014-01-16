@@ -63,7 +63,8 @@ public class SDOGeometryValueExtractor<X> extends BasicExtractor<X> {
 	/**
 	 * Creates instance
 	 *
-	 * @param javaDescriptor javadescriptor to use
+	 * @param javaDescriptor the {@code JavaTypeDescriptor} to use
+	 * @param sqlTypeDescriptor the {@code SqlTypeDescriptor} to use
 	 */
 	public SDOGeometryValueExtractor(JavaTypeDescriptor<X> javaDescriptor, SqlTypeDescriptor sqlTypeDescriptor ) {
 		super( javaDescriptor, sqlTypeDescriptor );
