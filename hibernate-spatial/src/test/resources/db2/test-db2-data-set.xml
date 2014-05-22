@@ -11,7 +11,6 @@
         <wkt>POINT(52.25 2.53)</wkt>
         <srid>4326</srid>
     </Element>
-
     <Element>
         <id>4</id>
         <type>POINT</type>
