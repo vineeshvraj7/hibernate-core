@@ -13,15 +13,9 @@
     </Element>
 
     <Element>
-        <id>3</id>
-        <type>POINT</type>
-        <wkt>POINT(150000 200000)</wkt>
-        <srid>31370</srid>
-    </Element>
-    <Element>
         <id>4</id>
         <type>POINT</type>
-        <wkt>POINT(10.0 2.0 1.0 3.0)</wkt>
+        <wkt>POINT ZM(10.0 2.0 1.0 3.0)</wkt>
         <srid>4326</srid>
     </Element>
 
@@ -42,28 +36,28 @@
     <Element>
         <id>7</id>
         <type>LINESTRING</type>
-        <wkt>LINESTRING(10.0 5.0 0.0, 20.0 15.0 3.0)</wkt>
+        <wkt>LINESTRING Z(10.0 5.0 0.0, 20.0 15.0 3.0)</wkt>
         <srid>4326</srid>
     </Element>
 
     <Element>
         <id>8</id>
         <type>LINESTRING</type>
-        <wkt>LINESTRING(10.0 5.0 0.0 0.0, 20.0 15.0 3.0 1.0)</wkt>
+        <wkt>LINESTRING ZM(10.0 5.0 0.0 0.0, 20.0 15.0 3.0 1.0)</wkt>
         <srid>4326</srid>
     </Element>
 
     <Element>
         <id>9</id>
         <type>LINESTRING</type>
-        <wkt>LINESTRING(10.0 5.0 1, 20.0 15.0 2, 30.3 22.4 5, 10 30.0 2)</wkt>
+        <wkt>LINESTRING M(10.0 5.0 1, 20.0 15.0 2, 30.3 22.4 5, 10 30.0 2)</wkt>
         <srid>4326</srid>
     </Element>
 
     <Element>
         <id>10</id>
         <type>LINESTRING</type>
-        <wkt>LINESTRING(10.0 5.0 1 1, 20.0 15.0 2 3, 30.3 22.4 5 10, 10 30.0 2 12)</wkt>
+        <wkt>LINESTRING ZM(10.0 5.0 1 1, 20.0 15.0 2 3, 30.3 22.4 5 10, 10 30.0 2 12)</wkt>
         <srid>4326</srid>
     </Element>
 
@@ -85,7 +79,7 @@
     <Element>
         <id>13</id>
         <type>MULTILINESTRING</type>
-        <wkt>MULTILINESTRING((10.0 5.0 1.0, 20.0 15.0 2.0, 30.3 22.4 1.0, 10 30.0 1.0),(40.0 20.0 0.0, 42.0 18.0 1.0,
+        <wkt>MULTILINESTRING Z((10.0 5.0 1.0, 20.0 15.0 2.0, 30.3 22.4 1.0, 10 30.0 1.0),(40.0 20.0 0.0, 42.0 18.0 1.0,
             43.0 16.0 2.0, 40 14.0 3.0))
         </wkt>
         <srid>4326</srid>
@@ -94,7 +88,7 @@
     <Element>
         <id>14</id>
         <type>MULTILINESTRING</type>
-        <wkt>MULTILINESTRING((10.0 5.0 1.0 0.0, 20.0 15.0 2.0 0.0, 30.3 22.4 1.0 1.0, 10 30.0 1.0 2.0),(40.0 20.0 0.0
+        <wkt>MULTILINESTRING ZM((10.0 5.0 1.0 0.0, 20.0 15.0 2.0 0.0, 30.3 22.4 1.0 1.0, 10 30.0 1.0 2.0),(40.0 20.0 0.0
             3.0, 42.0 18.0 1.0 4.0, 43.0 16.0 2.0 5.0, 40 14.0 3.0 6.0))
         </wkt>
         <srid>4326</srid>
@@ -103,7 +97,7 @@
     <Element>
         <id>15</id>
         <type>MULTILINESTRING</type>
-        <wkt>MULTILINESTRING((10.0 5.0 1.0 0.0, 20.0 15.0 2.0 0.0, 30.3 22.4 1.0 1.0, 10 30.0 1.0 2.0))</wkt>
+        <wkt>MULTILINESTRING ZM((10.0 5.0 1.0 0.0, 20.0 15.0 2.0 0.0, 30.3 22.4 1.0 1.0, 10 30.0 1.0 2.0))</wkt>
         <srid>4326</srid>
     </Element>
 
@@ -116,7 +110,7 @@
     <Element>
         <id>17</id>
         <type>POLYGON</type>
-        <wkt>POLYGON( (0 0 0, 0 10 1, 10 10 1, 10 0 1, 0 0 0) )</wkt>
+        <wkt>POLYGON Z( (0 0 0, 0 10 1, 10 10 1, 10 0 1, 0 0 0) )</wkt>
         <srid>4326</srid>
     </Element>
     <Element>
@@ -141,7 +135,7 @@
     <Element>
         <id>21</id>
         <type>MULTIPOLYGON</type>
-        <wkt>MULTIPOLYGON( ((10 20 1, 30 40 2, 44 50 2, 10 20 1)), ((105 100 0, 120 140 10, 130 134 20, 105 100 0)) )
+        <wkt>MULTIPOLYGON Z( ((10 20 1, 30 40 2, 44 50 2, 10 20 1)), ((105 100 0, 120 140 10, 130 134 20, 105 100 0)) )
         </wkt>
         <srid>4326</srid>
     </Element>
@@ -170,13 +164,13 @@
     <Element>
         <id>27</id>
         <type>MULTIPOINT</type>
-        <wkt>MULTIPOINT(21 2 1, 25 5 2, 30 3 5)</wkt>
+        <wkt>MULTIPOINT Z(21 2 1, 25 5 2, 30 3 5)</wkt>
         <srid>4326</srid>
     </Element>
     <Element>
         <id>28</id>
         <type>MULTIPOINT</type>
-        <wkt>MULTIPOINT(21 2 1 0, 25 5 2 4, 30 3 5 2)</wkt>
+        <wkt>MULTIPOINT ZM(21 2 1 0, 25 5 2 4, 30 3 5 2)</wkt>
         <srid>4326</srid>
     </Element>
     <Element>
@@ -215,12 +209,5 @@
         <wkt>MULTIPOLYGON EMPTY</wkt>
         <srid>4326</srid>
     </Element>
-    <Element>
-        <id>56</id>
-        <type>GEOMETRYCOLLECTION</type>
-        <wkt>GEOMETRYCOLLECTION EMPTY</wkt>
-        <srid>4326</srid>
-    </Element>
-
 
 </TestData>
