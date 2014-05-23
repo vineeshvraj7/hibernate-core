@@ -28,5 +28,6 @@ package org.hibernate.spatial;
 public interface SpatialAggregate {
 
 	public static final int EXTENT = 1;
+	public static final int UNION = 2;
 
 }

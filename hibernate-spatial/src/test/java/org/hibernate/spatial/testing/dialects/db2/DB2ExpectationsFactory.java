@@ -21,8 +21,12 @@
 
 package org.hibernate.spatial.testing.dialects.db2;
 
+import java.sql.SQLException;
+import java.util.Map;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+
 import org.hibernate.spatial.dialect.db2.DB2GeometryValueExtractor;
 import org.hibernate.spatial.testing.AbstractExpectationsFactory;
 import org.hibernate.spatial.testing.DataSourceUtils;
@@ -42,7 +46,19 @@ public class DB2ExpectationsFactory extends AbstractExpectationsFactory {
 	public DB2ExpectationsFactory(DataSourceUtils utils) {
 		super(utils);
 	}
-
+	/**
+	 * Returns the expected extent of all testsuite-suite geometries.
+	 *
+	 * @return map of identifier, extent
+	 * @throws SQLException
+	 */
+	public Map<Integer, Geometry> getExtent() throws SQLException {
+		return retrieveExpected(createNativeExtentStatement(), GEOMETRY);
+	}
+	protected NativeSQLStatement createNativeExtentStatement() {
+		return createNativeSQLStatement(
+				"select max(t.id), db2gse.ST_GetAggrResult(MAX(db2gse.st_BuildMBRAggr(t.geom))) from GeomTest t where db2gse.st_srid(t.geom) = 4326");
+	}
 	@Override
 	protected NativeSQLStatement createNativeTouchesStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
@@ -157,7 +173,7 @@ public class DB2ExpectationsFactory extends AbstractExpectationsFactory {
 
 	@Override
 	protected NativeSQLStatement createNativeHavingSRIDStatement(int srid) {
-		return createNativeSQLStatement("select t.id, (DB2GSE.st_srid(t.geom) = " + srid + ") from GeomTest t where DB2GSE.ST_SRID(t.geom) =  " + srid);
+		return createNativeSQLStatement("select t.id, DB2GSE.st_srid(t.geom) from GeomTest t where DB2GSE.ST_SRID(t.geom) =  " + srid);
 	}
 
 	@Override
@@ -178,12 +194,12 @@ public class DB2ExpectationsFactory extends AbstractExpectationsFactory {
 
 	@Override
 	protected NativeSQLStatement createNativeIsEmptyStatement() {
-		return createNativeSQLStatement("select id, DB2GSE.ST_isempty(geom) from geomtest");
+		return createNativeSQLStatement("select id, DB2GSE.ST_isempty(geom) from geomtest where db2gse.ST_IsEmpty(geom) = 1");
 	}
 
 	@Override
-	protected NativeSQLStatement createNativeIsNotEmptyStatement() {
-		return createNativeSQLStatement("select id, not DB2GSE.ST_isempty(geom) from geomtest");
+	protected NativeSQLStatement createNativeIsNotEmptyStatement() { // return 'not ST_IsEmpty', 'not' is not supported by DB2
+		return createNativeSQLStatement("select id, case when DB2GSE.ST_isempty(geom) = 0 then 1 else 0 end from geomtest where db2gse.ST_IsEmpty(geom) = 0");
 	}
 
 	@Override

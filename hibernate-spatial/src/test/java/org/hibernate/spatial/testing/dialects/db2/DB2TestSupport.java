@@ -34,7 +34,7 @@ import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 public class DB2TestSupport extends TestSupport {
 
 	public TestData createTestData(BaseCoreFunctionalTestCase testcase) {
-		return TestData.fromFile("test-db2-data-set.xml");
+		return TestData.fromFile("test-db2nozm-data-set.xml");
 	}
 
 	public DB2ExpectationsFactory createExpectationsFactory(DataSourceUtils dataSourceUtils) {

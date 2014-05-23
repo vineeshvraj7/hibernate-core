@@ -165,7 +165,7 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect{
 // register ST_GeomFromText to Hibernate
 		registerFunction("geomFromText", new SQLFunctionTemplate(GeometryType.INSTANCE,
 				"DB2GSE.ST_GeomFromText(?1,4326)"));
-				//"DB2GSE.ST_GeomFromText(CAST (?1 AS CLOB(1M)),4326)"));
+				//"DB2GSE.ST_GeomFromText(CAST (?1 AS CLOB(1M)),4326)")); // Hibernate messes up parens
 						
 		// Register spatial aggregate function
 		registerFunction("extent", new SQLFunctionTemplate(GeometryType.INSTANCE,
@@ -173,27 +173,36 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect{
 				));
 	}
 	@Override
-	public String getDWithinSQL(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getDWithinSQL(String columnName) {
+		return "db2gse.ST_Distance(" + columnName + ",?) < ?";	
 	}
 
 	@Override
-	public String getHavingSridSQL(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getHavingSridSQL(String columnName) {
+        return "( db2gse.ST_srsid(" + columnName + ") = ?)";
 	}
 
 	@Override
-	public String getIsEmptySQL(String arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getIsEmptySQL(String columnName, boolean isEmpty) {
+		if (isEmpty)
+			return "( db2gse.ST_IsEmpty(" + columnName + ") = 1)";
+		else 
+			return "( db2gse.ST_IsEmpty(" + columnName + ") = 0)";
 	}
 
 	@Override
-	public String getSpatialAggregateSQL(String arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getSpatialAggregateSQL(String columnName, int type) {
+		switch (type) {
+		case SpatialAggregate.EXTENT:  // same as extent function above???
+			return "db2gse.ST_GetAggrResult(MAX(db2gse.st_BuildMBRAggr(" + columnName + ")))";
+		case SpatialAggregate.UNION:
+			return "db2gse.ST_GetAggrResult(MAX(db2gse.st_BuildUnionAggr(" + columnName + ")))";			
+		default:
+			throw new IllegalArgumentException(
+					"Aggregation of type "
+							+ type + " are not supported by this dialect"
+			);
+	}
 	}
 
 	@Override
@@ -204,10 +213,8 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect{
 	//Temporary Fix for HHH-6074
 	@Override	
 	public String getTypeName(int code, long length, int precision, int scale) throws HibernateException {
-			System.out.println("DB2SpatialDialect:getTypeName got code " + code);
 		if (code == 3000) {
-		System.out.println("DB2SpatialDialect:getTypeName got code 3000, return ST_GEOMETRY");
-		return "DB2GSE.ST_GEOMETRY";
+			return "DB2GSE.ST_GEOMETRY";
 		}
 		return super.getTypeName(code, length, precision, scale);
 	}
@@ -220,9 +227,16 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect{
 		return super.remapSqlTypeDescriptor(sqlTypeDescriptor);
 	}
 	@Override
-	public String getSpatialRelateSQL(String arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getSpatialRelateSQL(String columnName, int spatialRelation) {
+		String relationName = (String) spatialRelationNames.get(spatialRelation);
+		if (relationName != null) {
+			if (spatialRelation != SpatialRelation.DISJOINT) {
+			return " db2gse." + relationName + "(" + columnName + ", ?) = 1 SELECTIVITY .0001";
+			} else { // SELECTIVITY not supported for ST_Disjoint UDF
+				return " db2gse." + relationName + "(" + columnName + ", ?) = 1";				
+			}
+		} else throw new IllegalArgumentException(
+                       "Spatial relation " + spatialRelation + " not implemented");
 	}
 
 	@Override
