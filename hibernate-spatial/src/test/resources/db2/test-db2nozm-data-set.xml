@@ -43,44 +43,36 @@
     <Element>
         <id>16</id>
         <type>POLYGON</type>
-        <wkt>POLYGON( (0 0, 0 10, 10 10, 10 0, 0 0) )</wkt>
+        <wkt>POLYGON( (0 0, 10 0, 10 10, 0 10, 0 0) )</wkt>
         <srid>4326</srid>
     </Element>
      <Element>
         <id>18</id>
         <type>POLYGON</type>
-        <wkt>POLYGON( (0 0, 0 10, 10 10, 10 0, 0 0), (2 2, 2 5, 5 5,5 2, 2 2))</wkt>
+        <wkt>POLYGON((0 0, 10 0, 10 10, 0 10, 0 0), (2 2, 2 5, 5 5, 5 2, 2 2))</wkt>
         <srid>4326</srid>
     </Element>
     <Element>
         <id>19</id>
         <type>POLYGON</type>
-        <wkt>POLYGON( (110 110, 110 120, 120 120, 120 110, 110 110) )</wkt>
+        <wkt>POLYGON( (110 110, 120 110, 120 120, 110 120, 110 110) )</wkt>
         <srid>4326</srid>
     </Element>
 
     <Element>
         <id>20</id>
         <type>MULTIPOLYGON</type>
-        <wkt>MULTIPOLYGON( ((10 20, 30 40, 44 50, 10 20)), ((105 100, 120 140, 130 134, 105 100)) )</wkt>
+        <wkt>MULTIPOLYGON(((105 100, 130 134, 120 140, 105 100)), ((10 20, 44 50, 30 40, 10 20)))</wkt>
         <srid>4326</srid>
     </Element>
      <Element>
         <id>22</id>
         <type>MULTIPOLYGON</type>
-        <wkt>MULTIPOLYGON(( (0 0, 0 50, 50 50, 50 0, 0 0), (10 10, 10 20, 20 20, 20 10, 10 10) ),((105 100, 120 140, 130
-            134, 105 100)) )
+        <wkt>MULTIPOLYGON(((0 0, 50 0, 50 50, 0 50, 0 0), (10 10, 10 20, 20 20, 20 10, 10 10)), ((105 100, 130 134, 120 140, 105 100)))
         </wkt>
         <srid>4326</srid>
     </Element>
 
-
-    <Element>
-        <id>26</id>
-        <type>MULTIPOINT</type>
-        <wkt>MULTIPOINT(21 2)</wkt>
-        <srid>4326</srid>
-    </Element>
     <Element>
         <id>50</id>
         <type>POINT</type>
