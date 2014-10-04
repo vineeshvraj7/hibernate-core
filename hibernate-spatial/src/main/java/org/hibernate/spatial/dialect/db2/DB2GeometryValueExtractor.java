@@ -23,6 +23,7 @@ package org.hibernate.spatial.dialect.db2;
 
 import org.hibernate.HibernateException;
 import org.hibernate.spatial.dialect.AbstractJTSGeometryValueExtractor;
+import org.hibernate.spatial.jts.JTS;
 import org.hibernate.type.descriptor.java.JavaTypeDescriptor;
 import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 import org.hibernate.spatial.Log;
@@ -61,12 +62,7 @@ public class DB2GeometryValueExtractor<X> extends
 	 *            - spatial value as returned from DB2 (currently a WKT CLOB)
 	 * @return A JTS Geometry representing the spatial value
 	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.hibernatespatial.AbstractDBGeometryType#convert2JTS(java.lang.Object)
-	 */
+
 	@Override
 	public Geometry toJTS(Object geomObj) {
 		Geometry geom = null;
@@ -78,10 +74,11 @@ public class DB2GeometryValueExtractor<X> extends
 		try {
 			if (geomObj instanceof Clob) {
 				String wkt = clobToString((Clob) geomObj);
-				System.out.println("**** wkt: " + wkt);
-				WKTReader wktReader = new WKTReader();
+				getLogger().info("**** wkt: " + wkt);
+				WKTReader wktReader = new WKTReader(JTS.getDefaultGeomFactory());
 				
 				geom = wktReader.read(wkt);
+				
 				return geom;
 			} else if (geomObj instanceof Blob) {
 				return null;
@@ -117,7 +114,7 @@ public class DB2GeometryValueExtractor<X> extends
 			} while (read >= 0);
 
 		} catch (Exception e) {
-			getLogger().warn("Could not convert database CLOB object to String.");
+			getLogger().error("Could not convert database CLOB object to String.");
 			e.printStackTrace();
 		} finally {
 			try {
@@ -125,7 +122,7 @@ public class DB2GeometryValueExtractor<X> extends
 					in.close();
 				}
 			} catch (IOException e) {
-				getLogger().warn("Could not close input stream.");
+				getLogger().error("Could not close input stream.");
 				e.printStackTrace();
 			}
 		}

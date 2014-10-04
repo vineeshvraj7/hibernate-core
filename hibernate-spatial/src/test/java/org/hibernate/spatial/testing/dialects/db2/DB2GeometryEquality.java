@@ -2,7 +2,7 @@
  * This file is part of Hibernate Spatial, an extension to the
  *  hibernate ORM solution for spatial (geographic) data.
  *
- *  Copyright Â© 2014 Adtech Geospatial
+ *  Copyright © 2014 Adtech Geospatial
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public
@@ -21,36 +21,24 @@
 
 package org.hibernate.spatial.testing.dialects.db2;
 
-import org.hibernate.spatial.testing.DataSourceUtils;
+import com.vividsolutions.jts.geom.Geometry;
+
 import org.hibernate.spatial.testing.GeometryEquality;
-import org.hibernate.spatial.testing.SQLExpressionTemplate;
-import org.hibernate.spatial.testing.TestData;
-import org.hibernate.spatial.testing.TestSupport;
-import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 
-/**
- * @author David Adler, Adtech Geospatial
- *         creation-date: 5/22/2014
- */
-public class DB2TestSupport extends TestSupport {
+public class DB2GeometryEquality extends GeometryEquality{
 
-	public TestData createTestData(BaseCoreFunctionalTestCase testcase) {
-//		return TestData.fromFile("db2/test-db2-data-set.xml");
-		return TestData.fromFile("db2/test-db2nozm-data-set.xml");		
-	}
 
-	public DB2ExpectationsFactory createExpectationsFactory(DataSourceUtils dataSourceUtils) {
-		return new DB2ExpectationsFactory(dataSourceUtils);
-	}
-
+	/**
+	 * Test whether the SRIDs of two geometries are the same.
+	 *
+	 * @param geom1
+	 * @param geom2
+	 * @return true if SRIDs are the same
+	 */	
 	@Override
-	public SQLExpressionTemplate getSQLExpressionTemplate() {
-		return new DB2ExpressionTemplate();
-	}
-	
+   protected boolean testSRID(Geometry geom1, Geometry geom2) {
+	   return true;
+   }	
 
-	@Override
-	public GeometryEquality createGeometryEquality() {
-		return new DB2GeometryEquality();
-	}	
+
 }
