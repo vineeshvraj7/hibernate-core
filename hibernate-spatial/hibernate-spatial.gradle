@@ -71,7 +71,11 @@ sourceSets.test.resources {
 }
 
 configurations {
-    deployerJars
+    deployerJars 
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -80,11 +84,10 @@ dependencies {
 
 
 uploadArchives {
-    repositories.mavenDeployer {
-        name = 'HSDeployer'
+    repositories.mavenDeployer {        
         configuration = configurations.deployerJars
         repository( id: "hs-releases-repository", url: "scp://www.hibernatespatial.org:/var/maven/repository" )
-        snapshotRepository( id: "hs-snapshots-repository", url: "scp://www.hibernatespatial.org:/var/maven/repository" )
+        snapshotRepository( id: "hs-snapshots-repository", url: "scp://www.hibernatespatial.org:/var/maven/repository" ) 
     }
 }
 
