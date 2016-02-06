@@ -103,10 +103,10 @@ public class TestStoreRetrieve extends SpatialFunctionalTestCase {
 	}
 
 	private String createFailureMessage(int id, Geometry storedGeometry, Geometry retrievedGeometry) {
-		String expectedText = (storedGeometry != null ? storedGeometry.toText() : "NULL");
-		String retrievedText = (retrievedGeometry != null ? retrievedGeometry.toText() : "NULL");
+		String expectedText = (storedGeometry != null ? storedGeometry.getSRID() + ";" + storedGeometry.toText() : "NULL");
+		String retrievedText = (retrievedGeometry != null ? retrievedGeometry.getSRID() + ";" + retrievedGeometry.toText() : "NULL");
 		return String.format(
-				"Equality testsuite-suite failed for %d.\nExpected: %s\nReceived:%s",
+				"Equality testsuite-suite failed for %d.\nExpected: %s\nReceived: %s",
 				id,
 				expectedText,
 				retrievedText
