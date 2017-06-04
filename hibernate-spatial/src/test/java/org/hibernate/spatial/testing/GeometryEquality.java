@@ -26,7 +26,7 @@ public class GeometryEquality {
 		return test( geom1, geom2, false );
 	}
 
-	private boolean test(Geometry geom1, Geometry geom2, boolean ignoreSRID) {
+	public boolean test(Geometry geom1, Geometry geom2, boolean ignoreSRID) {
 		if ( geom1 == null ) {
 			return geom2 == null;
 		}
