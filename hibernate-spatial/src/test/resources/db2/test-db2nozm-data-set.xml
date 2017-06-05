@@ -2,13 +2,13 @@
     <Element>
         <id>1</id>
         <type>POINT</type>
-        <wkt>SRID=4326;SRID=4326;POINT(10 5)</wkt>
+        <wkt>SRID=4326;POINT(10 5)</wkt>
     </Element>
 
     <Element>
         <id>2</id>
         <type>POINT</type>
-        <wkt>SRID=4326;SRID=4326;POINT(52.25 2.53)</wkt>
+        <wkt>SRID=4326;POINT(52.25 2.53)</wkt>
     </Element>
 
     <Element>

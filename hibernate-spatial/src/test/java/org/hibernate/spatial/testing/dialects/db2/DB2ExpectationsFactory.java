@@ -270,7 +270,8 @@ public class DB2ExpectationsFactory extends AbstractExpectationsFactory {
 
 	@Override
 	protected Geometry decode(Object o) {
-		return JTS.to( DB2GeometryTypeDescriptor.toGeometry( o ) );
+		org.geolatte.geom.Geometry<?> geometry = DB2GeometryTypeDescriptor.toGeometry( o );
+		return geometry == null ? null : JTS.to( geometry );
 	}
 
 }

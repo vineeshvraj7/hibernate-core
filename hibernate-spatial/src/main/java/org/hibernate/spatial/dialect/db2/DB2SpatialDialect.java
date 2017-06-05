@@ -73,7 +73,7 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 	private void registerSpatialType() {
 
 		// Register Geometry column type
-		registerColumnType( java.sql.Types.CLOB, "geometry" );
+		registerColumnType( java.sql.Types.CLOB, " db2gse.ST_Geometry" );
 	}
 
 	/**

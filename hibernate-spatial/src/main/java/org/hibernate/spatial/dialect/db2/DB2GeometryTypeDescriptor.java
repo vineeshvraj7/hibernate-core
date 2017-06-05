@@ -9,7 +9,7 @@ import java.sql.Types;
 
 import org.geolatte.geom.Geometry;
 import org.geolatte.geom.codec.db.db2.Db2ClobDecoder;
-import org.geolatte.geom.codec.db.db2.Db2Encoder;
+import org.geolatte.geom.codec.db.db2.Db2ClobEncoder;
 
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.ValueExtractor;
@@ -49,20 +49,20 @@ public class DB2GeometryTypeDescriptor implements SqlTypeDescriptor {
 			@Override
 			protected void doBind(PreparedStatement st, X value, int index, WrapperOptions options)
 					throws SQLException {
-				st.setBytes( index, toBytes( value, options ) );
+				st.setObject( index, toText( value, options ) );
 			}
 
 			@Override
 			protected void doBind(CallableStatement st, X value, String name, WrapperOptions options)
 					throws SQLException {
 
-				st.setBytes( name, toBytes( value, options ) );
+				st.setObject( name, toText( value, options ) );
 			}
 
-			private byte[] toBytes(X value, WrapperOptions options) {
+			private String toText(X value, WrapperOptions options) {
 				final Geometry<?> geometry = getJavaDescriptor().unwrap( value, Geometry.class, options );
-				final Db2Encoder encoder = new Db2Encoder();
-				return encoder.encode( geometry ).getBytes();
+				final Db2ClobEncoder encoder = new Db2ClobEncoder();
+				return encoder.encode( geometry );
 			}
 		};
 	}
