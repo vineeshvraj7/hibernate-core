@@ -80,10 +80,10 @@ public class TestSupportFactories {
 		}
 		if ( "org.hibernate.spatial.dialect.hana.HANASpatialDialect".equals( canonicalName ) ) {
 			return HANATestSupport.class;
+		}
 
 		if ("org.hibernate.spatial.dialect.db2.DB2SpatialDialect".equals( canonicalName )) {
 			return DB2TestSupport.class;
-
 		}
 		throw new IllegalArgumentException( "Dialect not known in test suite" );
 	}

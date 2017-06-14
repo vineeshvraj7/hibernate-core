@@ -1,5 +1,3 @@
-Created DB2GeometryEquality to handle DB2 specifics, to avoid the MCoordinates test as the retrieved data uses Coordinates
-in the geometry.
 
 Modified GeometryEquality to create/use testSRID method that can be overridden
 

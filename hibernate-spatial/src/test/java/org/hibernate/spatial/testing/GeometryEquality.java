@@ -46,7 +46,7 @@ public class GeometryEquality {
 			for ( int partIndex = 0; partIndex < expectedCollection.getNumGeometries(); partIndex++ ) {
 				Geometry partExpected = expectedCollection.getGeometryN( partIndex );
 				Geometry partReceived = receivedCollection.getGeometryN( partIndex );
-				if ( !test( partExpected, partReceived, true ) ) {
+				if ( !test( partExpected, partReceived, ignoreSRID ) ) {
 					return false;
 				}
 			}
