@@ -130,7 +130,7 @@ public class DB2ExpectationsFactory extends AbstractExpectationsFactory {
 	@Override
 	protected NativeSQLStatement createNativeConvexHullStatement(Geometry geom) {
 		return createNativeSQLStatementAllWKTParams(
-				"select t.id, DB2GSE.ST_convexhull(st_union(t.geom, DB2GSE.ST_GeomFromText(?, 4326))) from GeomTest t where DB2GSE.ST_SRID(t.geom) = 4326",
+				"select t.id, DB2GSE.ST_convexhull(DB2GSE.ST_Union(t.geom, DB2GSE.ST_GeomFromText(?, 4326))) from GeomTest t where DB2GSE.ST_SRID(t.geom) = 4326",
 				geom.toText()
 		);
 	}

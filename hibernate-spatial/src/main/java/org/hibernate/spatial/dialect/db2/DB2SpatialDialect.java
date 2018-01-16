@@ -19,7 +19,7 @@ import org.hibernate.type.StandardBasicTypes;
 
 /**
  * @author David Adler, Adtech Geospatial
- *         creation-date: 5/22/2014
+ * creation-date: 5/22/2014
  */
 public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 
@@ -191,12 +191,13 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 		// Register non-SFS functions listed in Hibernate Spatial
 		// dwithin not supported as a spatial function, it is effectively implemented using ST_Distance
 
-		// The srid parameter needs to be explicitly cast to INTEGER to avoid a -245 SQLCODE,
-		// ambiguous parameter.
-		registerFunction( "transform", new SQLFunctionTemplate(
-				geolatteGemetryType,
-				"DB2GSE.ST_Transform(?1, CAST (?2 AS INTEGER))"
-		) );
+
+//		// The srid parameter needs to be explicitly cast to INTEGER to avoid a -245 SQLCODE,
+//		// ambiguous parameter.
+//		registerFunction( "transform", new SQLFunctionTemplate(
+//				geolatteGemetryType,
+//				"DB2GSE.ST_Transform(?1, CAST (?2 AS INTEGER))"
+//		) );
 
 // register ST_GeomFromText to Hibernate
 		registerFunction( "geomFromText", new SQLFunctionTemplate(
@@ -205,11 +206,12 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 		) );
 		//"DB2GSE.ST_GeomFromText(CAST (?1 AS CLOB(1M)),4326)")); // Hibernate messes up parens
 
-		// Register spatial aggregate function
-		registerFunction( "extent", new SQLFunctionTemplate(
-				geolatteGemetryType,
-				"db2gse.ST_GetAggrResult(MAX(db2gse.st_BuildMBRAggr(?1)))"
-		) );
+
+//		// Register spatial aggregate function
+//		registerFunction( "extent", new SQLFunctionTemplate(
+//				geolatteGemetryType,
+//				"db2gse.ST_GetAggrResult(MAX(db2gse.st_BuildMBRAggr(?1)))"
+//		) );
 	}
 
 	@Override

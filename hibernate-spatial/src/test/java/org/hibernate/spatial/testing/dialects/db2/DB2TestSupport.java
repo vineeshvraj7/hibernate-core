@@ -26,31 +26,34 @@ import org.hibernate.spatial.testing.GeometryEquality;
 import org.hibernate.spatial.testing.SQLExpressionTemplate;
 import org.hibernate.spatial.testing.TestData;
 import org.hibernate.spatial.testing.TestSupport;
+
 import org.hibernate.testing.junit4.BaseCoreFunctionalTestCase;
 
 /**
  * @author David Adler, Adtech Geospatial
- *         creation-date: 5/22/2014
+ * creation-date: 5/22/2014
  */
 public class DB2TestSupport extends TestSupport {
 
 	public TestData createTestData(BaseCoreFunctionalTestCase testcase) {
-//		return TestData.fromFile("db2/test-db2-data-set.xml");
-		return TestData.fromFile("db2/test-db2nozm-data-set.xml");		
+		if ( "org.hibernate.spatial.integration.TestSpatialFunctions".equals( testcase.getClass().getCanonicalName() ) ) {
+			return TestData.fromFile( "db2/test-db2nozm-only-polygon.xml" );
+		}
+		return TestData.fromFile( "db2/test-db2nozm-data-set.xml" );
 	}
 
 	public DB2ExpectationsFactory createExpectationsFactory(DataSourceUtils dataSourceUtils) {
-		return new DB2ExpectationsFactory(dataSourceUtils);
+		return new DB2ExpectationsFactory( dataSourceUtils );
 	}
 
 	@Override
 	public SQLExpressionTemplate getSQLExpressionTemplate() {
 		return new DB2ExpressionTemplate();
 	}
-	
+
 
 	@Override
 	public GeometryEquality createGeometryEquality() {
 		return new DB2GeometryEquality();
-	}	
+	}
 }
