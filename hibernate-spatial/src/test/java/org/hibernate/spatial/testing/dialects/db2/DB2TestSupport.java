@@ -51,9 +51,4 @@ public class DB2TestSupport extends TestSupport {
 		return new DB2ExpressionTemplate();
 	}
 
-
-	@Override
-	public GeometryEquality createGeometryEquality() {
-		return new DB2GeometryEquality();
-	}
 }

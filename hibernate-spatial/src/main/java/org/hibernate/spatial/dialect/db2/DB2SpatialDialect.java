@@ -6,10 +6,11 @@ import java.util.Map;
 import org.hibernate.HibernateException;
 import org.hibernate.boot.model.TypeContributions;
 import org.hibernate.dialect.DB2Dialect;
-import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.dialect.function.StandardSQLFunction;
+import org.hibernate.engine.config.spi.ConfigurationService;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.spatial.GeolatteGeometryType;
+import org.hibernate.spatial.HibernateSpatialConfigurationSettings;
 import org.hibernate.spatial.JTSGeometryType;
 import org.hibernate.spatial.SpatialAggregate;
 import org.hibernate.spatial.SpatialDialect;
@@ -29,9 +30,6 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 	private static final long serialVersionUID = 1L;
 
 	private final Map<Integer, String> spatialRelationNames = new HashMap<>();
-	private final GeolatteGeometryType geolatteGemetryType = new GeolatteGeometryType( DB2GeometryTypeDescriptor.INSTANCE );
-	private final JTSGeometryType jtsGemetryType = new JTSGeometryType( DB2GeometryTypeDescriptor.INSTANCE );
-
 
 	/**
 	 * Construct a DB2Spatial dialect. Register the geometry type and spatial
@@ -45,8 +43,33 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 	}
 
 	public void contributeTypes(TypeContributions typeContributions, ServiceRegistry serviceRegistry) {
-		typeContributions.contributeType( geolatteGemetryType );
-		typeContributions.contributeType( jtsGemetryType );
+		final DB2GeometryTypeDescriptor typeDescriptor = mkDescriptor( serviceRegistry );
+		typeContributions.contributeType( new GeolatteGeometryType( typeDescriptor ) );
+		typeContributions.contributeType( new JTSGeometryType( typeDescriptor ) );
+	}
+
+	private DB2GeometryTypeDescriptor mkDescriptor(ServiceRegistry serviceRegistry) {
+		ConfigurationService configurationService = serviceRegistry.getService( ConfigurationService.class );
+		Integer srid = retrieveSridFromConfiguration( configurationService );
+		return new DB2GeometryTypeDescriptor( srid );
+	}
+
+	private Integer retrieveSridFromConfiguration(ConfigurationService configurationService) {
+		Integer srid = 0;
+		try {
+			srid = Integer.parseInt( configurationService.getSetting(
+					HibernateSpatialConfigurationSettings.DB2_DEFAULT_SRID,
+					String.class,
+					"0"
+			) );
+		}
+		catch (NumberFormatException e) {
+			throw new HibernateException(
+					"Invalid format for configuration parameter (Integer expected): " + HibernateSpatialConfigurationSettings.DB2_DEFAULT_SRID,
+					e
+			);
+		}
+		return srid;
 	}
 
 	/**
@@ -189,8 +212,6 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 		) );
 
 		// Register non-SFS functions listed in Hibernate Spatial
-		// dwithin not supported as a spatial function, it is effectively implemented using ST_Distance
-
 
 //		// The srid parameter needs to be explicitly cast to INTEGER to avoid a -245 SQLCODE,
 //		// ambiguous parameter.
@@ -199,13 +220,9 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 //				"DB2GSE.ST_Transform(?1, CAST (?2 AS INTEGER))"
 //		) );
 
-// register ST_GeomFromText to Hibernate
-		registerFunction( "geomFromText", new SQLFunctionTemplate(
-				geolatteGemetryType,
-				"DB2GSE.ST_GeomFromText(?1,4326)"
+		registerFunction( "geomFromText", new StandardSQLFunction(
+				"DB2GSE.ST_GeomFromText"
 		) );
-		//"DB2GSE.ST_GeomFromText(CAST (?1 AS CLOB(1M)),4326)")); // Hibernate messes up parens
-
 
 //		// Register spatial aggregate function
 //		registerFunction( "extent", new SQLFunctionTemplate(
@@ -251,8 +268,7 @@ public class DB2SpatialDialect extends DB2Dialect implements SpatialDialect {
 
 	@Override
 	public String getSpatialFilterExpression(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException( "DB2 Dialect doesn't support spatial filtering" );
 	}
 
 	//Temporary Fix for HHH-6074

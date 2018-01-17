@@ -46,6 +46,7 @@ public class DB2ExpectationsFactory extends AbstractExpectationsFactory {
 		super( utils );
 	}
 
+	private final DB2GeometryTypeDescriptor desc = new DB2GeometryTypeDescriptor(4326);
 	/**
 	 * Returns the expected extent of all testsuite-suite geometries.
 	 *
@@ -270,7 +271,7 @@ public class DB2ExpectationsFactory extends AbstractExpectationsFactory {
 
 	@Override
 	protected Geometry decode(Object o) {
-		org.geolatte.geom.Geometry<?> geometry = DB2GeometryTypeDescriptor.toGeometry( o );
+		org.geolatte.geom.Geometry<?> geometry = desc.toGeometry( o );
 		return geometry == null ? null : JTS.to( geometry );
 	}
 

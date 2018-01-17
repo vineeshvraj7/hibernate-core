@@ -27,10 +27,11 @@ import org.hibernate.type.descriptor.sql.SqlTypeDescriptor;
 public class DB2GeometryTypeDescriptor implements SqlTypeDescriptor {
 
 
-	/**
-	 * An instance of this class
-	 */
-	public static final DB2GeometryTypeDescriptor INSTANCE = new DB2GeometryTypeDescriptor();
+	private final Integer srid;
+
+	public DB2GeometryTypeDescriptor(Integer srid) {
+		this.srid = srid;
+	}
 
 	@Override
 	public int getSqlType() {
@@ -89,14 +90,14 @@ public class DB2GeometryTypeDescriptor implements SqlTypeDescriptor {
 		};
 	}
 
-	public static Geometry<?> toGeometry(Object object) {
+	public Geometry<?> toGeometry(Object object) {
 		if ( object == null ) {
 			return null;
 		}
 
 		if ( object instanceof Clob ) {
-			Db2ClobDecoder decoder = new Db2ClobDecoder();
-			return decoder.decode( (Clob) object );
+			Db2ClobDecoder decoder = new Db2ClobDecoder(srid);
+			return  decoder.decode( (Clob) object );
 		}
 
 		throw new IllegalStateException( "Object of type " + object.getClass()
