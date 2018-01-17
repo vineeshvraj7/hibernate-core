@@ -14,7 +14,6 @@ import java.util.Map;
 import com.vividsolutions.jts.geom.Geometry;
 
 import org.jboss.logging.Logger;
-import org.jboss.logging.annotations.Suppressed;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
