@@ -201,24 +201,21 @@ DB2::
 The `DB2SpatialDialect` supports the spatial extensions of the DB2 database. The dialect has been tested with DB2 LUW 11.1
 [NOTE]
 ====
-In DB2 _transfrom groups_ are used to transfer geometries between the database and client applications. Currently Hibernate
-Spatial only supports the ST_WellknownText transfer group.
+The Wellknowntext (WKT) representation used to transfer geometry information to and from DB2 does not include the srid information.
+
+The srid for use when retrieving geometries by specifying a value in the hibernate.properties file like:
+....
+hibernate.spatial.db2.srid = 4326
+....
+for example when using the WGS84 coordinate system.
+
+The srid for use when storing geometries can be specified in the Java class representing the table with a spatial column by including lines like:
+[%hardbreaks]
+    import org.hibernate.annotations.ColumnTransformer;
+	@ColumnTransformer(write="db2gse.st_geometry(cast( ? as clob(1M)),4326)")
+	private Geometry geom;
 ====
 
-This dialect can be configured using the Hibernate property:  +
-
-`hibernate.spatial.db2.srid`:::
-the EPSG code to use when deserializing geometries from the database.
-
-.Why the `hibernate.spatial.db2.srid` property?
-[NOTE]
-====
-The DB2 _transfrom groups_ have the property that when transferring geometries to the database the SRID is set to 0, effectively
-dropping the SRID information from Geometry. The ST_WellknownText transfer group (see above) has the additonal property that its output Wellknow Text
-representation contains no SRID information. +
-To provide at least a measure of control we have
-provided the `hibernate.spatial.db.srid` property. When reading a geometry from DB2, its SRID will be set to the value of this property. 
-====
 
 
 [[spatial-types]]
