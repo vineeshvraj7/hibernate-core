@@ -1,5 +1,4 @@
 
-Modified GeometryEquality to create/use testSRID method that can be overridden
 
 EWKTReader doesn't work with the test data for Z or M data. It tests for 'POINTM' but the data is 'POINT M'.
 

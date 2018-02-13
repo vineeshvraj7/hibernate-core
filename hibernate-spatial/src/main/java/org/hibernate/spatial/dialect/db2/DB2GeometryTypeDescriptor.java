@@ -69,7 +69,8 @@ public class DB2GeometryTypeDescriptor implements SqlTypeDescriptor {
 			private String toText(X value, WrapperOptions options) {
 				final Geometry<?> geometry = getJavaDescriptor().unwrap( value, Geometry.class, options );
 				final Db2ClobEncoder encoder = new Db2ClobEncoder();
-				return encoder.encode( geometry );
+				String encoded = encoder.encode( geometry );
+				return encoded;
 			}
 		};
 	}
