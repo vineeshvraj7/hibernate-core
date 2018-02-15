@@ -103,4 +103,25 @@
         <wkt>SRID=4326;MULTIPOLYGON EMPTY</wkt>
     </Element>
 
+    <!-- Z, M and ZM Geometries  -->
+    <!-- Due to the default definition of the SRID in DB2, the M and Z values need to be whole integers -->
+    <Element>
+        <id>56</id>
+        <type>POINT</type>
+        <wkt>SRID=4326;POINT Z(4.23 50.32 10)</wkt>
+    </Element>
+
+    <Element>
+        <id>57</id>
+        <type>POINT</type>
+        <wkt>SRID=4326;POINT M(4.23 50.32 10)</wkt>
+    </Element>
+
+    <Element>
+        <id>58</id>
+        <type>POINT</type>
+        <wkt>SRID=4326;POINT ZM(4.23 50.32 5 10)</wkt>
+    </Element>
+
+
 </TestData>

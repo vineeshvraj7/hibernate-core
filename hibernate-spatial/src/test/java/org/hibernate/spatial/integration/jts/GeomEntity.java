@@ -20,6 +20,8 @@ import org.hibernate.dialect.AbstractHANADialect;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.spatial.testing.TestDataElement;
 
+import static org.hibernate.spatial.integration.DecodeUtil.getWktDecoder;
+
 /**
  * Test class used in unit testing.
  */
@@ -60,13 +62,7 @@ public class GeomEntity {
 	}
 
 	public static GeomEntity createFrom(TestDataElement element, Dialect dialect) throws ParseException {
-		WktDecoder decoder = null;
-		if (dialect instanceof AbstractHANADialect) {
-			decoder = Wkt.newDecoder( Wkt.Dialect.HANA_EWKT );
-		}
-		else {
-			decoder = Wkt.newDecoder( Wkt.Dialect.POSTGIS_EWKT_1 );
-		}
+		WktDecoder decoder = getWktDecoder( dialect );
 		Geometry geom = JTS.to( decoder.decode( element.wkt ) );
 		GeomEntity result = new GeomEntity();
 		result.setId( element.id );

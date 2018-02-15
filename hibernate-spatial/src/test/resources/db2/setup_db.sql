@@ -29,7 +29,7 @@ create or replace function db2gse.asewkt(geometry db2gse.st_geometry)
 returns clob(2G)
 specific db2gse.asewkt1
 language sql
-deterministic
+deterministice
 no external action
 reads sql data
 return 'srid=' || varchar(db2gse.st_srsid(geometry)) || ';' || db2gse.st_astext(geometry)

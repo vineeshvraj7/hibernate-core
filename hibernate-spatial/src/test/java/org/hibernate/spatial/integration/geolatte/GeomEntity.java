@@ -20,6 +20,8 @@ import org.geolatte.geom.codec.Wkt;
 import org.geolatte.geom.codec.WktDecodeException;
 import org.geolatte.geom.codec.WktDecoder;
 
+import static org.hibernate.spatial.integration.DecodeUtil.getWktDecoder;
+
 /**
  * Test class used in unit testing.
  *
@@ -63,13 +65,7 @@ public class GeomEntity {
 	}
 
 	public static GeomEntity createFrom(TestDataElement element, Dialect dialect) throws WktDecodeException {
-		WktDecoder decoder = null;
-		if (dialect instanceof AbstractHANADialect) {
-			decoder = Wkt.newDecoder( Wkt.Dialect.HANA_EWKT );
-		}
-		else {
-			decoder = Wkt.newDecoder( Wkt.Dialect.POSTGIS_EWKT_1 );
-		}
+		WktDecoder decoder = getWktDecoder( dialect );
 		Geometry geom = decoder.decode( element.wkt );
 		GeomEntity result = new GeomEntity();
 		result.setId( element.id );
@@ -77,6 +73,8 @@ public class GeomEntity {
 		result.setType( element.type );
 		return result;
 	}
+
+
 
 	@Override
 	public boolean equals(Object o) {

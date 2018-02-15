@@ -113,7 +113,7 @@ public class TestStoreRetrieveUsingJTS extends SpatialFunctionalTestCase {
 		int id = -1;
 		try {
 			session = openSession();
-			Dialect dialect = sessionFactory().getSessionFactory().getJdbcServices().getDialect();
+			Dialect dialect = sessionFactory().getJdbcServices().getDialect();
 			// Every testsuite-suite instance is committed seperately
 			// to improve feedback in case of failure
 			for ( TestDataElement element : testData ) {
