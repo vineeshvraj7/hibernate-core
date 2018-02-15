@@ -22,7 +22,6 @@
 package org.hibernate.spatial.testing.dialects.db2;
 
 import org.hibernate.spatial.testing.DataSourceUtils;
-import org.hibernate.spatial.testing.GeometryEquality;
 import org.hibernate.spatial.testing.SQLExpressionTemplate;
 import org.hibernate.spatial.testing.TestData;
 import org.hibernate.spatial.testing.TestSupport;

@@ -11,12 +11,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.dialect.AbstractHANADialect;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.spatial.integration.GeomEntityLike;
 import org.hibernate.spatial.testing.TestDataElement;
 
 import org.geolatte.geom.Geometry;
-import org.geolatte.geom.codec.Wkt;
 import org.geolatte.geom.codec.WktDecodeException;
 import org.geolatte.geom.codec.WktDecoder;
 
@@ -31,40 +30,9 @@ import static org.hibernate.spatial.integration.DecodeUtil.getWktDecoder;
  */
 @Entity
 @Table(name = "geomtest")
-public class GeomEntity {
+public class GeomEntity implements GeomEntityLike<Geometry> {
 
-	@Id
-	private Integer id;
-
-	private String type;
-
-	private Geometry geom;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public Geometry getGeom() {
-		return geom;
-	}
-
-	public void setGeom(Geometry geom) {
-		this.geom = geom;
-	}
-
-	public static GeomEntity createFrom(TestDataElement element, Dialect dialect) throws WktDecodeException {
+	static GeomEntity createFrom(TestDataElement element, Dialect dialect) throws WktDecodeException {
 		WktDecoder decoder = getWktDecoder( dialect );
 		Geometry geom = decoder.decode( element.wkt );
 		GeomEntity result = new GeomEntity();
@@ -74,6 +42,43 @@ public class GeomEntity {
 		return result;
 	}
 
+
+	@Id
+	private Integer id;
+
+	private String type;
+
+	private Geometry geom;
+
+	@Override
+	public Integer getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@Override
+	public String getType() {
+		return type;
+	}
+
+	@Override
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	@Override
+	public Geometry getGeom() {
+		return geom;
+	}
+
+	@Override
+	public void setGeom(Geometry geom) {
+		this.geom = geom;
+	}
 
 
 	@Override

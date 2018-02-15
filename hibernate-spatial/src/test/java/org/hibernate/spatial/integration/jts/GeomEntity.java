@@ -18,6 +18,7 @@ import org.geolatte.geom.codec.WktDecoder;
 import org.geolatte.geom.jts.JTS;
 import org.hibernate.dialect.AbstractHANADialect;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.spatial.integration.GeomEntityLike;
 import org.hibernate.spatial.testing.TestDataElement;
 
 import static org.hibernate.spatial.integration.DecodeUtil.getWktDecoder;
@@ -27,7 +28,7 @@ import static org.hibernate.spatial.integration.DecodeUtil.getWktDecoder;
  */
 @Entity
 @Table(name = "geomtest")
-public class GeomEntity {
+public class GeomEntity implements GeomEntityLike<Geometry> {
 
 
 	@Id
