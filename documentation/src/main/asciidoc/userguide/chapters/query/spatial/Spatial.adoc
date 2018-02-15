@@ -198,22 +198,47 @@ The dialect has been tested with GeoDB version 0.7
 ====
 
 DB2::
-The `DB2SpatialDialect` supports the spatial extensions of the DB2 database. The dialect has been tested with DB2 LUW 11.1
+The `DB2SpatialDialect` supports the spatial extensions of the DB2 LUW database. 
+The dialect has been tested with DB2 LUW 11.1.
+The dialect does not support DB2 for z/OS or DB2 column-oriented databases.
 [NOTE]
 ====
-The Wellknowntext (WKT) representation used to transfer geometry information to and from DB2 does not include the srid information.
 
-The srid for use when retrieving geometries by specifying a value in the hibernate.properties file like:
-....
-hibernate.spatial.db2.srid = 4326
-....
-for example when using the WGS84 coordinate system.
+In order to use the DB2 Hibernate Spatial capabilities, it is necessary to first execute the following
+SQL statements which will allow DB2 to accept Extended WellKnown Text (EWKT) data and return EWKT data.
 
-The srid for use when storing geometries can be specified in the Java class representing the table with a spatial column by including lines like:
-[%hardbreaks]
-    import org.hibernate.annotations.ColumnTransformer;
-	@ColumnTransformer(write="db2gse.st_geometry(cast( ? as clob(1M)),4326)")
-	private Geometry geom;
+[source, SQL, indent=0]
+----
+create or replace function db2gse.asewkt(geometry db2gse.st_geometry)
+returns clob(2G)
+specific db2gse.asewkt1
+language sql
+deterministic
+no external action
+reads sql data
+return 'srid=' || varchar(db2gse.st_srsid(geometry)) || ';' || db2gse.st_astext(geometry);
+
+create or replace function db2gse.geomfromewkt(instring varchar(32000))
+returns db2gse.st_geometry
+specific db2gse.fromewkt1
+language sql
+deterministic
+no external action
+reads sql data
+return db2gse.st_geometry(
+substr(instring,posstr(instring,';')+1, length(instring) - posstr(instring,';')),
+integer(substr(instring,posstr(instring,'=')+1,posstr(instring,';')-(posstr(instring,'=')+1))));
+
+create transform for db2gse.st_geometry ewkt (
+ from sql with function db2gse.asewkt(db2gse.st_geometry), 
+ to   sql with function db2gse.geomfromewkt(varchar(32000)) );
+
+drop transform db2_program for db2gse.st_geometry;
+create transform for db2gse.st_geometry db2_program (
+ from sql with function db2gse.asewkt(db2gse.st_geometry), 
+ to   sql with function db2gse.geomfromewkt(varchar(32000)) );
+----
+
 ====
 
 
