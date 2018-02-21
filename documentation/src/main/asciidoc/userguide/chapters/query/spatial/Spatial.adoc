@@ -206,12 +206,8 @@ The dialect does not support DB2 for z/OS or DB2 column-oriented databases.
 
 In order to use the DB2 Hibernate Spatial capabilities, it is necessary to first execute the following
 SQL statements which will allow DB2 to accept Extended WellKnown Text (EWKT) data and return EWKT data.
-The easiest ways to do this are to:
-
-* Copy these statements into a SQL script in Eclipse with Data Tools Platform (DTP) or IBM Data Studio
-and execute them there.
-* or
-* Copy these statements into a file such as ewkt.sql and execute them in a DB2 command window with a command like 'db2 -tvf ewkt.sql'.
+One way to do this is to copy these statements into a file such as ewkt.sql and execute it in a DB2 command window
+with a command like 'db2 -tvf ewkt.sql'.
 
 [source, SQL, indent=0]
 ----
